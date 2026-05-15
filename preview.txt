@@ -1,0 +1,63 @@
+// Page 1: User selects an option
+const page1HTML = `
+  <h2>Choose your plan:</h2>
+  <div class="options">
+    <label>
+      <input type="radio" name="plan" value="basic"> Basic Plan
+    </label>
+    <label>
+      <input type="radio" name="plan" value="premium"> Premium Plan
+    </label>
+    <label>
+      <input type="radio" name="plan" value="enterprise"> Enterprise Plan
+    </label>
+  </div>
+  <button onclick="saveSelection('page1')">Next</button>
+`;
+
+// Page 2: Different selection
+const page2HTML = `
+  <h2>Choose your color:</h2>
+  <div class="options">
+    <label>
+      <input type="radio" name="color" value="red"> Red
+    </label>
+    <label>
+      <input type="radio" name="color" value="blue"> Blue
+    </label>
+    <label>
+      <input type="radio" name="color" value="green"> Green
+    </label>
+  </div>
+  <button onclick="saveSelection('page2')">Next</button>
+`;
+
+// Store selections
+let userSelections = {};
+
+function saveSelection(pageName) {
+  // Get selected value from the current page
+  const selected = document.querySelector('input[type="radio"]:checked');
+  if (selected) {
+    userSelections[pageName] = selected.value;
+    console.log('Saved:', userSelections);
+    // Move to next page
+    loadPage(currentPage + 1);
+  } else {
+    alert('Please select an option');
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+

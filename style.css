@@ -1,0 +1,251 @@
+* {
+      box-sizing: border-box;
+}
+
+html, body {
+      margin: 0;
+      min-height: 100vh;
+}
+
+body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #eef2ff 0%, #fdfcfb 100%);
+      color: #1f2937;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      min-height: 100vh;
+}
+
+.login-page {
+      width: 100%;
+      max-width: 420px;
+}
+
+.login-card {
+      background: #ffffff;
+      border-radius: 24px;
+      padding: 24px 20px;
+      box-shadow: 0 20px 60px rgba(15, 23, 42, 0.08);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+}
+
+.brand-header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.2px;
+      text-align: center;
+}
+
+.brand-logo {
+      width: 64px;
+      height: auto;
+      object-fit: contain;
+}
+
+.login-card h1 {
+      margin: 0;
+      font-size: 1.75rem;
+      letter-spacing: -0.02em;
+      color: #500E8C;
+}
+
+.subtitle {
+      margin: 4px 0 12px;
+      color: #500E8C;
+      font-size: 0.9rem;
+      text-align: center;
+}
+
+input {
+      width: 100%;
+      padding: 16px 16px;
+      border: 1px solid #2d333a;
+      border-radius: 30px;
+      background: #f8fafc;
+      font: inherit;
+      font-size: 16px;
+      color: #111827;
+      appearance: none;
+}
+
+.error-message {
+      color: #ff4444;
+      font-size: 12px;
+      margin-top: 5px;
+      display: none;
+    }
+
+
+/* Make the wrapper position relative */
+.password-wrapper {
+  position: relative;
+  display: inline-block;  /* or block, depending on your layout */
+  width: 100%;  /* Adjust as needed */
+}
+
+/* Style the password input to have space on the right */
+.password-wrapper input {
+  width: 100%;
+  padding-right: 40px !important;  /* Creates space for the eye */
+  box-sizing: border-box;
+}
+
+/* Position the eye INSIDE the input */
+.password-wrapper .toggle-password {
+  position: absolute;
+  right: 12px;  /* Distance from right edge */
+  top: 50%;
+  transform: translateY(-50%);  /* Centers vertically */
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  font-size: 18px;
+  color: #666;
+  z-index: 1;
+}
+
+.password-wrapper .toggle-password:hover {
+  color: #333;
+}
+
+
+input:focus {
+      outline: none;
+      border-color: #500E8C;
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
+}
+
+.primary-btn {
+      width: 100%;
+      border: none;
+      border-radius: 30px;
+      padding: 16px 16px;
+      background: #500E8C;
+      color: #ffffff;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 1rem;
+      transition: background 0.2s ease;
+      -webkit-appearance: none;
+      appearance: none;
+      touch-action: manipulation;
+}
+
+.primary-btn:active {
+      background: #500E8C;
+      opacity: 0.9;
+}
+
+.primary-btn a {
+      color: #ffffff;
+      text-decoration: none;
+}
+
+.divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: #500E8C;
+      font-size: 0.9rem;
+}
+
+.divider::before,
+.divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: #e5e7eb;
+}
+
+.social-options {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+}
+
+.social-btn {
+      border: 2px solid #500E8C;
+      border-radius: 50%;
+      background: #f8fafc;
+      width: 56px;
+      height: 56px;
+      cursor: pointer;
+      font: inherit;
+      transition: background 0.2s ease, border-color 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      -webkit-appearance: none;
+      appearance: none;
+      touch-action: manipulation;
+}
+
+.social-btn:active {
+      background: #500E8C;
+      border-color: #500E8C;
+}
+
+.social-btn i {
+      font-size: 20px;
+      color: #500E8C;
+}
+
+.social-btn:active i {
+      color: #ffffff;
+}
+
+.switch-text {
+      margin: 0;
+      color: rgb(71, 8, 119);
+      font-size: 0.9rem;
+      text-align: center;
+}
+
+.switch-text a {
+      color: rgb(71, 8, 119);
+      text-decoration: none;
+      font-weight: 600;
+}
+
+@media (max-width: 480px) {
+      body {
+            padding: 12px;
+      }
+
+      .login-card {
+            padding: 20px 16px;
+            gap: 14px;
+      }
+
+      .login-card h1 {
+            font-size: 1.5rem;
+      }
+
+      .subtitle {
+            font-size: 0.85rem;
+      }
+
+      input {
+            padding: 14px 14px;
+            font-size: 16px;
+      }
+
+      .primary-btn {
+            padding: 14px 14px;
+      }
+
+      .social-btn {
+            width: 52px;
+            height: 52px;
+      }
+
+      .social-btn i {
+            font-size: 18px;
+      }
+}

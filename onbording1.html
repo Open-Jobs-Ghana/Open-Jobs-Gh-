@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <link rel="stylesheet" href="style.css">
+      <title>Onboarding page | Open</title>
+      <style>
+            body.onboarding-page {
+                  margin: 0;
+                  min-height: 100vh;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  background: #F6ECEA;
+                  font-family: 'Poppins', sans-serif;
+                  padding: 16px;
+            }
+
+            .section {
+                  width: min(100%, 460px);
+                  text-align: center;
+                  background: #F6ECEA;
+                  border-radius: 28px;
+                  padding: 28px 24px;
+                  box-shadow: none;
+            }
+
+            .section h1 {
+                  margin: 0 0 16px;
+                  font-size: 24px;
+                  font-weight: 600;
+                  letter-spacing: 0.1em;
+                  color: rgb(18, 17, 17);
+            }
+
+            .section p {
+                  margin: 0 0 28px;
+                  font-size: 16px;
+                  line-height: 1.75;
+                  color: #3f3f46;
+            }
+
+            .onboard-image {
+                  width: 100%;
+                  max-width: 360px;
+                  display: block;
+                  margin: 0 auto 24px;
+                  border-radius: 24px;
+                  object-fit: cover;
+            }
+
+            .progress-dots {
+                  display: flex;
+                  justify-content: center;
+                  gap: 10px;
+                  margin-bottom: 24px;
+}
+
+            .progress-dot {
+                  width: 12px;
+                  height: 12px;
+                  border-radius: 50%;
+                  background: #ffffff;
+                  border: 1px solid #c8c3c0;
+            }
+
+            .progress-dot.active {
+                  background: #500E8C;
+                  border-color: #500E8C;
+                  transform: scale(1.2);
+            }
+
+            .progress-dot.visited {
+                  background: #500E8C;
+                  border-color: #500E8C;
+            }
+
+            .progress-dot.unvisited {
+                  background: #ffffff;
+                  border-color: #c8c3c0;
+            }
+
+            .progress-dot {
+                  width: 12px;
+                  height: 12px;
+                  border-radius: 50%;
+                  background: #ffffff;
+                  border: 1px solid #c8c3c0;
+                  cursor: pointer;
+                  transition: all 0.3s ease;
+            }
+
+            .options-container {
+                  display: flex;
+                  flex-direction: column;
+                  gap: 12px;
+                  margin-bottom: 24px;
+            }
+
+            .option-card {
+                  padding: 16px;
+                  border: 2px solid #e5e5e5;
+                  border-radius: 12px;
+                  background: #ffffff;
+                  color: #500E8C;
+                  font-size: 16px;
+                  font-weight: 500;
+                  cursor: pointer;
+                  transition: all 0.3s ease;
+                  text-align: center;
+            }
+
+            .option-card:hover {
+                  border-color: #500E8C;
+                  background: #f8f5ff;
+            }
+
+            .option-card.selected {
+                  background: #500E8C;
+                  color: #ffffff;
+                  border-color: #500E8C;
+            }
+
+            .section button:disabled {
+                  background: #cccccc;
+                  cursor: not-allowed;
+                  box-shadow: none;
+            }
+
+            .section button {
+                  width: 100%;
+                  max-width: 260px;
+                  border: none;
+                  border-radius: 28px;
+                  background: #500E8C;
+                  color: #ffffff;
+                  padding: 16px 24px;
+                  font-size: 16px;
+                  font-weight: 600;
+                  cursor: pointer;
+                  box-shadow: 0 4px 12px rgba(80, 14, 140, 0.25);
+            }
+
+            .button-group {
+                  display: flex;
+                  gap: 12px;
+                  justify-content: center;
+                  margin-top: 8px;
+            }
+
+            .button-group button {
+                  flex: 1;
+                  min-width: 0;
+            }
+
+            #backBtn {
+                  background: #500E8C;
+                  color: #ffffff;
+                  display: none;
+            }
+
+            #nextBtn {
+                  width: auto;
+            }
+
+            #backBtn:active,
+            #nextBtn:active {
+                  background: rgb(50, 5, 80);
+            }
+
+            /* Mobile Devices (320px - 480px) */
+            @media (max-width: 480px) {
+                  body.onboarding-page {
+                        padding: 12px;
+                  }
+
+                  .section {
+                        padding: 20px 16px;
+                        border-radius: 20px;
+                  }
+
+                  .section h1 {
+                        font-size: 20px;
+                        margin-bottom: 12px;
+                  }
+
+                  .section p {
+                        font-size: 14px;
+                        line-height: 1.6;
+                        margin-bottom: 20px;
+                  }
+
+                  .progress-dots {
+                        gap: 8px;
+                        margin-bottom: 16px;
+                  }
+
+                  .progress-dot {
+                        width: 10px;
+                        height: 10px;
+                  }
+
+                  .section button {
+                        padding: 12px 16px;
+                        font-size: 14px;
+                        border-radius: 24px;
+                  }
+
+                  .button-group {
+                        gap: 8px;
+                        margin-top: 6px;
+                  }
+            }
+
+            /* Tablets (481px - 768px) */
+            @media (min-width: 481px) and (max-width: 768px) {
+                  body.onboarding-page {
+                        padding: 20px;
+                  }
+
+                  .section {
+                        padding: 32px 28px;
+                        border-radius: 24px;
+                  }
+
+                  .section h1 {
+                        font-size: 22px;
+                        margin-bottom: 14px;
+                  }
+
+                  .section p {
+                        font-size: 15px;
+                        margin-bottom: 24px;
+                  }
+
+                  .button-group {
+                        gap: 12px;
+                  }
+            }
+
+            /* Desktop and Larger (769px+) */
+            @media (min-width: 769px) {
+                  body.onboarding-page {
+                        padding: 24px;
+                  }
+
+                  .section {
+                        width: 100%;
+                        max-width: 520px;
+                        padding: 40px 36px;
+                        border-radius: 32px;
+                  }
+
+                  .section h1 {
+                        font-size: 26px;
+                        margin-bottom: 18px;
+                  }
+
+                  .section p {
+                        font-size: 17px;
+                        line-height: 1.8;
+                        margin-bottom: 32px;
+                  }
+
+                  .progress-dots {
+                        gap: 12px;
+                        margin-bottom: 28px;
+                  }
+
+                  .progress-dot {
+                        width: 14px;
+                        height: 14px;
+                  }
+
+                  .section button {
+                        padding: 18px 28px;
+                        font-size: 17px;
+                        border-radius: 30px;
+                  }
+
+                  .button-group {
+                        gap: 16px;
+                        margin-top: 12px;
+                  }
+            }
+            
+      </style>
+</head>
+<body class="onboarding-page">
+      <div class="section">
+            <img src="onbord.jpg" alt="Onboarding illustration" class="onboard-image">
+            <div class="progress-dots" aria-label="Onboarding progress">
+                  <span class="progress-dot"></span>
+                  <span class="progress-dot"></span>
+                  <span class="progress-dot"></span>
+                  <span class="progress-dot"></span>
+                  <span class="progress-dot"></span>
+                  <span class="progress-dot"></span>
+            </div>
+
+            <h1 id="pageTitle">Hey there!</h1>
+            <p id="pageText">
+                  We're excited to have you here. Before we get into the career opportunities waiting for you, we just need a few quick details to personalize your journey.
+                  Ready to find your next big move? Tap on Next to get started! 🚀
+            </p>
+
+            <div id="optionsContainer" class="options-container"></div>
+
+            <div class="button-group">
+                  <button id="backBtn">Back</button>
+                  <button id="nextBtn">Next</button>
+            </div>
+      </div>
+      <script>
+            const pages = [
+                  {
+                        title: 'Hey there!',
+                        text: 'We\'re excited to have you here. Before we get into the career opportunities waiting for you, we just need a few quick details to personalize your journey. Ready to find your next big move? Tap Next to get started! 🚀'
+                  },
+                  {
+                        title: 'How did you find out about OPEN?',
+                        options: [
+                              { value: "Family or Friend", label: "Family or friend" },
+                              { value: "Flyer", label: "Flyer/ ad /post" },
+                              { value: "Social media", label: "Social media" },
+                              { value: "Google search", label: "Google search/AI search" },
+                              { value: "Other", label: "Other" }
+                        ]
+                  },
+                  {
+                        title: 'What brings you here today?',
+                        options: [
+                              { value: "Looking for a job", label: "I'm looking for a job" },
+                              { value: "Hiring talent", label: "I'm here to hire talent" },
+                              { value: "Exploring opportunities", label: "I'm just exploring " },
+                              { value: "Other", label: "Other" }
+                        ]
+                  },
+                  {
+                        title: 'Which field are you most interested in?',
+                        options: [
+                              { value: "Healthcare", label: "Healthcare" },
+                              { value: "Business or Finance", label: "Business or Finance" },
+                              { value: "Agriculture", label: "Agriculture" },
+                              { value: "Engineering", label: "Engineering" },
+                              { value: "Transport", label: "Transport" },
+                              { value: "Other", label: "Other" }
+                        ]
+                  },
+                  {
+                        title: 'Where would you prefer to work?',
+                        options: [
+                              { value: "Physical Workplace", label: "Physical Workplace" },
+                              { value: "Remotely", label: "Remotely(online or from home)" },
+                        ]
+                  },
+                  {
+                        title: 'What\'s your current professional level?',
+                        options: [
+                              { value: "Student", label: "Student/Intern" },
+                              { value: "Entry level", label: "Entry level" },
+                              { value: "Middle level", label: "Middle level" },
+                              { value: "Senior level", label: "Senior level" },
+                        ]
+                  },
+                  {
+                        title: '🥳 Hooray!',
+                        text: 'You are all done. Now all you need to do is explore the app to find and secure the best talent or job for yourself.'
+                  }
+            ];
+
+            const progressDots = document.querySelectorAll('.progress-dot');
+            const pageTitle = document.getElementById('pageTitle');
+            const pageText = document.getElementById('pageText');
+            const nextBtn = document.getElementById('nextBtn');
+            const backBtn = document.getElementById('backBtn');
+            const optionsContainer = document.getElementById('optionsContainer');
+            let currentIndex = 0;
+            let maxVisited = 0;
+            const selections = {};
+
+            function updateButtons() {
+                  const hasSelection = !pages[currentIndex].options || selections[currentIndex];
+                  nextBtn.disabled = !hasSelection;
+            }
+
+            function updatePage() {
+                  progressDots.forEach((dot, index) => {
+                        dot.className = 'progress-dot';
+                        if (index === currentIndex) {
+                              dot.classList.add('active');
+                        } else if (index <= maxVisited) {
+                              dot.classList.add('visited');
+                        } else {
+                              dot.classList.add('unvisited');
+                        }
+                        dot.addEventListener('click', () => {
+                              if (index <= maxVisited) {
+                                    currentIndex = index;
+                                    updatePage();
+                              }
+                        });
+                  });
+                  pageTitle.textContent = pages[currentIndex].title;
+                  pageText.textContent = pages[currentIndex].text;
+                  
+                  // Show image only on first page
+                  const onboardImage = document.querySelector('.onboard-image');
+                  onboardImage.style.display = currentIndex === 0 ? 'block' : 'none';
+                  
+                  // Clear and render options
+                  optionsContainer.innerHTML = '';
+                  if (pages[currentIndex].options) {
+                        pages[currentIndex].options.forEach(option => {
+                              const card = document.createElement('div');
+                              card.className = 'option-card';
+                              card.textContent = option.label;
+                              card.dataset.value = option.value;
+                              if (selections[currentIndex] === option.value) {
+                                    card.classList.add('selected');
+                              }
+                              card.addEventListener('click', () => {
+                                    // Remove selected from others
+                                    optionsContainer.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
+                                    card.classList.add('selected');
+                                    selections[currentIndex] = option.value;
+                                    updateButtons();
+                              });
+                              optionsContainer.appendChild(card);
+                        });
+                  }
+
+                  if (currentIndex === pages.length - 1) {
+                        nextBtn.textContent = 'Continue';
+                        nextBtn.style.display = 'block';
+                        backBtn.style.display = 'none';
+                  } else {
+                        nextBtn.style.display = 'block';
+                        backBtn.style.display = currentIndex >= 2 ? 'block' : 'none';
+                        nextBtn.textContent = 'Next';
+                  }
+                  updateButtons();
+            }
+
+            nextBtn.addEventListener('click', () => {
+                  if (currentIndex < pages.length - 1 && (!pages[currentIndex].options || selections[currentIndex])) {
+                        currentIndex += 1;
+                        maxVisited = Math.max(maxVisited, currentIndex);
+                        updatePage();
+                  }
+            });
+
+            backBtn.addEventListener('click', () => {
+                  if (currentIndex > 0) {
+                        currentIndex -= 1;
+                        updatePage();
+                  }
+            });
+
+            updatePage();
+      </script>
+</body>
+</html>
