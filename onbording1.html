@@ -386,7 +386,9 @@
             }
 
             function updatePage() {
-                  progressDots.forEach((dot, index) => {
+                  const currentProgressDots = document.querySelectorAll('.progress-dot');
+                  
+                  currentProgressDots.forEach((dot, index) => {
                         dot.className = 'progress-dot';
                         if (index === currentIndex) {
                               dot.classList.add('active');
@@ -395,15 +397,31 @@
                         } else {
                               dot.classList.add('unvisited');
                         }
-                        dot.addEventListener('click', () => {
-                              if (index <= maxVisited) {
+                  });
+
+                  currentProgressDots.forEach((dot, index) => {
+                        const newDot = dot.cloneNode(true);
+                        dot.parentNode.replaceChild(newDot, dot);
+                  });
+
+                  const updatedProgressDots = document.querySelectorAll('.progress-dot');
+                  updatedProgressDots.forEach((dot, index) => {
+                        if (index <= maxVisited) {
+                              dot.style.cursor = 'pointer';
+                              dot.addEventListener('click', () => {
                                     currentIndex = index;
                                     updatePage();
-                              }
-                        });
+                              });
+                        } else {
+                              dot.style.cursor = 'default';
+                        }
                   });
                   pageTitle.textContent = pages[currentIndex].title;
-                  pageText.textContent = pages[currentIndex].text;
+                  if (pages[currentIndex].text) {
+                        pageText.textContent = pages[currentIndex].text;
+                  } else {
+                        pageText.textContent = '';
+                  }
                   
                   // Show image only on first page
                   const onboardImage = document.querySelector('.onboard-image');
@@ -444,7 +462,9 @@
             }
 
             nextBtn.addEventListener('click', () => {
-                  if (currentIndex < pages.length - 1 && (!pages[currentIndex].options || selections[currentIndex])) {
+                  if (currentIndex === pages.length - 1) {
+                        window.location.href = 'index.html';
+                  } else if (currentIndex < pages.length - 1 && (!pages[currentIndex].options || selections[currentIndex])) {
                         currentIndex += 1;
                         maxVisited = Math.max(maxVisited, currentIndex);
                         updatePage();

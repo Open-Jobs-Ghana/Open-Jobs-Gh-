@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Welcome | Splash Experience</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    /* ----- GLOBAL RESET & BASE ----- */
+    body {
+      font-family: system-ui, 'Segoe UI', 'SF Pro Text', 'Helvetica Neue', sans-serif;
+      background-color: #F6ECEA;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ----- SPLASH SCREEN (full viewport overlay) ----- */
+    .splash-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: #F6ECEA;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      transition: opacity 0.8s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+      opacity: 1;
+    }
+
+    /* fade-out effect (triggered by JS) */
+    .splash-screen.fade-out {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    /* ----- CENTER IMAGE CONTAINER (middle) ----- */
+    .image-wrapper {
+      flex: 1 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 5vh;
+      padding: 0 4vw; /* allow breathing room on narrow screens */
+      box-sizing: border-box;
+      width: 100%;
+    }
+
+    .hero-image {
+      width: 100%; /* fluid width so image scales to container */
+      max-width: min(820px, 82%); /* limit on very large screens */
+      max-height: 55vh; /* keep image from overflowing viewport height */
+      height: auto;
+      object-fit: contain;
+      border-radius: clamp(12px, 3vw, 32px); /* responsive rounding */
+      box-shadow: none;
+      transition: transform 0.3s ease;
+    }
+
+    .hero-image:hover {
+      transform: scale(1.01);
+    }
+
+    /* ----- BOTTOM TEXT SECTION (always at bottom) ----- */
+    .bottom-text {
+      width: 100%;
+      text-align: center;
+      padding: 2rem 1.5rem 2.8rem 1.5rem;
+      background: transparent;
+    }
+
+    .tagline {
+      font-size: 1.25rem;
+      letter-spacing: -0.2px;
+      font-weight: 470;
+      color: #4a3b38;
+      background: rgba(246, 236, 234, 0.7);
+      display: inline-block;
+      backdrop-filter: blur(2px);
+      padding: 0.4rem 1.2rem;
+      border-radius: 60px;
+      font-weight: 500;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+    }
+
+    /* soft loading progress bar */
+    .progress-timer {
+      margin-top: 1.2rem;
+      width: 120px;
+      height: 2px;
+      background-color: #e2cfca;
+      border-radius: 4px;
+      margin-left: auto;
+      margin-right: auto;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      width: 0%;
+      height: 100%;
+      background-color: #b87c6b;
+      border-radius: 4px;
+      transition: width linear 0.05s;
+    }
+
+    /* responsive adjustments */
+    @media (max-width: 550px) {
+      .hero-image {
+        max-width: 85%;
+        max-height: 45vh;
+      }
+      .tagline {
+        font-size: 1rem;
+        padding: 0.3rem 1rem;
+      }
+      .bottom-text {
+        padding-bottom: 2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- SPLASH SCREEN -->
+  <div id="splash" class="splash-screen">
+    <div class="image-wrapper">
+      <!-- CENTER IMAGE: a warm, welcoming illustration -->
+      <img class="hero-image" 
+           src="Open name logo.png"
+           alt="welcome illustration with abstract figures and warmth"
+           loading="eager">
+    </div>
+    <div class="bottom-text">
+      <div class="tagline">gather · bloom · connect</div>
+      <div class="progress-timer">
+        <div id="progressFill" class="progress-fill"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      // ===== CONFIGURATION =====
+      // Change this to the path of your existing sign-up page file
+      const SIGNUP_PAGE_URL = 'signup.html';  // <-- UPDATE THIS to your actual signup page filename
+      
+      const SPLASH_DURATION = 3200;   // 3.2 seconds (adjust as needed)
+      // =========================
+      
+      const splashElement = document.getElementById('splash');
+      const progressFill = document.getElementById('progressFill');
+      
+      let startTime = null;
+      let animationFrameId = null;
+      let transitionTimer = null;
+      let redirectExecuted = false;  // prevent multiple redirects
+
+      // Function to update progress bar based on elapsed time
+      function updateProgress(now) {
+        if (!startTime) return;
+        const elapsed = now - startTime;
+        let percent = Math.min(1, elapsed / SPLASH_DURATION) * 100;
+        if (progressFill) {
+          progressFill.style.width = percent + '%';
+        }
+        if (elapsed < SPLASH_DURATION) {
+          animationFrameId = requestAnimationFrame(updateProgress);
+        } else {
+          if (progressFill) progressFill.style.width = '100%';
+          if (animationFrameId) {
+            cancelAnimationFrame(animationFrameId);
+            animationFrameId = null;
+          }
+        }
+      }
+
+      // Start progress animation
+      function startProgressAnimation() {
+        startTime = performance.now();
+        if (progressFill) progressFill.style.width = '0%';
+        animationFrameId = requestAnimationFrame(updateProgress);
+      }
+
+      // Redirect to sign-up page
+      function redirectToSignUp() {
+        if (redirectExecuted) return;
+        redirectExecuted = true;
+        
+        // Add fade-out class to splash
+        splashElement.classList.add('fade-out');
+        
+        // Wait for fade-out animation to complete before redirecting
+        setTimeout(() => {
+          window.location.href = SIGNUP_PAGE_URL;
+        }, 850); // matches CSS transition duration
+      }
+
+      // Initialize splash
+      function initSplash() {
+        startProgressAnimation();
+        
+        // Set timer to redirect after duration
+        transitionTimer = setTimeout(() => {
+          redirectToSignUp();
+        }, SPLASH_DURATION);
+      }
+
+      // Start the splash experience
+      initSplash();
+
+      // Optional: If user clicks anywhere on splash (just for better UX - still redirects after timeout)
+      // But we don't want to interfere, so just log.
+      console.log(`Splash active — redirecting to "${SIGNUP_PAGE_URL}" in ${SPLASH_DURATION/1000} seconds`);
+    })();
+  </script>
+</body>
+</html>
