@@ -101,7 +101,7 @@
             .option-card {
                   padding: 16px;
                   border: 2px solid #e5e5e5;
-                  border-radius: 12px;
+                  border-radius: 110px;
                   background: #ffffff;
                   color: #500E8C;
                   font-size: 16px;
@@ -297,6 +297,7 @@
                   <span class="progress-dot"></span>
                   <span class="progress-dot"></span>
                   <span class="progress-dot"></span>
+                  <span class="progress-dot"></span>
             </div>
 
             <h1 id="pageTitle">Hey there!</h1>
@@ -352,13 +353,13 @@
                         title: 'Where would you prefer to work?',
                         options: [
                               { value: "Physical Workplace", label: "Physical Workplace" },
-                              { value: "Remotely", label: "Remotely(online or from home)" },
+                              { value: "Remotely", label: "Remotely (online or from home)" },
                         ]
                   },
                   {
                         title: 'What\'s your current professional level?',
                         options: [
-                              { value: "Student", label: "Student/Intern" },
+                              { value: "Student", label: "Student / Intern" },
                               { value: "Entry level", label: "Entry level" },
                               { value: "Middle level", label: "Middle level" },
                               { value: "Senior level", label: "Senior level" },
@@ -452,10 +453,10 @@
                   if (currentIndex === pages.length - 1) {
                         nextBtn.textContent = 'Continue';
                         nextBtn.style.display = 'block';
-                        backBtn.style.display = 'none';
+                        backBtn.style.display = currentIndex > 0 ? 'block' : 'none';
                   } else {
                         nextBtn.style.display = 'block';
-                        backBtn.style.display = currentIndex >= 2 ? 'block' : 'none';
+                        backBtn.style.display = currentIndex > 0 ? 'block' : 'none';
                         nextBtn.textContent = 'Next';
                   }
                   updateButtons();
@@ -463,7 +464,7 @@
 
             nextBtn.addEventListener('click', () => {
                   if (currentIndex === pages.length - 1) {
-                        window.location.href = 'index.html';
+                        window.location.href = 'home.html';
                   } else if (currentIndex < pages.length - 1 && (!pages[currentIndex].options || selections[currentIndex])) {
                         currentIndex += 1;
                         maxVisited = Math.max(maxVisited, currentIndex);

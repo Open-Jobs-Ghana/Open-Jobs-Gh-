@@ -22,16 +22,20 @@
       <input id="email" type="email" name="email" placeholder="Email Address" required>
       <input id="password" type="password" name="password" placeholder="Create Password" required>
       <input id="confirm-password" type="password" name="confirm_password" placeholder="Confirm Password" required>
+
       <div class="error-message" id="passwordError">
         ❌ Password must start with capital letter, contain special character (@#$%!&*), and end with 1-2 numbers
       </div>
-      <button type="submit" class="primary-btn"><a href="onbording1.html">Create Account</a></button>
+
+      <button type="submit" class="primary-btn">Create Account</button>
       <div class="divider"><span>or continue with:</span></div>
+
       <div class="social-options">
-        <button type="button" class="social-btn"><i class="fab fa-google"></i></button>
-        <button type="button" class="social-btn"><i class="fas fa-envelope"></i></button>
-        <button type="button" class="social-btn"><i class="fas fa-phone"></i></button>
+          <button type="button" class="social-btn"><i class="fab fa-google"></i></button>
+          <button type="button" class="social-btn"><i class="fas fa-envelope"></i></button>
+          <button type="button" class="social-btn"><i class="fas fa-phone"></i></button>
       </div>
+
       <p class="switch-text">Already have an account? <a href="login.html">Sign In</a></p>
     </form>
   </div>
@@ -80,10 +84,26 @@
     );
   }
   
-  const form = document.getElementById('loginForm');
+  const form = document.getElementById('signup-page');
   const passwordInput = document.getElementById('password');
   const errorMessage = document.getElementById('passwordError');
   
+  if (form) {
+    form.addEventListener('submit', function(e) {
+      const password = passwordInput.value;
+      
+      if (!validatePassword(password)) {
+        e.preventDefault(); // STOP form submission
+        errorMessage.style.display = 'block';
+        passwordInput.classList.add('invalid');
+        passwordInput.focus();
+        return false;
+      }
+
+      e.preventDefault();
+      window.location.href = 'onbording1.html';
+    });
+  }
   
   passwordInput.addEventListener('input', function() {
     const password = this.value;
@@ -95,25 +115,6 @@
       this.classList.remove('invalid');
       errorMessage.style.display = 'none';
     }
-  });
-  
-  // Form submission validation
-  form.addEventListener('submit', function(e) {
-    const password = passwordInput.value;
-    
-    if (!validatePassword(password)) {
-      e.preventDefault(); // STOP form submission
-      errorMessage.style.display = 'block';
-      passwordInput.classList.add('invalid');
-      passwordInput.focus();
-      return false;
-    }
-    
-    // If we get here, password is valid
-    // You would normally check against database here
-    alert('✅ Password format valid! Checking credentials...');
-    
-    e.preventDefault();
   });
 </script>
 </html>
