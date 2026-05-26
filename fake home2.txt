@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>ConnectHub - Dynamic Feed</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, sans-serif;
+      background: #f8fafc;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      color: #0f172a;
+    }
+
+    /* ========= HEADER ========= */
+    .app-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(255, 255, 255, 0.96);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid #e9eef3;
+      padding: 0.75rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+    }
+
+    .logo-area {
+      flex-shrink: 0;
+    }
+
+    .logo-img {
+      height: 46px;
+      width: auto;
+      object-fit: contain;
+      border-radius: 10px;
+    }
+
+    .search-wrapper {
+      flex: 1;
+      max-width: 480px;
+      min-width: 240px;
+      position: relative;
+    }
+
+    .search-bar {
+      width: 100%;
+      padding: 0.7rem 2.8rem 0.7rem 1.2rem;
+      font-size: 0.95rem;
+      border: 1px solid #e2e8f0;
+      border-radius: 60px;
+      background: white;
+      outline: none;
+      transition: 0.2s;
+    }
+
+    .search-bar:focus {
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59,130,246,0.15);
+    }
+
+    .search-icon-btn {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 6px;
+      border-radius: 50%;
+      color: #5b6e8c;
+    }
+
+    /* ========= SCROLLABLE MAIN ========= */
+    .scrollable-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 2rem 1.8rem 3rem;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    /* ----- CHANGING FEED (single card in middle) ----- */
+    .changing-feed-section {
+      margin-bottom: 3rem;
+      display: flex;
+      justify-content: center;
+    }
+    .dynamic-card {
+      max-width: 580px;
+      width: 100%;
+      background: white;
+      border-radius: 32px;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.05);
+      overflow: hidden;
+      transition: all 0.3s ease;
+      border: 1px solid #eef2ff;
+    }
+    .dynamic-card-img {
+      height: 220px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3.5rem;
+      color: white;
+    }
+    .dynamic-card-content {
+      padding: 1.5rem;
+    }
+    .dynamic-card h3 {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+    .dynamic-card p {
+      color: #334155;
+      line-height: 1.5;
+    }
+
+    /* section headers with arrow */
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin: 2rem 0 1.2rem 0;
+      border-bottom: 2px solid #eef2ff;
+      padding-bottom: 0.6rem;
+    }
+    .section-header h2 {
+      font-size: 1.6rem;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+      color: #0f172a;
+    }
+    .arrow-btn {
+      background: none;
+      border: none;
+      font-size: 1.8rem;
+      cursor: pointer;
+      color: #3b82f6;
+      transition: transform 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-weight: 500;
+    }
+    .arrow-btn:hover {
+      transform: translateX(4px);
+      color: #1e40af;
+    }
+
+    /* categories grid */
+    .categories-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 1.2rem;
+      margin-top: 0.5rem;
+    }
+    .category-card {
+      background: white;
+      border-radius: 20px;
+      padding: 1rem;
+      text-align: center;
+      transition: 0.2s;
+      cursor: pointer;
+      border: 1px solid #eef2ff;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+    }
+    .category-card:hover {
+      transform: translateY(-4px);
+      border-color: #cbdffa;
+      box-shadow: 0 8px 18px rgba(0,0,0,0.05);
+    }
+    .category-emoji {
+      font-size: 2.4rem;
+      margin-bottom: 8px;
+    }
+    .category-label {
+      font-weight: 600;
+      font-size: 0.85rem;
+    }
+
+    /* For you grid (2 per row) */
+    .for-you-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem;
+    }
+    .post-card {
+      background: white;
+      border-radius: 24px;
+      border: 1px solid #edf2f7;
+      overflow: hidden;
+      transition: all 0.2s;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.02);
+    }
+    .post-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 1rem 1rem 0.5rem 1rem;
+    }
+    .user-avatar {
+      width: 48px;
+      height: 48px;
+      background: #cbd5e1;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 1.2rem;
+      color: #1e293b;
+      background: #eef2ff;
+    }
+    .user-info {
+      flex: 1;
+    }
+    .user-name {
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .verified-badge {
+      background: #3b82f6;
+      color: white;
+      font-size: 0.6rem;
+      border-radius: 30px;
+      padding: 2px 8px;
+    }
+    .profession {
+      font-size: 0.7rem;
+      color: #5b6e8c;
+    }
+    .post-type {
+      background: #eef2ff;
+      border-radius: 40px;
+      padding: 4px 10px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      display: inline-block;
+      margin: 0 1rem 0.5rem 1rem;
+    }
+    .post-details {
+      padding: 0 1rem 1rem 1rem;
+    }
+    .post-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      font-size: 0.7rem;
+      color: #5b6e8c;
+      margin-top: 8px;
+      border-top: 1px solid #f0f2f5;
+      padding-top: 10px;
+    }
+
+    /* trending jobs grid (initially hidden, shown on arrow click) */
+    .trending-jobs-wrapper {
+      margin-top: 1rem;
+    }
+    .trending-jobs-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin-top: 1rem;
+    }
+    .job-card {
+      background: white;
+      border-radius: 24px;
+      border: 1px solid #eef2ff;
+      padding: 1rem;
+    }
+    .job-header {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+    .job-avatar {
+      width: 44px;
+      height: 44px;
+      background: #f1f5f9;
+      border-radius: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+    }
+    .job-info h4 {
+      font-size: 1rem;
+    }
+    .job-type {
+      font-size: 0.7rem;
+      background: #e9f5ff;
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 30px;
+      margin: 6px 0 4px;
+    }
+    .job-footer {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.7rem;
+      margin-top: 10px;
+      color: #475569;
+    }
+
+    /* nav buttons */
+    .nav-buttons {
+      display: flex;
+      justify-content: space-around;
+      background: white;
+      padding: 0.6rem 1rem;
+      border-top: 1px solid #eef2ff;
+    }
+    .nav-item {
+      background: transparent;
+      border: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+      cursor: pointer;
+      font-size: 0.7rem;
+      color: #5b6e8c;
+      transition: 0.2s;
+    }
+    .nav-item svg {
+      width: 26px;
+      height: 26px;
+      stroke: currentColor;
+      fill: none;
+    }
+    .nav-item.active {
+      color: #2563eb;
+    }
+
+    .static-footer {
+      background: #0f172a;
+      color: #94a3b8;
+      text-align: center;
+      padding: 1rem;
+      font-size: 0.75rem;
+      flex-shrink: 0;
+    }
+    @media (max-width: 700px) {
+      .for-you-grid { grid-template-columns: 1fr; }
+      .scrollable-content { padding: 1.5rem; }
+    }
+    .hidden-trending { display: none; }
+  </style>
+</head>
+<body>
+
+<header class="app-header">
+  <div class="logo-area">
+    <img class="logo-img" src="https://placehold.co/220x50/1e3a8a/white?text=CONNECTHUB&font=montserrat" alt="ConnectHub Logo">
+  </div>
+  <div class="search-wrapper">
+    <input type="text" class="search-bar" placeholder="Search for jobs, people, or categories...">
+    <button class="search-icon-btn" aria-label="Search">🔍</button>
+  </div>
+</header>
+
+<main class="scrollable-content">
+  <div class="container">
+    <!-- 1) changing feed (single in middle, auto-rotates) -->
+    <div class="changing-feed-section">
+      <div class="dynamic-card" id="changingCard">
+        <!-- JS fills dynamic content -->
+      </div>
+    </div>
+
+    <!-- 2) Explore categories with arrow -->
+    <div class="section-header">
+      <h2>📂 Explore Categories</h2>
+      <button class="arrow-btn" id="toggleCategoriesBtn">➡️ <span>Show all</span></button>
+    </div>
+    <div id="categoriesContainer">
+      <!-- categories grid will appear / toggle -->
+      <div class="categories-grid" id="categoriesGrid"></div>
+    </div>
+
+    <!-- 3) For you section (2 per row, 4 posts) -->
+    <div class="section-header">
+      <h2>✨ For you</h2>
+      <div></div>
+    </div>
+    <div id="forYouGrid" class="for-you-grid"></div>
+
+    <!-- 4) Trending Jobs with arrow -->
+    <div class="section-header">
+      <h2>🔥 Trending Jobs</h2>
+      <button class="arrow-btn" id="toggleTrendingBtn">➡️ <span>Show jobs</span></button>
+    </div>
+    <div id="trendingWrapper" class="trending-jobs-wrapper hidden-trending">
+      <div id="trendingJobsGrid" class="trending-jobs-grid"></div>
+    </div>
+  </div>
+</main>
+
+<!-- bottom image buttons -->
+<div class="nav-buttons">
+  <button class="nav-item" data-page="home"><svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6"><path d="M3 9L12 3L21 9V20H3V9Z" /><path d="M9 20V12H15V20" /></svg><span>Home</span></button>
+  <button class="nav-item" data-page="messages"><svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6"><path d="M21 15C21 15.5304 20.7893 16.0391 20.4142 16.4142C20.0391 16.7893 19.5304 17 19 17H7L3 21V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H19C19.5304 3 20.0391 3.21071 20.4142 3.58579C20.7893 3.96086 21 4.46957 21 5V15Z" /></svg><span>Messages</span></button>
+  <button class="nav-item" data-page="add"><svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6"><path d="M12 5V19M5 12H19" /><circle cx="12" cy="12" r="9" /></svg><span>Add</span></button>
+  <button class="nav-item" data-page="saved"><svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6"><path d="M19 21L12 16L5 21V5C5 4.46957 5.21071 3.96086 5.58579 3.58579C5.96086 3.21071 6.46957 3 7 3H17C17.5304 3 18.0391 3.21071 18.4142 3.58579C18.7893 3.96086 19 4.46957 19 5V21Z" /></svg><span>Saved</span></button>
+  <button class="nav-item" data-page="settings"><svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="3" /><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" /></svg><span>Settings</span></button>
+</div>
+
+<footer class="static-footer">
+  <p>© 2025 ConnectHub — Your career & social ecosystem. <a href="#" style="color:#93c5fd;">Privacy</a> | <a href="#" style="color:#93c5fd;">Terms</a></p>
+</footer>
+
+<script>
+  // ---------- DATA ----------
+  // Changing feed items (rotates every 6 seconds)
+  const changingItems = [
+    { imgBg: "linear-gradient(135deg, #0f2027, #203a43, #2c5364)", emoji: "💼", title: "Remote work is rising!", desc: "68% of companies now offer hybrid models. Stay ahead!" },
+    { imgBg: "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)", emoji: "📈", title: "New skill: AI for Business", desc: "Learn how to integrate AI into your workflow. Free webinar." },
+    { imgBg: "linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)", emoji: "🚀", title: "Startup funding hits record", desc: "Venture capital increasing in green tech & healthcare." },
+    { imgBg: "linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)", emoji: "🌍", title: "Global talent marketplace", desc: "Connect with international employers now." }
+  ];
+  let currentIndex = 0;
+  function updateChangingCard() {
+    const card = document.getElementById('changingCard');
+    const item = changingItems[currentIndex];
+    card.innerHTML = `
+      <div class="dynamic-card-img" style="background: ${item.imgBg};">
+        <span style="font-size: 4rem;">${item.emoji}</span>
+      </div>
+      <div class="dynamic-card-content">
+        <h3>${item.title}</h3>
+        <p>${item.desc}</p>
+        <div style="margin-top:12px;"><span style="background:#eef2ff; padding:6px 14px; border-radius:40px; font-size:0.7rem;">⚡ Trending now</span></div>
+      </div>
+    `;
+    currentIndex = (currentIndex + 1) % changingItems.length;
+  }
+  updateChangingCard();
+  setInterval(updateChangingCard, 6000);
+
+  // categories (6 fixed)
+  const categories = [
+    "Banking & Finance", "Agriculture", "Healthcare", "Safety & Security", "Education & Training", "Travel & Logistics"
+  ];
+  const categoryEmojis = ["🏦", "🌾", "🏥", "🛡️", "📚", "✈️"];
+  function renderCategories(show = true) {
+    const grid = document.getElementById('categoriesGrid');
+    if (!show) { grid.innerHTML = ''; return; }
+    grid.innerHTML = categories.map((cat, idx) => `
+      <div class="category-card">
+        <div class="category-emoji">${categoryEmojis[idx]}</div>
+        <div class="category-label">${cat}</div>
+      </div>
+    `).join('');
+  }
+  let categoriesVisible = true;
+  renderCategories(true);
+
+  // For you posts (4 items, 2 per row)
+  const forYouPosts = [
+    { name: "Sarah Johnson", profession: "Product Designer", type: "CV", date: "2h ago", verified: true, location: "San Francisco, CA", views: "1.2k", avatar: "SJ", iconPost: "📄" },
+    { name: "Michael Chen", profession: "Full Stack Dev", type: "Job", date: "Yesterday", verified: false, location: "Remote", views: "3.4k", avatar: "MC", iconPost: "💼" },
+    { name: "Aisha Kamau", profession: "Data Scientist", type: "CV", date: "5h ago", verified: true, location: "Nairobi, KE", views: "892", avatar: "AK", iconPost: "📊" },
+    { name: "David Kim", profession: "Cybersecurity Analyst", type: "Job", date: "1d ago", verified: false, location: "Austin, TX", views: "2.1k", avatar: "DK", iconPost: "🔒" }
+  ];
+
+  function renderForYou() {
+    const container = document.getElementById('forYouGrid');
+    container.innerHTML = forYouPosts.map(post => `
+      <div class="post-card">
+        <div class="post-header">
+          <div class="user-avatar">${post.avatar}</div>
+          <div class="user-info">
+            <div class="user-name">${post.name} ${post.verified ? '<span class="verified-badge">✓ Verified</span>' : '<span style="background:#e2e8f0; padding:2px 6px; border-radius:20px; font-size:0.6rem;">Not verified</span>'}</div>
+            <div class="profession">${post.profession}</div>
+          </div>
+        </div>
+        <div class="post-type">${post.iconPost} ${post.type === 'CV' ? '📄 CV / Resume' : '💼 Job Opening'}</div>
+        <div class="post-details">
+          <div class="post-meta">
+            <span>📅 ${post.date}</span>
+            <span>📍 ${post.location}</span>
+            <span>👁️ ${post.views} views</span>
+          </div>
+        </div>
+      </div>
+    `).join('');
+  }
+  renderForYou();
+
+  // Trending jobs data (4 job cards)
+  const trendingJobs = [
+    { userName: "FinTech Corp", jobTitle: "Risk Analyst", jobDesc: "Banking & Finance sector, remote-friendly", jobType: "Full time", date: "2d ago", location: "New York, NY", views: "4.2k", avatar: "🏦", duration: "Full time" },
+    { userName: "AgriGrow", jobTitle: "Agronomist", jobDesc: "Sustainable agriculture specialist", jobType: "Partial", date: "1d ago", location: "Iowa, US", views: "1.8k", avatar: "🌽", duration: "Part time" },
+    { userName: "HealthFirst", jobTitle: "Telehealth Nurse", jobDesc: "Remote healthcare support", jobType: "Full time", date: "5h ago", location: "Remote", views: "3.9k", avatar: "🏥", duration: "Full time" },
+    { userName: "EduGlobal", jobTitle: "E-Learning Coordinator", jobDesc: "EdTech content creator", jobType: "Full time", date: "3h ago", location: "Chicago, IL", views: "2.3k", avatar: "📖", duration: "Full time" }
+  ];
+
+  function renderTrendingJobs(visible) {
+    const grid = document.getElementById('trendingJobsGrid');
+    if (!visible) return;
+    grid.innerHTML = trendingJobs.map(job => `
+      <div class="job-card">
+        <div class="job-header">
+          <div class="job-avatar">${job.avatar}</div>
+          <div class="job-info">
+            <h4>${job.jobTitle}</h4>
+            <div style="font-size:0.75rem; color:#3b82f6;">${job.userName}</div>
+          </div>
+        </div>
+        <div class="job-type">${job.duration} · ${job.jobType === "Full time" ? "Full time" : "Partial/Contract"}</div>
+        <p style="font-size:0.8rem; margin: 8px 0;">${job.jobDesc}</p>
+        <div class="job-footer">
+          <span>📅 ${job.date}</span>
+          <span>📍 ${job.location}</span>
+          <span>👁️ ${job.views}</span>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  // Toggle categories arrow: show/hide categories grid but keeps 6 cards or collapse? "all the categories would show the image and their label" on click, we make sure visible
+  const toggleBtn = document.getElementById('toggleCategoriesBtn');
+  let categoriesExpanded = true;
+  toggleBtn.addEventListener('click', () => {
+    const grid = document.getElementById('categoriesGrid');
+    if (categoriesExpanded) {
+      grid.innerHTML = ''; // hide
+      toggleBtn.innerHTML = '➡️ <span>Show categories</span>';
+    } else {
+      renderCategories(true);
+      toggleBtn.innerHTML = '➡️ <span>Hide categories</span>';
+    }
+    categoriesExpanded = !categoriesExpanded;
+  });
+
+  // Trending jobs toggle + arrow to show/hide wrapper
+  const trendingWrapper = document.getElementById('trendingWrapper');
+  const toggleTrendingBtn = document.getElementById('toggleTrendingBtn');
+  let trendingVisible = false;
+  toggleTrendingBtn.addEventListener('click', () => {
+    if (trendingVisible) {
+      trendingWrapper.classList.add('hidden-trending');
+      toggleTrendingBtn.innerHTML = '➡️ <span>Show jobs</span>';
+    } else {
+      trendingWrapper.classList.remove('hidden-trending');
+      renderTrendingJobs(true);
+      toggleTrendingBtn.innerHTML = '⬅️ <span>Hide jobs</span>';
+    }
+    trendingVisible = !trendingVisible;
+  });
+
+  // nav buttons "links to pages" simulation (adds alert for demo)
+  const navBtns = document.querySelectorAll('.nav-item');
+  navBtns.forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const page = btn.getAttribute('data-page');
+      alert(`🔁 Navigating to ${page} page. (Full website version would link to ${page}.html)`);
+      // active style just for ux (optional)
+      navBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      // In a real app you would redirect: window.location.href = `/${page}.html`;
+    });
+  });
+  // set home active by default
+  document.querySelector('.nav-item[data-page="home"]').classList.add('active');
+
+  // search functionality
+  const searchBtn = document.querySelector('.search-icon-btn');
+  const searchInput = document.querySelector('.search-bar');
+  function handleSearch() {
+    const val = searchInput.value.trim();
+    alert(val ? `🔎 Searching for "${val}" (integrate real search)` : `Please type something to search.`);
+  }
+  searchBtn.addEventListener('click', handleSearch);
+  searchInput.addEventListener('keypress', (e) => { if(e.key === 'Enter') handleSearch(); });
+</script>
+</body>
+</html>

@@ -14,7 +14,7 @@
   <div class="login-page">
     <form class="login-card" action="#" method="post" id="signup-page">
       <div class="brand-header">
-        <img src="Open Logo.png" alt="Open logo" class="brand-logo">
+        <img src="icons/Open Logo.png" alt="Open logo" class="brand-logo">
         <h1>OPEN</h1>
       </div>
       <p class="subtitle">Join Open and get started with your work</p>
@@ -31,9 +31,9 @@
       <div class="divider"><span>or continue with:</span></div>
 
       <div class="social-options">
-          <button type="button" class="social-btn"><i class="fab fa-google"></i></button>
-          <button type="button" class="social-btn"><i class="fas fa-envelope"></i></button>
-          <button type="button" class="social-btn"><i class="fas fa-phone"></i></button>
+          <button type="button" class="social-btn"><img src="icons/google icon.svg" alt="Google"></button>
+          <button type="button" class="social-btn"><img src="icons/Email Icon.svg" alt="Email"></button>
+          <button type="button" class="social-btn"><img src="icons/Phone Icon.svg" alt="Phone"></button>
       </div>
 
       <p class="switch-text">Already have an account? <a href="login.html">Sign In</a></p>
@@ -59,8 +59,8 @@
       const toggleBtn = document.createElement('button');
       toggleBtn.type = 'button';
       toggleBtn.className = 'toggle-password';
-      toggleBtn.textContent = '👁️';
       toggleBtn.setAttribute('aria-label', 'Show password');
+      toggleBtn.innerHTML = '<img src="icons/eye.png" alt="Show password">';
           
       wrapper.appendChild(toggleBtn);
           
@@ -68,7 +68,10 @@
       toggleBtn.addEventListener('click', function() {
       const type = input.type === 'password' ? 'text' : 'password';
       input.type = type;
-      this.textContent = type === 'password' ? '👁️' : '🙈';
+      const iconSrc = type === 'password' ? 'icons/eye.png' : 'icons/invisible.png';
+      const ariaLabel = type === 'password' ? 'Show password' : 'Hide password';
+      this.setAttribute('aria-label', ariaLabel);
+      this.innerHTML = `<img src="${iconSrc}" alt="${ariaLabel}">`;
       });
    });
 });

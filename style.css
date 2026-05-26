@@ -184,6 +184,12 @@ input {
   color: #333;
 }
 
+.password-wrapper .toggle-password img {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  display: block;
+}
 
 input:focus {
       outline: none;
@@ -264,6 +270,12 @@ input:focus {
 .social-btn i {
       font-size: 20px;
       color: #500E8C;
+}
+
+.social-btn img {
+      width: 20px;
+      height: 20px;
+      object-fit: contain;
 }
 
 .social-btn:active i {
