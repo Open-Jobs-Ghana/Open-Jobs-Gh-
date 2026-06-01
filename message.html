@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Open Web App - Ultra Crisp Chat Prototype</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #ffffff;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        #app-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+
+        .ui-input-layer {
+            position: absolute;
+            z-index: 10;
+            display: none;
+            align-items: center;
+        }
+
+        .native-input {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: transparent;
+            font-size: 15px;
+            font-family: inherit;
+            color: #111827;
+            outline: none;
+            padding: 0 10px;
+        }
+
+        .native-input::placeholder {
+            color: #7C7C7C;
+        }
+
+        .cursor-pointer-zone {
+            position: absolute;
+            z-index: 5;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<div id="app-container">
+    <canvas id="chatCanvas"></canvas>
+    
+    <div id="search-container" class="ui-input-layer">
+        <input type="text" id="chatSearchInput" class="native-input" placeholder="Search for chat...">
+    </div>
+
+    <div id="message-container" class="ui-input-layer">
+        <input type="text" id="chatMessageInput" class="native-input" placeholder="Message...">
+    </div>
+
+    <input type="file" id="hiddenFileUploader" style="display: none;">
+    <div id="interactive-pointer-zones"></div>
+</div>
+
+<script>
+const canvas = document.getElementById('chatCanvas');
+const ctx = canvas.getContext('2d');
+
+const searchContainer = document.getElementById('search-container');
+const searchInput = document.getElementById('chatSearchInput');
+const messageContainer = document.getElementById('message-container');
+const messageInput = document.getElementById('chatMessageInput');
+const fileUploader = document.getElementById('hiddenFileUploader');
+const pointerZoneWrapper = document.getElementById('interactive-pointer-zones');
+
+// CONFIGURATION & PERSISTENT STATUS SEEDS
+let currentTab = 'All'; 
+let activeChatUser = null; 
+let searchQuery = "";
+
+const PURPLE = '#500E8C';
+const TEXT_DARK = '#111827';
+const TEXT_MUTED = '#7C7C7C';
+const BUBBLE_USER = '#500E8C';
+const BUBBLE_OTHER = '#9E9E9E';
+
+const chatDatabase = [
+    { id: 1, name: 'David Agbnu', lastMsg: 'Hello dear, please reply me', time: '05:13 PM', unread: 6, category: ['All', 'Unread'], avatarColor: '#4A5568', initial: 'D' },
+    { id: 2, name: 'Ekoe Chris', lastMsg: 'This is not a dating site so don\'t...', time: '03:01 PM', unread: 1, category: ['All', 'Unread', 'Clients'], avatarColor: '#2D3748', initial: 'E' },
+    { id: 3, name: 'Yaw Adoley Mary', lastMsg: 'You didn\'t meet the requirement...', time: '02:40 PM', unread: 1, category: ['All', 'Unread', 'Clients'], avatarColor: '#718096', initial: 'Y' },
+    { id: 4, name: 'Efia Kumi', lastMsg: 'Okay 👍', time: '03/03/26', unread: 0, category: ['All', 'Clients'], avatarColor: '#A0AEC0', initial: 'E' },
+    { id: 5, name: 'David Agbnu (Spam 1)', lastMsg: 'Can I call you privately dear, my...', time: '03/01/26', unread: 0, category: ['All', 'Spam'], avatarColor: '#4A5568', initial: 'D' },
+    { id: 6, name: 'David Agbnu (Spam 2)', lastMsg: 'Hello dear', time: '23/01/26', unread: 0, category: ['All', 'Spam'], avatarColor: '#4A5568', initial: 'D' }
+];
+
+const conversationHistories = {
+    'Efia Kumi': [
+        { sender: 'user', text: 'Good morning madam', time: '12:01 PM' },
+        { sender: 'other', text: 'Are you sure it is morning?', time: '12:01 PM' },
+        { sender: 'user', text: 'Sorry please, I meant to say afternoon', time: '12:03 PM' },
+        { sender: 'other', text: 'Okay 👍', time: '12:04 PM' }
+    ]
+};
+
+let hitZones = [];
+
+function addHitZone(x, y, w, h, callback) {
+    hitZones.push({ x, y, w, h, callback });
+    
+    const zone = document.createElement('div');
+    zone.className = 'cursor-pointer-zone';
+    zone.style.left = `${x}px`;
+    zone.style.top = `${y}px`;
+    zone.style.width = `${w}px`;
+    zone.style.height = `${h}px`;
+    
+    zone.addEventListener('click', (e) => {
+        e.stopPropagation();
+        callback();
+    });
+    pointerZoneWrapper.appendChild(zone);
+}
+
+// RESOLVES BLURRY TEXT AND ASSETS BY CONFIGURING MULTI-DENSITY RETINA BACKING MATRIX
+function resizeCanvas() {
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+    const dpr = window.devicePixelRatio || 1;
+    
+    // Scale backing dimension canvas buffer size
+    canvas.width = width * dpr;
+    canvas.height = height * dpr;
+    
+    // Scale standard coordinate space context sizes down to display dimensions
+    ctx.scale(dpr, dpr);
+    
+    // Ensure styles map to layout properties safely
+    canvas.style.width = `${width}px`;
+    canvas.style.height = `${height}px`;
+    
+    drawScreen();
+}
+
+function drawRoundRect(x, y, w, h, r, fill, stroke) {
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.lineTo(x + w - r, y);
+    ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+    ctx.lineTo(x + w, h + y - r);
+    ctx.quadraticCurveTo(x + w, h + y, x + w - r, h + y);
+    ctx.lineTo(x + r, h + y);
+    ctx.quadraticCurveTo(x, h + y, x, h + y - r);
+    ctx.lineTo(x, y + r);
+    ctx.quadraticCurveTo(x, y, x + r, y);
+    ctx.closePath();
+    if (fill) { ctx.fillStyle = fill; ctx.fill(); }
+    if (stroke) { ctx.strokeStyle = stroke; ctx.lineWidth = 1; ctx.stroke(); }
+}
+
+function drawScreen() {
+    ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+    pointerZoneWrapper.innerHTML = ''; 
+    hitZones = [];
+    
+    if (activeChatUser === null) {
+        messageContainer.style.display = 'none';
+        renderDashboardList();
+    } else {
+        searchContainer.style.display = 'none';
+        renderChatSpace();
+    }
+    renderBottomNavbar();
+}
+
+function renderDashboardList() {
+    ctx.fillStyle = PURPLE;
+    ctx.fillRect(0, 0, window.innerWidth, 175);
+    
+    ctx.fillStyle = '#FFFFFF';
+    ctx.font = 'bold 22px -apple-system, BlinkMacSystemFont, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('Open Web App', 24, 50);
+    ctx.font = '13px -apple-system, BlinkMacSystemFont, sans-serif';
+    ctx.fillText('PDF reader', 24, 68);
+    
+    let searchWidth = window.innerWidth - 100;
+    drawRoundRect(24, 95, searchWidth, 42, 21, '#FFFFFF');
+    
+    searchContainer.style.display = 'flex';
+    searchContainer.style.left = '45px';
+    searchContainer.style.top = '95px';
+    searchContainer.style.width = `${searchWidth - 40}px`;
+    searchContainer.style.height = '42px';
+    
+    let filterX = window.innerWidth - 60;
+    drawRoundRect(filterX, 95, 42, 42, 12, 'rgba(255,255,255,0.15)');
+    ctx.strokeStyle = '#FFFFFF'; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(filterX+11, 110); ctx.lineTo(filterX+31, 110); ctx.moveTo(filterX+15, 116); ctx.lineTo(filterX+27, 116); ctx.stroke();
+    addHitZone(filterX, 95, 42, 42, () => { alert("Filters toggled."); });
+
+    let tabBoxW = window.innerWidth - 48;
+    drawRoundRect(24, 195, tabBoxW, 54, 27, '#FFFFFF', '#E5E7EB');
+    
+    const tabs = ['All', 'Unread', 'Spam', 'Clients'];
+    let tabSegment = tabBoxW / 4;
+    
+    tabs.forEach((tab, index) => {
+        let tx = 24 + (index * tabSegment);
+        ctx.textAlign = 'center';
+        ctx.font = currentTab === tab ? 'bold 14px sans-serif' : '14px sans-serif';
+        ctx.fillStyle = currentTab === tab ? PURPLE : TEXT_MUTED;
+        ctx.fillText(tab, tx + (tabSegment / 2), 228);
+        
+        if (currentTab === tab) {
+            ctx.fillStyle = PURPLE;
+            ctx.fillRect(tx + (tabSegment / 2) - 16, 240, 32, 3);
+        }
+        
+        addHitZone(tx, 195, tabSegment, 54, () => {
+            currentTab = tab;
+            drawScreen();
+        });
+    });
+
+    const filteredChats = chatDatabase.filter(c => {
+        const matchesCategory = c.category.includes(currentTab);
+        const matchesSearch = c.name.toLowerCase().includes(searchQuery.toLowerCase());
+        return matchesCategory && matchesSearch;
+    });
+
+    let itemY = 280;
+    
+    filteredChats.forEach(chat => {
+        let rowW = window.innerWidth - 48;
+        addHitZone(24, itemY, rowW, 75, () => {
+            // MARK PROFILE AS READ IMMEDIATELY ON SELECTION CLICK
+            chat.unread = 0; 
+            
+            activeChatUser = chat.name;
+            if (!conversationHistories[activeChatUser]) {
+                conversationHistories[activeChatUser] = [
+                    { sender: 'other', text: chat.lastMsg, time: chat.time }
+                ];
+            }
+            drawScreen();
+        });
+
+        ctx.fillStyle = chat.avatarColor;
+        ctx.beginPath(); ctx.arc(54, itemY + 35, 26, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = '#FFFFFF'; ctx.font = 'bold 16px sans-serif'; ctx.textAlign = 'center';
+        ctx.fillText(chat.initial, 54, itemY + 41);
+
+        ctx.textAlign = 'left';
+        ctx.fillStyle = TEXT_DARK; ctx.font = 'bold 16px sans-serif';
+        ctx.fillText(chat.name, 94, itemY + 28);
+        
+        ctx.fillStyle = TEXT_MUTED; ctx.font = '13px sans-serif';
+        let maxChars = Math.floor((window.innerWidth - 160) / 8);
+        let displayMsg = chat.lastMsg.length > maxChars ? chat.lastMsg.substring(0, maxChars - 2) + '...' : chat.lastMsg;
+        ctx.fillText(displayMsg, 94, itemY + 50);
+
+        let rightEdge = window.innerWidth - 24;
+        ctx.textAlign = 'right'; ctx.font = '11px sans-serif';
+        ctx.fillStyle = chat.unread > 0 ? PURPLE : TEXT_MUTED;
+        ctx.fillText(chat.time, rightEdge, itemY + 28);
+
+        // Dynamic Unread Badge check visibility status conditional rule logic mapping updates
+        if (chat.unread > 0) {
+            ctx.fillStyle = PURPLE;
+            ctx.beginPath(); ctx.arc(rightEdge - 10, itemY + 46, 10, 0, Math.PI * 2); ctx.fill();
+            ctx.fillStyle = '#FFFFFF'; ctx.font = 'bold 10px sans-serif'; ctx.textAlign = 'center';
+            ctx.fillText(chat.unread, rightEdge - 10, itemY + 49);
+        } else {
+            ctx.strokeStyle = '#9CA3AF'; ctx.lineWidth = 1.5; ctx.beginPath();
+            ctx.moveTo(rightEdge - 16, itemY + 44); ctx.lineTo(rightEdge - 12, itemY + 49); ctx.lineTo(rightEdge - 4, itemY + 40);
+            ctx.stroke();
+        }
+        itemY += 80;
+    });
+
+    if(filteredChats.length === 0) {
+        ctx.fillStyle = TEXT_MUTED;
+        ctx.font = '15px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('No matches found', window.innerWidth/2, 340);
+    }
+}
+
+function renderChatSpace() {
+    ctx.fillStyle = PURPLE;
+    ctx.fillRect(0, 0, window.innerWidth, 130);
+
+    ctx.strokeStyle = '#FFFFFF'; ctx.lineWidth = 3; ctx.lineCap = 'round';
+    ctx.beginPath(); ctx.moveTo(38, 65); ctx.lineTo(24, 75); ctx.lineTo(38, 85); ctx.stroke();
+    addHitZone(10, 45, 60, 60, () => {
+        activeChatUser = null;
+        drawScreen();
+    });
+
+    ctx.fillStyle = '#FFFFFF'; ctx.textAlign = 'left';
+    ctx.font = 'bold 18px sans-serif';
+    ctx.fillText(activeChatUser, 74, 74);
+    ctx.font = '12px sans-serif'; ctx.fillStyle = '#E2E8F0';
+    ctx.fillText('Active Session Connection', 74, 92);
+
+    const logs = conversationHistories[activeChatUser] || [];
+    let chatY = 170;
+
+    ctx.fillStyle = TEXT_MUTED; ctx.font = '12px sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText('Today', window.innerWidth / 2, chatY);
+    chatY += 30;
+
+    let maxBubbleW = window.innerWidth * 0.7;
+
+    logs.forEach(msg => {
+        ctx.font = '14px sans-serif';
+        let txtWidth = ctx.measureText(msg.text).width;
+        let boxWidth = Math.min(Math.max(txtWidth + 32, 100), maxBubbleW);
+        let boxHeight = 44;
+        
+        if(txtWidth > maxBubbleW - 32) { boxWidth = maxBubbleW; boxHeight = 60; }
+
+        if (msg.sender === 'user') {
+            let bx = window.innerWidth - boxWidth - 24;
+            drawRoundRect(bx, chatY, boxWidth, boxHeight, 14, BUBBLE_USER);
+            ctx.fillStyle = '#FFFFFF'; ctx.textAlign = 'left';
+            ctx.fillText(msg.text, bx + 14, chatY + 24);
+            ctx.fillStyle = '#E2E8F0'; ctx.font = '9px sans-serif'; ctx.textAlign = 'right';
+            ctx.fillText(msg.time + ' ✓✓', bx + boxWidth - 10, chatY + boxHeight - 6);
+        } else {
+            let bx = 24;
+            drawRoundRect(bx, chatY, boxWidth, boxHeight, 14, BUBBLE_OTHER);
+            ctx.fillStyle = '#FFFFFF'; ctx.textAlign = 'left';
+            ctx.fillText(msg.text, bx + 14, chatY + 24);
+            ctx.fillStyle = '#E2E8F0'; ctx.font = '9px sans-serif'; ctx.textAlign = 'right';
+            ctx.fillText(msg.time, bx + boxWidth - 10, chatY + boxHeight - 6);
+        }
+        chatY += boxHeight + 14;
+    });
+
+    let inputY = window.innerHeight - 135;
+    let inputW = window.innerWidth - 120;
+    drawRoundRect(16, inputY, inputW, 48, 24, '#F3F4F6', '#D1D5DB');
+    
+    messageContainer.style.display = 'flex';
+    messageContainer.style.left = '26px';
+    messageContainer.style.top = `${inputY + 3}px`;
+    messageContainer.style.width = `${inputW - 20}px`;
+    messageContainer.style.height = '42px';
+
+    let micX = window.innerWidth - 86;
+    let sendX = window.innerWidth - 38;
+    
+    ctx.fillStyle = PURPLE; ctx.beginPath(); ctx.arc(micX, inputY + 24, 20, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = '#FFFFFF'; ctx.font = '15px sans-serif'; ctx.textAlign = 'center'; ctx.fillText('🎤', micX, inputY + 29);
+    addHitZone(micX - 20, inputY, 40, 48, () => { alert("Voice note recorder activated..."); });
+
+    ctx.fillStyle = PURPLE; ctx.beginPath(); ctx.arc(sendX, inputY + 24, 20, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = '#FFFFFF'; ctx.font = '14px sans-serif'; ctx.textAlign = 'center'; ctx.fillText('➔', sendX, inputY + 28);
+    addHitZone(sendX - 20, inputY, 40, 48, () => { handleSendMessage(); });
+}
+
+function renderBottomNavbar() {
+    let navY = window.innerHeight - 70;
+    
+    ctx.strokeStyle = '#E5E7EB'; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(0, navY); ctx.lineTo(window.innerWidth, navY); ctx.stroke();
+    ctx.fillStyle = '#FFFFFF'; ctx.fillRect(0, navY + 1, window.innerWidth, 69);
+
+    const navItems = [
+        { name: 'Home', icon: '🏠' },
+        { name: 'Messages', icon: '💬' },
+        { name: 'Add', icon: '➕' }, 
+        { name: 'Saved', icon: '🔖' },
+        { name: 'Settings', icon: '⚙️' }
+    ];
+
+    let segmentW = window.innerWidth / 5;
+
+    navItems.forEach((item, idx) => {
+        let ix = (segmentW * idx) + (segmentW / 2);
+        ctx.textAlign = 'center';
+        
+        let isMessageActive = item.name === 'Messages' && activeChatUser === null;
+        ctx.fillStyle = isMessageActive ? PURPLE : TEXT_MUTED;
+        
+        ctx.font = '18px sans-serif';
+        ctx.fillText(item.icon, ix, navY + 28);
+        
+        ctx.font = 'bold 10px sans-serif';
+        ctx.fillText(item.name, ix, navY + 44);
+
+        addHitZone(segmentW * idx, navY, segmentW, 70, () => {
+            if (item.name === 'Add') {
+                fileUploader.click(); 
+            } else if (item.name === 'Messages' || item.name === 'Home') {
+                activeChatUser = null;
+                drawScreen();
+            } else {
+                alert(`${item.name} tab toggled.`);
+            }
+        });
+    });
+}
+
+searchInput.addEventListener('input', (e) => {
+    searchQuery = e.target.value;
+    drawScreen();
+});
+
+function handleSendMessage() {
+    let text = messageInput.value;
+    if(text && text.trim() !== '') {
+        let now = new Date();
+        let timestampStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        if (!conversationHistories[activeChatUser]) {
+            conversationHistories[activeChatUser] = [];
+        }
+        conversationHistories[activeChatUser].push({
+            sender: 'user',
+            text: text,
+            time: timestampStr
+        });
+        messageInput.value = ''; 
+        drawScreen();
+    }
+}
+
+messageInput.addEventListener('keydown', (e) => {
+    if(e.key === 'Enter') { handleSendMessage(); }
+});
+
+fileUploader.addEventListener('change', (e) => {
+    if(e.target.files.length > 0) {
+        alert(`Attached file successfully: ${e.target.files[0].name}`);
+    }
+});
+
+// Run immediate dimension upscaling calculations on window adjustments
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
+</script>
+
+</body>
+</html>

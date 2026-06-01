@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Open Jobs Ghana - Add Ad</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            width: 100%; height: 100vh;
+            background-color: #F9FAFB;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            display: flex; flex-direction: column;
+            overflow: hidden;
+        }
+
+        #app-container {
+            width: 100%; height: 100%;
+            display: flex; flex-direction: column;
+            background: #ffffff;
+        }
+
+        /* Top Header Component */
+        .header-nav {
+            padding: 20px 32px;
+            display: flex; align-items: center;
+            background: #FFF; border-bottom: 1px solid #F3F4F6;
+            z-index: 10;
+        }
+        .back-link {
+            font-size: 18px; font-weight: 700; color: #500E8C;
+            text-decoration: none; display: flex; align-items: center; gap: 8px;
+            cursor: pointer;
+        }
+
+        /* Core Layout Spreading for Laptops */
+        .main-content {
+            flex: 1; overflow-y: auto; padding: 32px;
+            max-width: 1300px; width: 100%; margin: 0 auto;
+            -webkit-overflow-scrolling: touch;
+            padding-bottom: 120px;
+        }
+
+        /* ==========================================
+           ADD FORM VIEW STYLING
+        ========================================== */
+        .form-section { display: flex; flex-direction: column; gap: 28px; }
+        .section-label { font-size: 15px; font-weight: 700; color: #111827; margin-bottom: 4px; }
+        .section-sublabel { font-size: 13px; color: #9CA3AF; margin-top: -2px; margin-bottom: 12px; }
+        
+        .image-slots-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; }
+        .image-slot {
+            aspect-ratio: 1 / 1; border: 2px dashed #D1D5DB; border-radius: 16px;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; background: #FCFDFD; transition: all 0.2s ease;
+            position: relative; overflow: hidden;
+        }
+        .image-slot:hover { border-color: #500E8C; background: rgba(80, 14, 140, 0.02); }
+        .image-slot svg { width: 32px; height: 32px; fill: #9CA3AF; }
+        .image-slot img { width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; }
+        .image-slot input[type="file"] { display: none; }
+
+        .field-group { display: flex; flex-direction: column; gap: 8px; }
+        .field-header { display: flex; justify-content: space-between; align-items: center; }
+        .char-counter { font-size: 12px; color: #9CA3AF; font-weight: 500; }
+        
+        .input-text, .select-dropdown {
+            width: 100%; height: 54px; border: 1.5px solid #500E8C; border-radius: 14px;
+            padding: 0 18px; font-size: 15px; color: #111827; background: #FFF; outline: none;
+        }
+        .textarea-input {
+            width: 100%; height: 140px; border: 1.5px solid #500E8C; border-radius: 14px;
+            padding: 16px 18px; font-size: 15px; color: #111827; background: #FFF; outline: none; resize: none;
+        }
+        .select-dropdown {
+            appearance: none;
+            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23111827' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>");
+            background-repeat: no-repeat; background-position: right 18px center; background-size: 16px;
+        }
+
+        .form-split-row { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+        .radio-box-container { border: 1.5px solid #500E8C; border-radius: 16px; display: flex; flex-direction: column; overflow: hidden; }
+        .radio-option {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 18px 20px; cursor: pointer; background: #FFF;
+        }
+        .radio-option:not(:last-child) { border-bottom: 1px solid rgba(80, 14, 140, 0.15); }
+        .radio-circle { width: 22px; height: 22px; border: 2px solid #500E8C; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+        input[type="radio"] { display: none; }
+        input[type="radio"]:checked + .radio-circle { background: #500E8C; box-shadow: inset 0 0 0 4px #FFF; }
+
+        .form-actions-row { display: flex; gap: 20px; justify-content: flex-end; margin-top: 16px; }
+        .form-btn {
+            width: 180px; height: 52px; border-radius: 14px; font-size: 15px; font-weight: 700;
+            cursor: pointer; display: flex; align-items: center; justify-content: center; background: transparent; transition: all 0.2s;
+        }
+        .btn-cancel, .btn-save { border: 1.5px solid #500E8C; color: #500E8C; }
+        .form-btn:hover { background: #500E8C; color: #FFF; }
+
+        /* ==========================================
+           GLOBAL REUSED STRUCTURES (NAV & MODAL)
+        ========================================== */
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 0; width: 100%; height: 80px;
+            background: #FFF; border-top: 1px solid #E5E7EB; display: flex;
+            align-items: center; justify-content: space-around; z-index: 10;
+            box-shadow: 0 -4px 10px rgba(0,0,0,0.02); padding: 0 40px;
+        }
+        .nav-item {
+            display: flex; flex-direction: column; align-items: center; gap: 4px;
+            color: #6B7280; font-size: 13px; font-weight: 500; text-decoration: none; cursor: pointer;
+            width: 100px; padding: 8px 0;
+        }
+        .nav-item.active { color: #500E8C; font-weight: 600; }
+        .nav-icon { font-size: 26px; }
+
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.4); z-index: 100; display: none;
+            align-items: center; justify-content: center; padding: 24px; backdrop-filter: blur(2px);
+        }
+        .modal-box {
+            width: 100%; max-width: 440px; background: #FFF; border-radius: 24px; padding: 36px 24px;
+            text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            animation: popUp 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .modal-title { font-size: 19px; font-weight: 700; color: #111827; line-height: 1.4; margin-bottom: 16px; }
+        .modal-desc { font-size: 14px; color: #4B5563; line-height: 1.5; margin-bottom: 28px; }
+        .modal-actions { display: flex; gap: 16px; }
+        .modal-btn {
+            flex: 1; height: 50px; border-radius: 12px; font-size: 15px; font-weight: 600;
+            cursor: pointer; display: flex; align-items: center; justify-content: center;
+            background: transparent; border: 1.5px solid #500E8C; color: #500E8C; transition: all 0.2s;
+        }
+        .modal-btn:hover { background: rgba(80, 14, 140, 0.05); }
+
+        @keyframes popUp { from { transform: scale(0.95) translateY(10px); opacity: 0; } to { transform: scale(1) translateY(0); opacity: 1; } }
+
+        /* Media Queries Breakdown Rules */
+        @media (max-width: 768px) {
+            .form-split-row { grid-template-columns: 1fr; gap: 24px; }
+            .image-slots-grid { grid-template-columns: repeat(3, 1fr); gap: 12px; }
+            .main-content { padding: 20px; }
+            .form-actions-row { justify-content: space-between; }
+            .form-btn { flex: 1; width: 100%; }
+            .bottom-nav { padding: 0; height: 72px; }
+            .nav-item { font-size: 11px; width: auto; }
+            .nav-icon { font-size: 22px; }
+        }
+        @media (max-width: 480px) {
+            .image-slots-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+    </style>
+</head>
+<body>
+
+<div id="app-container">
+    <div class="header-nav">
+        <div class="back-link" id="form-header-back-btn"><span>‹</span> Back</div>
+    </div>
+
+    <div class="main-content">
+        <form class="form-section" id="real-creation-form" onsubmit="event.preventDefault();">
+            
+            <div class="image-upload-container">
+                <div class="section-label">Upload image of ad</div>
+                <div class="section-sublabel">(You can upload only a maximum of 5 images)</div>
+                <div class="image-slots-grid">
+                    <label class="image-slot"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zm-5.04-6.71l-2.75 3.54-1.96-2.36L6.5 17h11l-3.54-4.71z"/></svg><input type="file" accept="image/*" onchange="processSlotPreview(this)"></label>
+                    <label class="image-slot"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zm-5.04-6.71l-2.75 3.54-1.96-2.36L6.5 17h11l-3.54-4.71z"/></svg><input type="file" accept="image/*" onchange="processSlotPreview(this)"></label>
+                    <label class="image-slot"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zm-5.04-6.71l-2.75 3.54-1.96-2.36L6.5 17h11l-3.54-4.71z"/></svg><input type="file" accept="image/*" onchange="processSlotPreview(this)"></label>
+                    <label class="image-slot"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zm-5.04-6.71l-2.75 3.54-1.96-2.36L6.5 17h11l-3.54-4.71z"/></svg><input type="file" accept="image/*" onchange="processSlotPreview(this)"></label>
+                    <label class="image-slot"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zm-5.04-6.71l-2.75 3.54-1.96-2.36L6.5 17h11l-3.54-4.71z"/></svg><input type="file" accept="image/*" onchange="processSlotPreview(this)"></label>
+                </div>
+            </div>
+
+            <div class="field-group">
+                <div class="field-header"><label class="section-label">Title:</label><span class="char-counter" id="title-counter">0/700</span></div>
+                <input type="text" class="input-text" id="form-title-in" maxlength="700" placeholder="Enter ad title...">
+            </div>
+
+            <div class="field-group">
+                <div class="field-header"><label class="section-label">Description:</label><span class="char-counter" id="desc-counter">0/2500</span></div>
+                <textarea class="textarea-input" id="form-desc-in" maxlength="2500" placeholder="Enter ad description details..."></textarea>
+            </div>
+
+            <div class="form-split-row">
+                <div class="field-group">
+                    <label class="section-label">Ad Type:</label>
+                    <div class="radio-box-container">
+                        <label class="radio-option"><span class="radio-label-text">Job</span><input type="radio" name="ad-type-group" value="Job" checked><span class="radio-circle"></span></label>
+                        <label class="radio-option"><span class="radio-label-text">CV</span><input type="radio" name="ad-type-group" value="CV"><span class="radio-circle"></span></label>
+                    </div>
+                </div>
+                <div class="field-group">
+                    <label class="section-label">Experience Level</label>
+                    <div class="radio-box-container">
+                        <label class="radio-option"><span class="radio-label-text">Intern</span><input type="radio" name="exp-level-group" value="Intern" checked><span class="radio-circle"></span></label>
+                        <label class="radio-option"><span class="radio-label-text">Entry Level</span><input type="radio" name="exp-level-group" value="Entry Level"><span class="radio-circle"></span></label>
+                        <label class="radio-option"><span class="radio-label-text">Intermediate Level</span><input type="radio" name="exp-level-group" value="Intermediate Level"><span class="radio-circle"></span></label>
+                        <label class="radio-option"><span class="radio-label-text">Middle Level</span><input type="radio" name="exp-level-group" value="Middle Level"><span class="radio-circle"></span></label>
+                        <label class="radio-option"><span class="radio-label-text">Senior Level</span><input type="radio" name="exp-level-group" value="Senior Level"><span class="radio-circle"></span></label>
+                        <label class="radio-option"><span class="radio-label-text">Executive Level</span><input type="radio" name="exp-level-group" value="Executive Level"><span class="radio-circle"></span></label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-split-row">
+                <div class="field-group"><label class="section-label">Region:</label><select class="select-dropdown" id="region-selector"><option value="">All regions</option></select></div>
+                <div class="field-group"><label class="section-label">City/Town/Area:</label><select class="select-dropdown" id="area-selector" disabled><option value="">All areas</option></select></div>
+            </div>
+
+            <div class="form-split-row">
+                <div class="field-group"><label class="section-label">Ad Category:</label><select class="select-dropdown" id="category-selector"><option value="">All Categories</option></select></div>
+                <div class="field-group"><label class="section-label">Choose sub category</label><select class="select-dropdown" id="subcategory-selector" disabled><option value="">All sub categories</option></select></div>
+            </div>
+
+            <div class="form-actions-row">
+                <button type="button" class="form-btn btn-cancel" id="form-cancel-trigger">Cancel</button>
+                <button type="button" class="form-btn btn-save" id="form-save-trigger">Save</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="modal-overlay" id="cancel-modal-overlay">
+        <div class="modal-box">
+            <h3 class="modal-title">Are you sure you want to Cancel?</h3>
+            <p class="modal-desc">Your progress will not be saved. If you are sure you want to cancel, confirm below, if not, press the cancel button.</p>
+            <div class="modal-actions">
+                <button class="modal-btn" style="font-weight:700;" id="modal-cancel-confirm">Confirm</button>
+                <button class="modal-btn" style="font-weight:700;" id="modal-cancel-close">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="save-modal-overlay">
+        <div class="modal-box">
+            <h3 class="modal-title">Are you sure you want to Save this Ad?</h3>
+            <p class="modal-desc">Your listing parameters will be validated and pushed live into your portfolio interface stream instantly.</p>
+            <div class="modal-actions">
+                <button class="modal-btn" style="font-weight:700;" id="modal-save-confirm">Confirm</button>
+                <button class="modal-btn" style="font-weight:700;" id="modal-save-close">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="bottom-nav">
+        <div class="nav-item tab-trigger" onclick="goToDashboard()"><span class="nav-icon">🏠</span><span>Home</span></div>
+        <div class="nav-item tab-trigger" onclick="goToDashboard()"><span class="nav-icon">💬</span><span>Messages</span></div>
+        <div class="nav-item tab-trigger active" id="global-add-nav-btn"><span class="nav-icon">➕</span><span>Add</span></div>
+        <div class="nav-item tab-trigger" onclick="goToDashboard()"><span class="nav-icon">🔖</span><span>Saved</span></div>
+        <div class="nav-item tab-trigger" onclick="goToDashboard()"><span class="nav-icon">⚙️</span><span>Settings</span></div>
+    </div>
+</div>
+
+<script>
+    /* Databases Maps Initialization */
+    const geoDatabase = {
+"Ahafo Region": ["Goaso", "Duayaw Nkwanta", "Mim", "Bechem"],
+        "Ashanti Region": ["Kumasi", "Obuasi", "Ejisu", "Konongo", "Mampong", "Bekwai"],
+        "Bono East Region": ["Techiman", "Kintampo", "Nkoranza", "Yeji"],
+        "Bono Region": ["Sunyani", "Berekum", "Dormaa Ahenkro", "Sampa"],
+        "Central Region": ["Cape Coast", "Winneba", "Kasoa", "Elmina", "Agona Swedru"],
+        "Eastern Region": ["Koforidua", "Nkawkaw", "Nsawam", "Asamankese", "Somanya"],
+        "Greater Accra Region": ["Abeka", "Abelemkpe", "Abokobi", "Accra Newtown", "Achimota", "Adenta", "Airport Residential Area", "Amasaman", "Ashaiman", "Ashaley Botwe", "Afienya", "Bortianor", "Burma Camp", "Baatsona", "Cantonments", "Chorkor", "Dansoman", "Dawhennya", "Dodowa", "Dzorwulu", "Darkuman", "Dome", "Gbawe", "Haatso"],
+        "North East Region": ["Nalerigu", "Gambaga", "Walewale"],
+        "Northern Region": ["Tamale", "Yendi", "Savelugu"],
+        "Oti Region": ["Dambai", "Jasikan", "Kete Krachi", "Nkwanta"],
+        "Savannah Region": ["Damongo", "Bole", "Salaga"],
+        "Upper East Region": ["Bolgatanga", "Navrongo", "Bawku"],
+        "Upper West Region": ["Wa", "Lawra", "Tumu"],
+        "Volta Region": ["Ho", "Hohoe", "Keta", "Aflao", "Anloga"],
+        "Western North Region": ["Sefwi Wiawso", "Bibiani", "Enchi"],
+        "Western Region": ["Sekondi-Takoradi", "Tarkwa", "Axim", "Elubo"]
+    };
+
+    const functionalCategories = {
+       "Agriculture & Environment": ["Agronomy", "Animal Husbandry", "Horticulture", "Environmental Science", "Farm Management"],
+        "Business, Finance & Administration": ["Accounting", "Human Resources", "Banking", "Auditing", "Administrative Assistant", "Business Strategy"],
+        "Creative & Media": ["Graphic Design", "UI/UX Design", "Copywriting", "Video Editing", "Photography", "Journalism"],
+        "Education & Training": ["Teaching", "Curriculum Design", "Tutoring", "Educational Consulting"],
+        "Engineering": ["Civil Engineering", "Mechanical Engineering", "Electrical Engineering", "Chemical Engineering"],
+        "Entertainment": ["Acting", "Music Production", "Event Management", "Choreography"],
+        "Health Care": ["Nursing", "General Medicine", "Pharmacy", "Medical Lab Tech", "Public Health"],
+        "Information Technology": ["Frontend Development", "Backend Development", "Full Stack Development", "Mobile App Development", "DevOps", "Cybersecurity", "Data Science"],
+        "Legal & Government": ["Criminal Law", "Corporate Law", "Paralegal Services", "Public Policy", "Litigation"],
+        "Manufacturing, Production & Factory": ["Operations Management", "Quality Assurance", "Machinery Operation", "Assembly Line Tech"],
+        "Science, Research & Biotechnology": ["Laboratory Analysis", "Biochemistry", "Clinical Research", "Data Analytics"],
+        "Security & Protective Services": ["Risk Assessment", "Corporate Guarding", "Cyber Threat Intelligence"],
+        "Sales & Marketing": ["Digital Marketing", "SEO Optimization", "Social Media Management", "Sales Strategy", "Brand Management"],
+        "Tourism": ["Tour Operations", "Hospitality Management", "Travel Consulting"],
+        "Transport & Logistics": ["Supply Chain Management", "Fleet Logistics", "Warehouse Operations", "Distribution Operations"]
+    };
+
+    /* Dropdown Fields Engine setup */
+    const regionSelect = document.getElementById('region-selector');
+    const areaSelect = document.getElementById('area-selector');
+    const categorySelect = document.getElementById('category-selector');
+    const subcategorySelect = document.getElementById('subcategory-selector');
+
+    Object.keys(geoDatabase).forEach(r => regionSelect.options.add(new Option(r, r)));
+    Object.keys(functionalCategories).forEach(c => categorySelect.options.add(new Option(c, c)));
+
+    regionSelect.addEventListener('change', function() {
+        areaSelect.innerHTML = '<option value="">All areas</option>';
+        if(!this.value) { areaSelect.disabled = true; return; }
+        geoDatabase[this.value].forEach(a => areaSelect.options.add(new Option(a, a)));
+        areaSelect.disabled = false;
+    });
+
+    categorySelect.addEventListener('change', function() {
+        subcategorySelect.innerHTML = '<option value="">All sub categories</option>';
+        if(!this.value) { subcategorySelect.disabled = true; return; }
+        functionalCategories[this.value].forEach(s => subcategorySelect.options.add(new Option(s, s)));
+        subcategorySelect.disabled = false;
+    });
+
+    /* Live Local Character Counter Shunts */
+    const titleIn = document.getElementById('form-title-in');
+    const descIn = document.getElementById('form-desc-in');
+    titleIn.addEventListener('input', () => document.getElementById('title-counter').textContent = `${titleIn.value.length}/700`);
+    descIn.addEventListener('input', () => document.getElementById('desc-counter').textContent = `${descIn.value.length}/2500`);
+
+    /* Memory Local Image URL Processing Slot */
+    let capturedImageBase64 = "";
+    function processSlotPreview(input) {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                capturedImageBase64 = e.target.result;
+                let slot = input.parentElement;
+                let existingImg = slot.querySelector('img');
+                if(existingImg) existingImg.src = capturedImageBase64;
+                else {
+                    let img = document.createElement('img');
+                    img.src = capturedImageBase64;
+                    slot.appendChild(img);
+                }
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    /* Modal System Intercept Operations */
+    const cancelOverlay = document.getElementById('cancel-modal-overlay');
+    const saveOverlay = document.getElementById('save-modal-overlay');
+
+    document.getElementById('form-header-back-btn').addEventListener('click', () => cancelOverlay.style.display = 'flex');
+    document.getElementById('form-cancel-trigger').addEventListener('click', () => cancelOverlay.style.display = 'flex');
+    document.getElementById('modal-cancel-close').addEventListener('click', () => cancelOverlay.style.display = 'none');
+    document.getElementById('modal-cancel-confirm').addEventListener('click', () => {
+        cancelOverlay.style.display = 'none';
+        document.getElementById('real-creation-form').reset();
+        goToDashboard();
+    });
+
+    // Save Intercept Logic Flow
+    document.getElementById('form-save-trigger').addEventListener('click', () => {
+        if(!titleIn.value.trim()) { alert("Please complete the title field before updating."); return; }
+        saveOverlay.style.display = 'flex';
+    });
+    document.getElementById('modal-save-close').addEventListener('click', () => saveOverlay.style.display = 'none');
+    
+    /* ==========================================
+       DYNAMIC CARD SUBMISSION DATA ENGINE
+    ========================================== */
+    document.getElementById('modal-save-confirm').addEventListener('click', () => {
+        saveOverlay.style.display = 'none';
+
+        const inputTitle = titleIn.value.trim();
+        const inputDesc = descIn.value.trim() || "No detailed layout description parameters specified.";
+        const inputType = document.querySelector('input[name="ad-type-group"]:checked').value;
+        const inputExp = document.querySelector('input[name="exp-level-group"]:checked').value;
+        const inputRegion = regionSelect.value || "Any Region";
+        const inputArea = areaSelect.value || "Any Locality";
+        const inputCat = categorySelect.value || "General Domain";
+        const inputSubcat = subcategorySelect.value || "General Support";
+        const inputImage = capturedImageBase64 || "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'><rect width='100%' height='100%' fill='%23500E8C'/><circle cx='50' cy='40' r='22' fill='%23FFF'/><path d='M15,85 C15,65 30,58 50,58 C70,58 85,65 85,85 Z' fill='%23FFF'/></svg>";
+
+        // Store ad data in sessionStorage to pass to ads.html
+        let adsData = JSON.parse(sessionStorage.getItem('adsData') || '[]');
+        adsData.push({
+            title: inputTitle,
+            desc: inputDesc,
+            type: inputType,
+            exp: inputExp,
+            region: inputRegion,
+            area: inputArea,
+            category: inputCat,
+            subcategory: inputSubcat,
+            image: inputImage
+        });
+        sessionStorage.setItem('adsData', JSON.stringify(adsData));
+
+        document.getElementById('real-creation-form').reset();
+        document.querySelectorAll('.image-slot img').forEach(img => img.remove());
+        capturedImageBase64 = "";
+        document.getElementById('title-counter').textContent = "0/700";
+        document.getElementById('desc-counter').textContent = "0/2500";
+        areaSelect.disabled = true;
+        subcategorySelect.disabled = true;
+
+        // Redirect to ads.html
+        window.location.href = 'ads.html';
+    });
+
+    function goToDashboard() {
+        window.location.href = 'ads.html';
+    }
+</script>
+</body>
+</html>

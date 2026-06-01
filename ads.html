@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Open Jobs Ghana - My Ads</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            width: 100%; height: 100vh;
+            background-color: #F9FAFB;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            display: flex; flex-direction: column;
+            overflow: hidden;
+        }
+
+        #app-container {
+            width: 100%; height: 100%;
+            display: flex; flex-direction: column;
+            background: #ffffff;
+        }
+
+        /* Top Header Component */
+        .header-nav {
+            padding: 20px 32px;
+            display: flex; align-items: center;
+            background: #FFF; border-bottom: 1px solid #F3F4F6;
+            z-index: 10;
+        }
+        .header-title {
+            font-size: 18px; font-weight: 700; color: #500E8C;
+        }
+
+        /* Core Layout Spreading for Laptops */
+        .main-content {
+            flex: 1; overflow-y: auto; padding: 32px;
+            max-width: 1300px; width: 100%; margin: 0 auto;
+            -webkit-overflow-scrolling: touch;
+            padding-bottom: 120px;
+        }
+
+        /* ==========================================
+           DASHBOARD VIEW STYLING (MY ADS)
+        ========================================== */
+        .sort-container { margin-bottom: 32px; }
+        .sort-label { font-size: 13px; color: #9CA3AF; margin-bottom: 10px; font-weight: 500; }
+        .pill-wrapper { display: flex; gap: 10px; flex-wrap: wrap; }
+        .sort-pill {
+            padding: 10px 20px; border-radius: 20px; font-size: 14px;
+            font-weight: 500; cursor: pointer; border: 1px solid #500E8C;
+            background: transparent; color: #500E8C; transition: all 0.2s ease;
+        }
+        .sort-pill.active { background: #500E8C; color: #FFF; }
+
+        .dashboard-title { font-size: 24px; font-weight: 700; color: #111827; margin-bottom: 24px; }
+        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 40px; }
+        .stat-card {
+            background: #FFF; border-radius: 20px; padding: 24px 16px;
+            text-align: center; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.04); border: 1px solid #F3F4F6;
+        }
+        .stat-label { font-size: 14px; font-weight: 600; color: #4B5563; margin-bottom: 8px; }
+        .stat-val { font-size: 28px; font-weight: 700; color: #111827; }
+
+        .status-header { display: flex; align-items: center; gap: 8px; font-size: 20px; font-weight: 700; margin-bottom: 20px; color: #111827; }
+        .dot-indicator { width: 12px; height: 12px; background-color: #22C55E; border-radius: 50%; }
+
+        /* Dynamic Ad Card List CSS */
+        .ad-list-wrapper { display: flex; flex-direction: column; gap: 24px; }
+        .ad-card {
+            background: #FFF; border-radius: 24px; padding: 32px;
+            box-shadow: 0 4px 25px rgba(0,0,0,0.03); border: 1px solid #E5E7EB;
+        }
+        .profile-row { display: flex; gap: 24px; margin-bottom: 28px; align-items: center; }
+        .avatar-img { width: 100px; height: 100px; border-radius: 20px; object-fit: cover; background: #E5E7EB; }
+        .profile-info { flex: 1; }
+        .profile-name { font-size: 22px; font-weight: 700; color: #500E8C; margin-bottom: 8px; }
+        .profile-desc { font-size: 15px; color: #374151; line-height: 1.6; }
+
+        .details-grid {
+            display: grid; grid-template-columns: repeat(4, 1fr);
+            row-gap: 24px; column-gap: 20px;
+            margin-bottom: 32px; border-top: 1px solid #F3F4F6; padding-top: 24px;
+        }
+        .meta-label { font-size: 12px; color: #6B7280; margin-bottom: 6px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; }
+        .meta-val { font-size: 16px; color: #111827; font-weight: 600; word-break: break-word; }
+
+        .card-actions { display: flex; gap: 16px; justify-content: flex-end; }
+        .action-btn {
+            width: 150px; height: 50px; border-radius: 12px; font-size: 16px; font-weight: 600;
+            cursor: pointer; background: transparent; border: 1px solid #500E8C; color: #500E8C;
+            transition: all 0.2s ease; display: flex; align-items: center; justify-content: center;
+        }
+        .action-btn:hover { background: #500E8C; color: #FFF; }
+
+        .empty-state {
+            display: none; flex-direction: column; align-items: center; text-align: center; padding: 80px 20px;
+        }
+        .desert-art { width: 220px; height: 180px; position: relative; margin-bottom: 24px; }
+        .sun { width: 44px; height: 44px; background: #FDE047; border-radius: 50%; position: absolute; top: 10px; left: 20px; box-shadow: 0 0 15px rgba(253,224,71,0.5); }
+        .dunes { width: 180px; height: 80px; background: #FEF08A; border-radius: 50% 50% 0 0; position: absolute; bottom: 0; left: 10px; transform: scaleY(0.6); }
+        .dune-front { width: 140px; height: 70px; background: #FDE047; border-radius: 50% 50% 0 0; position: absolute; bottom: 0; right: 10px; transform: scaleY(0.5); z-index: 2; }
+        .cactus { width: 14px; height: 60px; background: #86EFAC; border-radius: 10px 10px 0 0; position: absolute; bottom: 25px; right: 45px; z-index: 1; }
+        .cactus::before { content: ''; position: absolute; width: 10px; height: 25px; border: 4px solid #86EFAC; border-top: none; border-left: none; border-radius: 0 0 8px 0; left: 10px; top: 10px; }
+        .cactus::after { content: ''; position: absolute; width: 10px; height: 20px; border: 4px solid #86EFAC; border-top: none; border-right: none; border-radius: 0 0 0 8px; left: -14px; top: 20px; }
+        .empty-title { font-size: 22px; font-weight: 700; color: #9CA3AF; margin-bottom: 12px; }
+        .empty-desc { font-size: 15px; color: #6B7280; line-height: 1.6; max-width: 460px; }
+
+        /* ==========================================
+           GLOBAL REUSED STRUCTURES (NAV & MODAL)
+        ========================================== */
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 0; width: 100%; height: 80px;
+            background: #FFF; border-top: 1px solid #E5E7EB; display: flex;
+            align-items: center; justify-content: space-around; z-index: 10;
+            box-shadow: 0 -4px 10px rgba(0,0,0,0.02); padding: 0 40px;
+        }
+        .nav-item {
+            display: flex; flex-direction: column; align-items: center; gap: 4px;
+            color: #6B7280; font-size: 13px; font-weight: 500; text-decoration: none; cursor: pointer;
+            width: 100px; padding: 8px 0;
+        }
+        .nav-item.active { color: #500E8C; font-weight: 600; }
+        .nav-icon { font-size: 26px; }
+
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.4); z-index: 100; display: none;
+            align-items: center; justify-content: center; padding: 24px; backdrop-filter: blur(2px);
+        }
+        .modal-box {
+            width: 100%; max-width: 440px; background: #FFF; border-radius: 24px; padding: 36px 24px;
+            text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            animation: popUp 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .modal-title { font-size: 19px; font-weight: 700; color: #111827; line-height: 1.4; margin-bottom: 16px; }
+        .modal-desc { font-size: 14px; color: #4B5563; line-height: 1.5; margin-bottom: 28px; }
+        .modal-actions { display: flex; gap: 16px; }
+        .modal-btn {
+            flex: 1; height: 50px; border-radius: 12px; font-size: 15px; font-weight: 600;
+            cursor: pointer; display: flex; align-items: center; justify-content: center;
+            background: transparent; border: 1.5px solid #500E8C; color: #500E8C; transition: all 0.2s;
+        }
+        .modal-btn:hover { background: rgba(80, 14, 140, 0.05); }
+
+        @keyframes popUp { from { transform: scale(0.95) translateY(10px); opacity: 0; } to { transform: scale(1) translateY(0); opacity: 1; } }
+
+        /* Media Queries Breakdown Rules */
+        @media (max-width: 900px) {
+            .details-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 768px) {
+            .stats-grid { grid-template-columns: repeat(3, 1fr); gap: 12px; }
+            .main-content { padding: 20px; }
+            .card-actions { justify-content: space-between; }
+            .action-btn { flex: 1; width: 100%; }
+            .bottom-nav { padding: 0; height: 72px; }
+            .nav-item { font-size: 11px; width: auto; }
+            .nav-icon { font-size: 22px; }
+            .stat-val { font-size: 22px; }
+        }
+        @media (max-width: 480px) {
+            .stats-grid { grid-template-columns: 1fr; gap: 12px; }
+        }
+    </style>
+</head>
+<body>
+
+<div id="app-container">
+    <div class="header-nav">
+        <div class="header-title">My Ads</div>
+    </div>
+    
+    <div class="main-content">
+        <div class="sort-container">
+            <div class="sort-label">Sort By:</div>
+            <div class="pill-wrapper">
+                <button class="sort-pill active">Most viewed</button>
+                <button class="sort-pill">Upload date</button>
+                <button class="sort-pill">Live</button>
+                <button class="sort-pill">Expired</button>
+            </div>
+        </div>
+
+        <h2 class="dashboard-title">Dashboard Summary</h2>
+        <div class="stats-grid">
+            <div class="stat-card"><div class="stat-label">Total Ads</div><div class="stat-val" id="total-ads-counter">0</div></div>
+            <div class="stat-card"><div class="stat-label">Total Clicks</div><div class="stat-val" id="total-clicks-counter">2.3k</div></div>
+            <div class="stat-card"><div class="stat-label">Views</div><div class="stat-val" id="total-views-counter">2.3k</div></div>
+        </div>
+
+        <div id="live-ads-section">
+            <div class="status-header"><span class="dot-indicator"></span><span>Live Ads</span></div>
+            <div class="ad-list-wrapper" id="ads-container-list">
+                <!-- Ads will be inserted here -->
+            </div>
+        </div>
+
+        <div class="empty-state" id="dashboard-empty-state">
+            <div class="desert-art"><div class="sun"></div><div class="dunes"></div><div class="cactus"></div><div class="dune-front"></div></div>
+            <h3 class="empty-title">No ads available</h3>
+            <p class="empty-desc">You currently have no ads uploaded. Try adding some ads to your portfolio to have access to your stats and analytics.</p>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="delete-confirmation-overlay">
+        <div class="modal-box">
+            <h3 class="modal-title">Are you sure you want to delete your ad?</h3>
+            <p class="modal-desc">Deleting your ad is an irreversible action. If you are sure you want to delete your ad, press the confirm button. If not, press cancel.</p>
+            <div class="modal-actions">
+                <button class="modal-btn" style="font-weight:700;" id="modal-delete-confirm">Confirm</button>
+                <button class="modal-btn" style="font-weight:700;" id="modal-delete-close">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="bottom-nav">
+        <div class="nav-item tab-trigger active" onclick="goToAds()"><span class="nav-icon">🏠</span><span>Home</span></div>
+        <div class="nav-item tab-trigger"><span class="nav-icon">💬</span><span>Messages</span></div>
+        <div class="nav-item tab-trigger" onclick="goToAdd()"><span class="nav-icon">➕</span><span>Add</span></div>
+        <div class="nav-item tab-trigger"><span class="nav-icon">🔖</span><span>Saved</span></div>
+        <div class="nav-item tab-trigger"><span class="nav-icon">⚙️</span><span>Settings</span></div>
+    </div>
+</div>
+
+<script>
+    let totalAdsCount = 0;
+    let currentCardToDelete = null;
+
+    // Load ads from sessionStorage on page load
+    function loadAds() {
+        const adsData = JSON.parse(sessionStorage.getItem('adsData') || '[]');
+        const container = document.getElementById('ads-container-list');
+        
+        adsData.forEach(ad => {
+            const adHTML = `
+                <div class="ad-card">
+                    <div class="profile-row">
+                        <img class="avatar-img" src="${ad.image}" alt="Ad Header Image">
+                        <div class="profile-info">
+                            <h3 class="profile-name">${ad.title}</h3>
+                            <p class="profile-desc">${ad.desc}</p>
+                        </div>
+                    </div>
+                    <div class="details-grid">
+                        <div><div class="meta-label">Ad Type:</div><div class="meta-val">${ad.type === 'Job' ? '💼 Job' : '📄 CV'}</div></div>
+                        <div><div class="meta-label">Verification Status:</div><div class="meta-val">Verified Admin</div></div>
+                        <div><div class="meta-label">Category:</div><div class="meta-val">${ad.category}</div></div>
+                        <div><div class="meta-label">Experience level:</div><div class="meta-val">${ad.exp}</div></div>
+                        <div><div class="meta-label">Sub Category:</div><div class="meta-val">${ad.subcategory}</div></div>
+                        <div><div class="meta-label">Upload Date:</div><div class="meta-val">Today</div></div>
+                        <div style="grid-column: span 2;"><div class="meta-label">Location:</div><div class="meta-val">${ad.area}, ${ad.region}</div></div>
+                    </div>
+                    <div class="card-actions">
+                        <button class="action-btn" onclick="openDeleteModal(this)">Delete</button>
+                        <button class="action-btn">Edit</button>
+                    </div>
+                </div>
+            `;
+            container.insertAdjacentHTML('beforeend', adHTML);
+            totalAdsCount++;
+        });
+
+        if(totalAdsCount > 0) {
+            document.getElementById('live-ads-section').style.display = 'block';
+            document.getElementById('dashboard-empty-state').style.display = 'none';
+        } else {
+            document.getElementById('live-ads-section').style.display = 'none';
+            document.getElementById('dashboard-empty-state').style.display = 'flex';
+        }
+        
+        document.getElementById('total-ads-counter').textContent = totalAdsCount;
+    }
+
+    // Delete modal functions
+    const deleteOverlay = document.getElementById('delete-confirmation-overlay');
+    
+    window.openDeleteModal = function(buttonElement) {
+        currentCardToDelete = buttonElement.closest('.ad-card');
+        deleteOverlay.style.display = 'flex';
+    };
+
+    document.getElementById('modal-delete-close').addEventListener('click', () => {
+        deleteOverlay.style.display = 'none';
+        currentCardToDelete = null;
+    });
+
+    document.getElementById('modal-delete-confirm').addEventListener('click', () => {
+        if (currentCardToDelete) {
+            currentCardToDelete.remove();
+            totalAdsCount--;
+            document.getElementById('total-ads-counter').textContent = totalAdsCount;
+
+            if(totalAdsCount <= 0) {
+                document.getElementById('live-ads-section').style.display = 'none';
+                document.getElementById('dashboard-empty-state').style.display = 'flex';
+            }
+
+            // Update sessionStorage
+            const adsData = JSON.parse(sessionStorage.getItem('adsData') || '[]');
+            adsData.pop(); // Remove last added ad (simplified for demo)
+            sessionStorage.setItem('adsData', JSON.stringify(adsData));
+        }
+        deleteOverlay.style.display = 'none';
+        currentCardToDelete = null;
+    });
+
+    function goToAdd() {
+        window.location.href = 'add.html';
+    }
+
+    function goToAds() {
+        window.location.href = 'ads.html';
+    }
+
+    // Load ads when page loads
+    window.addEventListener('load', loadAds);
+</script>
+</body>
+</html>
+</html>
