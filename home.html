@@ -1,112 +1,1127 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <link rel="stylesheet" href="style.css">
-      <title>Home | Open</title>
-      <style>
-             /* ==========================================
-           BOTTOM PINNED GLOBAL TAB MENU LAYOUT
-            ========================================== */
-            .bottom-nav {
-                  position: fixed; bottom: 0; left: 0; width: 100%; height: 80px;
-                  background: #FFF; border-top: 1px solid #E5E7EB; display: flex;
-                  align-items: center; justify-content: space-around; z-index: 10;
-                  box-shadow: 0 -4px 10px rgba(0,0,0,0.02); padding: 0 40px;
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Open Jobs Ghana</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* --- CORE CONFIGURATION & MATERIAL SYSTEM --- */
+        :root {
+            --purple-main: #5d10a2;
+            --purple-text-title: #4a008c;
+            --bg-light: #ffffff;
+            --bg-search: #f1f2f6;
+            --text-dark: #1a1a1a;
+            --text-muted: #8e8e93;
+            --border-card: #f2f2f7;
+            --shadow-card: rgba(0, 0, 0, 0.06);
+            --screen-edge-margin: 16px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            min-height: 100vh;
+            width: 100%;
+            overflow-x: hidden;
+        }
+
+        .app-container {
+            width: 100%;
+            min-height: 100vh;
+            padding-bottom: 90px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .view-pane {
+            display: none;
+            width: 100%;
+            animation: paneEntry 0.2s ease-out;
+        }
+
+        .view-pane.active {
+            display: block;
+        }
+
+        @keyframes paneEntry {
+            from { opacity: 0; transform: translateY(2px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- APP NAVIGATION STICKY HEADER --- */
+        .home-search-header {
+            display: flex;
+            align-items: center;
+            padding: 16px var(--screen-edge-margin);
+            gap: 12px;
+            background: #ffffff;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            border-bottom: 1px solid #f8f9fa;
+        }
+
+        .header-logo-brand-box {
+            width: 38px;
+            height: 38px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .header-logo-brand-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .search-bar-input-wrapper {
+            flex: 1;
+            position: relative;
+        }
+
+        .search-bar-input-wrapper input {
+            width: 100%;
+            background-color: var(--bg-search);
+            border: none;
+            border-radius: 24px;
+            padding: 12px 16px 12px 46px;
+            font-size: 14px;
+            outline: none;
+            color: var(--text-dark);
+        }
+
+        .search-bar-input-wrapper .search-lens-icon-asset {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 18px;
+            height: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        /* --- HERO CAROUSEL FRAME --- */
+        .hero-banner-carousel {
+            margin: 4px var(--screen-edge-margin) 16px var(--screen-edge-margin);
+            height: 180px;
+            background-color: var(--purple-main);
+            border-radius: 20px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 6px 18px rgba(93, 16, 162, 0.15);
+        }
+
+        .carousel-scrolling-track {
+            display: flex;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        .carousel-slide-card {
+            min-width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: flex-end;
+            padding: 20px 24px;
+            position: relative;
+            box-sizing: border-box;
+            cursor: pointer;
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+
+        .carousel-slide-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, rgba(41, 5, 74, 0.95) 55%, rgba(41, 5, 74, 0.5) 100%);
+            z-index: 1;
+        }
+
+        .carousel-slide-card h4 {
+            font-size: 15px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 6px;
+            letter-spacing: 0.3px;
+            z-index: 2;
+            text-shadow: 0 1px 4px rgba(0,0,0,0.4);
+            max-width: 85%;
+            line-height: 1.4;
+            white-space: normal;
+        }
+
+        .carousel-slide-card p {
+            font-size: 12px;
+            font-weight: 400;
+            color: rgba(255, 255, 255, 0.95);
+            max-width: 85%;
+            line-height: 1.4;
+            z-index: 2;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.4);
+            white-space: normal;
+        }
+
+        /* --- SECTION MAIN TITLE STRUCTURES --- */
+        .section-heading-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px var(--screen-edge-margin) 12px var(--screen-edge-margin);
+        }
+
+        .section-heading-row h2 {
+            font-size: 15px;
+            font-weight: 700;
+            color: #000000;
+        }
+
+        .section-heading-row .arrow-nav-trigger {
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--purple-main);
+        }
+
+        /* --- HORIZONTAL CATEGORIES SELECTOR TRACK --- */
+        .horizontal-scrollable-categories {
+            display: flex;
+            gap: 14px;
+            padding: 4px var(--screen-edge-margin) 12px var(--screen-edge-margin);
+            overflow-x: auto;
+        }
+        .horizontal-scrollable-categories::-webkit-scrollbar {
+            display: none;
+        }
+
+        .category-square-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            min-width: 84px;
+            text-align: center;
+        }
+
+        .category-square-icon-box {
+            width: 58px;
+            height: 58px;
+            background-color: var(--purple-main);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 14px;
+            margin-bottom: 6px;
+            color: #ffffff;
+        }
+
+        .category-square-card span {
+            font-size: 11px;
+            font-weight: 500;
+            color: #222222;
+            line-height: 1.3;
+            width: 100%;
+        }
+
+        .category-square-icon-box img {
+            width: 28px;
+            height: 28px;
+            object-fit: contain;
+        }
+
+        /* --- FLUID GRID ENGINE --- */
+        .adaptive-ads-grid-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            padding: 0 var(--screen-edge-margin) 16px var(--screen-edge-margin);
+        }
+
+        @media (min-width: 650px) {
+            .adaptive-ads-grid-container {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 16px;
+            }
+        }
+
+        @media (min-width: 950px) {
+            .adaptive-ads-grid-container {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
+        /* --- CARD FRAME DESIGN --- */
+        .ad-card-wrapper {
+            background-color: #ffffff;
+            border: 1px solid var(--border-card);
+            border-radius: 20px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 4px 14px var(--shadow-card);
+            cursor: pointer;
+        }
+
+        .ad-card-media-box {
+            width: 100%;
+            aspect-ratio: 1.25 / 1;
+            overflow: hidden;
+        }
+
+        .ad-card-media-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .ad-card-information-box {
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+
+        .ad-card-main-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--purple-text-title);
+            line-height: 1.3;
+            margin-bottom: 4px;
+        }
+
+        .ad-card-subtitle-text {
+            font-size: 13px;
+            font-weight: 400;
+            color: #1c1c1e;
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+
+        .badge-date-container-row {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 10px;
+            width: 100%;
+        }
+
+        .type-document-tag {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            font-size: 11px;
+            font-weight: 500;
+            color: #1c1c1e;
+            background-color: #e5e5ea;
+            padding: 5px 10px;
+            border-radius: 6px;
+            flex-shrink: 0;
+            height: 26px;
+            line-height: 1;
+        }
+
+        .posted-calendar-date-label {
+            font-size: 11.5px;
+            color: var(--text-muted);
+            white-space: normal;
+        }
+
+        .verification-status-meta-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 6px;
+            margin-bottom: 12px;
+            width: 100%;
+            flex-wrap: wrap;
+        }
+
+        .verification-badge-group {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--purple-main);
+            flex-shrink: 0;
+        }
+
+        .verification-badge-group img {
+            width: 14px;
+            height: 14px;
+            object-fit: contain;
+        }
+
+        .extra-modifier-tag-text {
+            font-size: 11.5px;
+            font-weight: 500;
+            color: #1c1c1e;
+            white-space: normal;
+        }
+
+        .ad-card-footer-location-metrics {
+            margin-top: auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: flex-start;
+            padding-top: 10px;
+            border-top: 1px solid #f2f2f7;
+            font-size: 11.5px;
+            color: var(--text-muted);
+            font-weight: 400;
+            gap: 4px;
+            width: 100%;
+        }
+
+        @media(min-width: 360px) {
+            .ad-card-footer-location-metrics {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+            }
+        }
+
+        .ad-card-footer-location-metrics .loc-label {
+            color: #555555;
+            white-space: normal;
+        }
+
+        .ad-card-footer-location-metrics .view-count-label {
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        /* --- SUB-PANEL RUNTIME CONTAINER VIEWS --- */
+        .sub-header-navigation-sticky-row {
+            padding: 16px var(--screen-edge-margin);
+            border-bottom: 1px solid #eeeff2;
+            background: #ffffff;
+            position: sticky;
+            top: 0;
+            z-index: 40;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .sub-header-navigation-sticky-row .back-arrow-action-btn {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--purple-main);
+            cursor: pointer;
+            padding-right: 4px;
+        }
+
+        .sub-header-navigation-sticky-row h1 {
+            font-size: 15px;
+            font-weight: 700;
+        }
+
+        .vertical-categories-stack-wrapper {
+            display: flex;
+            flex-direction: column;
+            padding: 10px var(--screen-edge-margin);
+        }
+
+        .category-list-row-item {
+            display: flex;
+            align-items: center;
+            padding: 14px 0;
+            border-bottom: 1px solid #f5f6f9;
+            cursor: pointer;
+        }
+
+        .category-list-row-item .icon-wrapper-box {
+            width: 38px;
+            height: 38px;
+            background: #f4ebfc;
+            border-radius: 10px;
+            margin-right: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--purple-main);
+            flex-shrink: 0;
+        }
+
+        .category-list-row-item span {
+            font-size: 13.5px;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .runtime-filters-capsule-row {
+            display: flex;
+            gap: 8px;
+            padding: 12px var(--screen-edge-margin);
+            overflow-x: auto;
+        }
+        .runtime-filters-capsule-row::-webkit-scrollbar { display: none; }
+
+        .filter-capsule-toggle-trigger {
+            padding: 6px 14px;
+            border-radius: 20px;
+            border: 1px solid var(--purple-main);
+            background: transparent;
+            color: var(--purple-main);
+            font-size: 12px;
+            font-weight: 500;
+            white-space: nowrap;
+            cursor: pointer;
+        }
+
+        .filter-counter-metrics-bar {
+            padding: 4px var(--screen-edge-margin) 12px var(--screen-edge-margin);
+            font-size: 11.5px;
+            color: var(--text-muted);
+        }
+
+        /* --- PRODUCT SPEC PRESENTATION VIEW --- */
+        .detail-presentation-hero-frame {
+            width: 100%;
+            max-height: 280px;
+            background-color: #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .detail-presentation-hero-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .detail-presentation-body-content {
+            padding: 20px var(--screen-edge-margin);
+        }
+
+        .detail-header-flex-block {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+        }
+
+        .detail-header-flex-block h2 {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--purple-text-title);
+        }
+
+        .detail-specifications-card-block {
+            border: 1px solid var(--border-card);
+            border-radius: 16px;
+            padding: 14px;
+            background: #ffffff;
+            margin-bottom: 12px;
+        }
+
+        .detail-specifications-card-block h3 {
+            font-size: 11.5px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        .detail-specifications-card-block p {
+            font-size: 13px;
+            line-height: 1.5;
+            color: #333333;
+        }
+
+        .meta-technical-attributes-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .meta-technical-attributes-grid div {
+            display: flex;
+            flex-direction: column;
             }
 
-            .nav-item {
-                  display: flex; flex-direction: column; align-items: center; gap: 4px;
-                  color: #6B7280; font-size: 13px; font-weight: 500; text-decoration: none; cursor: pointer;
-                  width: 100px; padding: 8px 0;
-            }
+        .meta-technical-attributes-grid label {
+            font-size: 10.5px;
+            color: var(--text-muted);
+        }
 
-            .nav-item.active { color: #500E8C; font-weight: 600; }
-        
-            .nav-svg-icon {
-                  width: 24px;
-                  height: 24px;
-                  fill: none;
-                  stroke: #6B7280;
-                  stroke-width: 2;
-                  margin-bottom: 2px;
-                  transition: stroke 0.2s;
-            }
+        .meta-technical-attributes-grid strong {
+            font-size: 12.5px;
+            color: var(--text-dark);
+        }
 
-            .nav-item.active .nav-svg-icon {
-                  stroke: #500E8C;
-            }
-      </style>
+        /* --- GLOBAL NAVIGATION BOTTOM DOCK --- */
+        .global-screen-bottom-navigation-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 64px;
+            background: #ffffff;
+            border-top: 1px solid var(--border-card);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            z-index: 100;
+        }
 
+        .navigation-action-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--purple-main);
+            opacity: 0.5;
+            flex: 1;
+            height: 100%;
+            gap: 4px;
+        }
+
+        .navigation-action-item.active-state {
+            opacity: 1;
+        }
+
+        .navigation-action-item .nav-icon-frame {
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .navigation-action-item .nav-label-text {
+            font-size: 10px;
+            font-weight: 500;
+        }
+
+        .navigation-action-item.center-add-action-override {
+            opacity: 1;
+        }
+
+        .navigation-action-item.center-add-action-override .nav-icon-frame {
+            width: 32px;
+            height: 32px;
+            color: var(--purple-main);
+        }
+
+        /* --- BOTTOM NAV FROM HOME.HTML --- */
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 0; width: 100%; height: 80px;
+            background: #FFF; border-top: 1px solid #E5E7EB; display: flex;
+            align-items: center; justify-content: space-around; z-index: 10;
+            box-shadow: 0 -4px 10px rgba(0,0,0,0.02); padding: 0 40px;
+        }
+
+        .nav-item {
+            display: flex; flex-direction: column; align-items: center; gap: 4px;
+            color: #6B7280; font-size: 13px; font-weight: 500; text-decoration: none; cursor: pointer;
+            width: 100px; padding: 8px 0;
+        }
+
+        .nav-item.active { color: #500E8C; font-weight: 600; }
+    
+        .nav-svg-icon {
+            width: 24px;
+            height: 24px;
+            fill: none;
+            stroke: #6B7280;
+            stroke-width: 2;
+            margin-bottom: 2px;
+            transition: stroke 0.2s;
+        }
+
+        .nav-item.active .nav-svg-icon {
+            stroke: #500E8C;
+        }
+    </style>
 </head>
-<body class="home-page">
-      <header class="home-header">
-            <div class="header-top">
-                  <img src="Open Logo.png" alt="Open logo" class="home-logo">
-            </div>
-            <div class="header-search">
-                  <div class="search-wrapper">
-                        <input type="search" class="search-input" placeholder="Search..." aria-label="Search">
-                        <span class="search-icon">🔍</span>
-                  </div>
-            </div>
-      </header>
+<body>
 
-      <!-- ==========================================
-      BOTTOM PINNED GLOBAL TAB MENU LAYOUT
-   ========================================== -->
-      <div class="bottom-nav">
-            <div class="nav-item tab-trigger" data-route="home" onclick="window.location.href='home.html'">
-                  <svg class="nav-svg-icon" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-                  <span>Home</span>
+    <div class="app-container">
+
+        <section id="view-home" class="view-pane active">
+            <header class="home-search-header">
+                <div class="header-logo-brand-box" onclick="location.reload()">
+                    <img src="icons/Open Logo.png" alt="Open Jobs Ghana Logo">
+                </div>
+                <div class="search-bar-input-wrapper">
+                    <input type="text" id="runtime-global-search" placeholder="Search ads, jobs, CVs..." onkeydown="handleSearchSubmit(event)">
+                    <div class="search-lens-icon-asset" onclick="triggerManualSearchSubmit()">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#8e8e93" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                    </div>
+                </div>
+            </header>
+
+            <div class="hero-banner-carousel">
+                <div class="carousel-scrolling-track" id="verified-trending-carousel-track"></div>
+            </div>
+
+            <div class="section-heading-row">
+                <h2>Explore categories</h2>
+                <div class="arrow-nav-trigger" onclick="navigateToPane('view-categories')">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+                </div>
+            </div>
+            <div class="horizontal-scrollable-categories" id="home-categories-shortcut-track"></div>
+
+            <div class="section-heading-row"><h2>For you</h2></div>
+            <div class="adaptive-ads-grid-container" id="feed-for-you"></div>
+
+            <div class="section-heading-row">
+                <h2>Trending Jobs</h2>
+                <div class="arrow-nav-trigger" onclick="openFilteredListWithContext('Job', 'Trending Jobs')">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+                </div>
+            </div>
+            <div class="adaptive-ads-grid-container" id="feed-trending-jobs"></div>
+
+            <div class="section-heading-row">
+                <h2>Trending CVs</h2>
+                <div class="arrow-nav-trigger" onclick="openFilteredListWithContext('CV', 'Trending CVs')">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+                </div>
+            </div>
+            <div class="adaptive-ads-grid-container" id="feed-trending-cvs"></div>
+
+            <div class="section-heading-row">
+                <h2>Discover all ads</h2>
+                <div class="arrow-nav-trigger" onclick="openFilteredListWithContext('All', 'Discover all ads')">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+                </div>
+            </div>
+            <div class="adaptive-ads-grid-container" id="feed-discover-all"></div>
+        </section>
+
+
+        <section id="view-categories" class="view-pane">
+            <header class="sub-header-navigation-sticky-row">
+                <span class="back-arrow-action-btn" onclick="handlePaneBackNavigation()">❮</span>
+                <h1>Explore categories</h1>
+            </header>
+            <div class="vertical-categories-stack-wrapper" id="full-categories-list-render"></div>
+        </section>
+
+
+        <section id="view-filtered-list" class="view-pane">
+            <header class="sub-header-navigation-sticky-row">
+                <span class="back-arrow-action-btn" onclick="navigateToPane('view-home')">❮</span>
+                <h1 id="filtered-view-title-label">Discover all ads</h1>
+            </header>
+            
+            <div class="runtime-filters-capsule-row">
+                <button class="filter-capsule-toggle-trigger" id="filter-type-trigger-btn" onclick="cycleTypeRuntimeFilter()">Type: All</button>
+                <button class="filter-capsule-toggle-trigger" id="filter-field-trigger-btn" onclick="navigateToPane('view-categories')">All Fields</button>
+            </div>
+
+            <div class="filter-counter-metrics-bar" id="filter-results-counter">0 total ads found</div>
+            <div class="adaptive-ads-grid-container" id="feed-filtered-list-output"></div>
+        </section>
+
+
+        <section id="view-ad-detail" class="view-pane">
+            <header class="sub-header-navigation-sticky-row">
+                <span class="back-arrow-action-btn" onclick="handlePaneBackNavigation()">❮ Back</span>
+            </header>
+
+            <div class="detail-presentation-hero-frame">
+                <img id="detail-pane-image" src="" alt="Ad Visual Frame">
+            </div>
+
+            <div class="detail-presentation-body-content">
+                <div class="detail-header-flex-block">
+                    <div>
+                        <h2 id="detail-pane-title"></h2>
+                        <p id="detail-pane-subtitle"></p>
+                    </div>
+                </div>
+
+                <div class="detail-specifications-card-block">
+                    <h3>Description</h3>
+                    <p id="detail-pane-description" style="margin-top:4px;"></p>
+                </div>
+
+                <div class="detail-specifications-card-block">
+                    <div class="meta-technical-attributes-grid">
+                        <div><label>Ad Type</label><strong id="meta-attr-type"></strong></div>
+                        <div><label>Verification</label><strong id="meta-attr-verified"></strong></div>
+                        <div><label>Category</label><strong id="meta-attr-category"></strong></div>
+                        <div><label>Upload Date</label><strong id="meta-attr-date"></strong></div>
+                        <div style="grid-column: span 2;"><label>Location</label><strong id="meta-attr-location"></strong></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- BOTTOM PINNED GLOBAL TAB MENU LAYOUT -->
+        <nav class="bottom-nav">
+            <div id="bottom-nav-home" class="nav-item tab-trigger" data-route="home" onclick="window.location.href='new home.html'">
+                <svg class="nav-svg-icon" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                <span>Home</span>
             </div>
 
             <div class="nav-item tab-trigger" data-route="messages" onclick="window.location.href='message.html'">
-                  <svg class="nav-svg-icon" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-                  <span>Messages</span>
+                <svg class="nav-svg-icon" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                <span>Messages</span>
             </div>
 
             <div class="nav-item tab-trigger" data-route="add" onclick="window.location.href='add.html'">
-                  <svg class="nav-svg-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
-                  <span>Add</span>
+                <svg class="nav-svg-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+                <span>Add</span>
             </div>
 
             <div class="nav-item tab-trigger" data-route="saved" onclick="window.location.href='saved.html'">
-                  <svg class="nav-svg-icon" viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
-                  <span>Saved</span>
+                <svg class="nav-svg-icon" viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+                <span>Saved</span>
             </div>
 
             <div class="nav-item tab-trigger" data-route="settings" onclick="window.location.href='settings.html'">
-                  <svg class="nav-svg-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2 2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-                  <span>Settings</span>
+                <svg class="nav-svg-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2 2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                <span>Settings</span>
+            </div>
+        </nav>
 
+    </div>
 
-</body>
+    <script>
+        // System wide Runtime State Data Cache
+        const PLATFORM_DATABASE = [
+            {
+                id: "item_001",
+                title: "Gyan Ablakwah",
+                subtitle: "Registered Masseur & Logistics Specialist",
+                description: "Professional services management and domestic coordination across high demand regional areas.",
+                type: "CV",
+                category: "Travel & Logistics",
+                date: "03/04/2026",
+                verified: false,
+                contract: "",
+                location: "Lashibi, Greater Accra",
+                views: "32 views",
+                image: "https://images.unsplash.com/photo-1540569014015-19a7be504e3a?auto=format&fit=crop&w=400&q=80"
+            },
+            {
+                id: "item_002",
+                title: "Sogakope Methodist School",
+                subtitle: "Maths Teacher wanted",
+                description: "Maths Teacher wanted urgently for immediate employment to handle junior high departments. Candidates must possess certified educational backgrounds.",
+                type: "Job",
+                category: "Education & Training",
+                date: "25/04/2026",
+                verified: true,
+                contract: "Full-Time",
+                location: "Sogakope, Volta Region",
+                views: "3.2k views",
+                image: "https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?auto=format&fit=crop&w=400&q=80"
+            },
+            {
+                id: "item_003",
+                title: "Kumi Law & Associates",
+                subtitle: "Interns and legal supports needed",
+                description: "Kumi law & Associates needs interns and workers to process immediate documentation, general support indexing, and client coordination operations.",
+                type: "Job",
+                category: "Healthcare",
+                date: "04/02/2026",
+                verified: true,
+                contract: "Full-Time",
+                location: "Tesano, Greater Accra",
+                views: "300 views",
+                image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=400&q=80"
+            },
+            {
+                id: "item_004",
+                title: "Ekoe Chris",
+                subtitle: "Goalkeeper and Athletic Coach",
+                description: "I am looking to attach to local teams, sports organizations, youth training facilities, or athletic scouts.",
+                type: "CV",
+                date: "06/02/2026",
+                category: "Entertainment",
+                verified: false,
+                contract: "",
+                location: "Tseado, Greater Accra",
+                views: "200 views",
+                image: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=400&q=80"
+            },
+            {
+                id: "item_005",
+                title: "Plus Size Fashion Drinks",
+                subtitle: "Indigenous beverage creators needed",
+                description: "We require professional hands skilled in beverage preparation, specifically indigenous Sobolo juice production, packaging and stock tracking management.",
+                type: "Job",
+                category: "Agriculture",
+                date: "04/02/2026",
+                verified: true,
+                contract: "Full-time",
+                location: "Tesano, Greater Accra",
+                views: "80 views",
+                image: "https://images.unsplash.com/photo-1595981267035-7b04ec84a82d?auto=format&fit=crop&w=400&q=80"
+            }
+        ];
 
-<script>
-      // Set active nav item based on current page
-      function setActiveNav() {
-            const currentPage = window.location.pathname.split('/').pop() || 'home.html';
+        const CATEGORIES_DATABASE = [
+            { name: "Agriculture", label: "Agric", total: 1, icon: "icons/Support.svg" },
+            { name: "Education & Training", label: "Education", total: 1, icon: "icons/People icon.svg" },
+            { name: "Healthcare", label: "Healthcare", total: 1, icon: "icons/Support.svg" },
+            { name: "Entertainment", label: "Entertainment", total: 1, icon: "icons/Bell.svg" },
+            { name: "Travel & Logistics", label: "Logistics", total: 1, icon: "icons/Globe.svg" }
+        ];
+
+        let historyStack = ['view-home'];
+        let currentFilterType = "All"; 
+        let currentFilterCategory = "All";
+
+        // Global Dom Initialization Engine
+        window.addEventListener('DOMContentLoaded', () => {
+            renderCategoriesShortcutTrack();
+            renderFullCategoriesListPanel();
+            renderDashboardFeeds();
+            setActiveNav();
+            initializeCarouselTrack();
+        });
+
+        function navigateToPane(targetPaneId) {
+            document.querySelectorAll('.view-pane').forEach(p => p.classList.remove('active'));
+            const destination = document.getElementById(targetPaneId);
+            if(destination) {
+                destination.classList.add('active');
+                if(historyStack[historyStack.length - 1] !== targetPaneId) {
+                    historyStack.push(targetPaneId);
+                }
+            }
+            window.scrollTo(0,0);
+            updateNavigationDockIndicators(targetPaneId);
+        }
+
+        function handlePaneBackNavigation() {
+            if(historyStack.length > 1) {
+                historyStack.pop();
+                const previousPane = historyStack[historyStack.length - 1];
+                document.querySelectorAll('.view-pane').forEach(p => p.classList.remove('active'));
+                document.getElementById(previousPane).classList.add('active');
+                updateNavigationDockIndicators(previousPane);
+            }
+        }
+
+        function updateNavigationDockIndicators(activePaneId) {
+            const homeItem = document.getElementById('bottom-nav-home');
+            if(homeItem) {
+                if(activePaneId === 'view-home') homeItem.classList.add('active-state');
+                else homeItem.classList.remove('active-state');
+            }
+        }
+
+        function initializeCarouselTrack() {
+            const track = document.getElementById('verified-trending-carousel-track');
+            const verifiedItems = PLATFORM_DATABASE.filter(i => i.verified);
+            track.innerHTML = '';
+            
+            verifiedItems.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'carousel-slide-card';
+                card.style.backgroundImage = `url('${item.image}')`;
+                card.onclick = () => openAdDetailPresentation(item.id);
+                card.innerHTML = `
+                    <h4>${item.title}</h4>
+                    <p>${item.subtitle}</p>
+                `;
+                track.appendChild(card);
+            });
+        }
+
+        function buildAdHTMLComponent(item) {
+            return `
+                <div class="ad-card-wrapper" onclick="openAdDetailPresentation('${item.id}')">
+                    <div class="ad-card-media-box">
+                        <img src="${item.image}" alt="Media Card Visual Assets">
+                    </div>
+                    <div class="ad-card-information-box">
+                        <h3 class="ad-card-main-title">${item.title}</h3>
+                        <p class="ad-card-subtitle-text">${item.subtitle}</p>
+                        
+                        <div class="badge-date-container-row">
+                            <span class="type-document-tag">${item.type}</span>
+                            <span class="posted-calendar-date-label">${item.date}</span>
+                        </div>
+
+                        <div class="verification-status-meta-row">
+                            ${item.verified ? `
+                            <div class="verification-badge-group">
+                                <img src="verify.png" alt="Verified Status">
+                                <span>Verified</span>
+                            </div>` : '<div></div>'}
+                            ${item.contract ? `<span class="extra-modifier-tag-text">${item.contract}</span>` : ''}
+                        </div>
+
+                        <div class="ad-card-footer-location-metrics">
+                            <span class="loc-label">${item.location}</span>
+                            <span class="view-count-label">${item.views}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderDashboardFeeds() {
+            document.getElementById('feed-for-you').innerHTML = PLATFORM_DATABASE.slice(0, 4).map(buildAdHTMLComponent).join('');
+            document.getElementById('feed-trending-jobs').innerHTML = PLATFORM_DATABASE.filter(i => i.type === 'Job').map(buildAdHTMLComponent).join('');
+            document.getElementById('feed-trending-cvs').innerHTML = PLATFORM_DATABASE.filter(i => i.type === 'CV').map(buildAdHTMLComponent).join('');
+            document.getElementById('feed-discover-all').innerHTML = PLATFORM_DATABASE.map(buildAdHTMLComponent).join('');
+        }
+
+        function renderCategoriesShortcutTrack() {
+            const container = document.getElementById('home-categories-shortcut-track');
+            container.innerHTML = CATEGORIES_DATABASE.map(cat => `
+                <div class="category-square-card" onclick="openFilteredListWithContext('All', '${cat.name}')">
+                    <div class="category-square-icon-box">
+                        <img src="${cat.icon}" alt="${cat.label} icon">
+                    </div>
+                    <span>${cat.label}</span>
+                </div>
+            `).join('');
+        }
+
+        function renderFullCategoriesListPanel() {
+            const container = document.getElementById('full-categories-list-render');
+            container.innerHTML = CATEGORIES_DATABASE.map(cat => `
+                <div class="category-list-row-item" onclick="openFilteredListWithContext('All', '${cat.name}')">
+                    <div class="icon-wrapper-box">
+                        <img src="${cat.icon}" alt="${cat.label} icon" style="width:20px; height:20px; object-fit: contain;">
+                    </div>
+                    <span>${cat.name} (${cat.total})</span>
+                </div>
+            `).join('');
+        }
+
+        function openFilteredListWithContext(type, titleOrCategoryName) {
+            currentFilterType = type;
+            const matchesCategory = CATEGORIES_DATABASE.some(c => c.name === titleOrCategoryName);
+            
+            if (matchesCategory) {
+                currentFilterCategory = titleOrCategoryName;
+                document.getElementById('filtered-view-title-label').innerText = titleOrCategoryName;
+            } else {
+                currentFilterCategory = "All";
+                document.getElementById('filtered-view-title-label').innerText = titleOrCategoryName;
+            }
+            
+            executeRuntimeFilterEngine();
+            navigateToPane('view-filtered-list');
+        }
+
+        function cycleTypeRuntimeFilter() {
+            if (currentFilterType === "All") currentFilterType = "Job";
+            else if (currentFilterType === "Job") currentFilterType = "CV";
+            else currentFilterType = "All";
+            
+            document.getElementById('filter-type-trigger-btn').innerText = `Type: ${currentFilterType}`;
+            executeRuntimeFilterEngine();
+        }
+
+        function executeRuntimeFilterEngine() {
+            let records = PLATFORM_DATABASE;
+            
+            if (currentFilterType !== "All") {
+                records = records.filter(r => r.type === currentFilterType);
+            }
+            if (currentFilterCategory !== "All") {
+                records = records.filter(r => r.category === currentFilterCategory);
+            }
+
+            const searchInput = document.getElementById('runtime-global-search').value.trim().toLowerCase();
+            if (searchInput) {
+                records = records.filter(r => 
+                    r.title.toLowerCase().includes(searchInput) || 
+                    r.subtitle.toLowerCase().includes(searchInput) ||
+                    r.description.toLowerCase().includes(searchInput)
+                );
+            }
+
+            document.getElementById('filter-field-trigger-btn').innerText = currentFilterCategory === "All" ? "All Fields" : currentFilterCategory;
+            document.getElementById('filter-results-counter').innerText = `${records.length} total ads found`;
+            document.getElementById('feed-filtered-list-output').innerHTML = records.map(buildAdHTMLComponent).join('');
+        }
+
+        function handleSearchSubmit(event) {
+            if (event.key === 'Enter') {
+                triggerManualSearchSubmit();
+            }
+        }
+
+        function triggerManualSearchSubmit() {
+            openFilteredListWithContext('All', 'Search Results');
+        }
+
+        function openAdDetailPresentation(itemId) {
+            const target = PLATFORM_DATABASE.find(i => i.id === itemId);
+            if (!target) return;
+
+            document.getElementById('detail-pane-image').src = target.image;
+            document.getElementById('detail-pane-title').innerText = target.title;
+            document.getElementById('detail-pane-subtitle').innerText = target.subtitle;
+            document.getElementById('detail-pane-description').innerText = target.description;
+
+            document.getElementById('meta-attr-type').innerText = target.type;
+            document.getElementById('meta-attr-verified').innerText = target.verified ? "Verified Professional" : "Standard Profile";
+            document.getElementById('meta-attr-category').innerText = target.category;
+            document.getElementById('meta-attr-date').innerText = target.date;
+            document.getElementById('meta-attr-location').innerText = target.location;
+
+            navigateToPane('view-ad-detail');
+        }
+
+        // Set active nav item based on current page
+        function setActiveNav() {
+            const currentPage = window.location.pathname.split('/').pop() || 'new home.html';
             const navItems = document.querySelectorAll('.nav-item[data-route]');
             navItems.forEach(item => item.classList.remove('active'));
-            
+
             const routeMap = {
-                  'add.html': 'add',
-                  'saved.html': 'saved',
-                  'home.html': 'home',
-                  'message.html': 'messages',
-                  'settings.html': 'settings'
+                'add.html': 'add',
+                'saved.html': 'saved',
+                'home.html': 'home',
+                'new home.html': 'home',
+                'message.html': 'messages',
+                'settings.html': 'settings'
             };
-            
+
             const currentRoute = routeMap[currentPage];
             if(currentRoute) {
-                  const activeItem = document.querySelector(`.nav-item[data-route="${currentRoute}"]`);
-                  if(activeItem) activeItem.classList.add('active');
+                const activeItem = document.querySelector(`.nav-item[data-route="${currentRoute}"]`);
+                if(activeItem) activeItem.classList.add('active');
             }
-      }
-      
-      window.addEventListener('load', setActiveNav);
-</script>
-</script>
+        }
+    </script>
+</body>
 </html>
