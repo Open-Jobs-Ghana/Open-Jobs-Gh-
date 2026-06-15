@@ -7,15 +7,29 @@
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <style>
 	:root {
-    --bg-color: #9b9b9b;
+    --bg-color: #ffffff;
     --primary-purple: #3e1263;
 }
 
-* { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
+* { 
+    box-sizing: border-box; 
+    margin: 0; 
+    padding: 0; 
+    font-family: sans-serif; 
+}
 
-body { background-color: var(--bg-color); display: flex; justify-content: center; min-height: 100vh; }
+body { 
+    background-color: var(--bg-color); 
+    display: flex; 
+    justify-content: center; 
+    min-height: 100vh; 
+}
 
-.app-container { width: 100%; max-width: 480px; padding: 20px 25px 80px; }
+.app-container { 
+    width: 100%; 
+    max-width: 480px; 
+    padding: 20px 25px 80px; 
+}
 
 /* Header */
 .header { display: flex; align-items: center; margin-bottom: 20px; }
@@ -180,7 +194,7 @@ font-size: 14px;
     <script>
 
 	const STORAGE_KEY = "OPEN_USER_RECORDS";
-const SESSION_KEY = "OPEN_ACTIVE_SESSION";
+    const SESSION_KEY = "OPEN_ACTIVE_SESSION";
 
 document.addEventListener('DOMContentLoaded', () => {
     const topName = document.getElementById('top-display-name');
