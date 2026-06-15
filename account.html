@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Profile - OPEN</title>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <style>
+	:root {
+    --bg-color: #9b9b9b;
+    --primary-purple: #3e1263;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
+
+body { background-color: var(--bg-color); display: flex; justify-content: center; min-height: 100vh; }
+
+.app-container { width: 100%; max-width: 480px; padding: 20px 25px 80px; }
+
+/* Header */
+.header { display: flex; align-items: center; margin-bottom: 20px; }
+.header h1 { flex: 1; text-align: center; font-size: 1.2rem; color: var(--primary-purple); margin-right: 30px; }
+.back-btn { background: none; border: none; color: var(--primary-purple); font-size: 1.5rem; cursor: pointer; }
+
+/* Profile Section */
+.profile-pic-section { text-align: center; margin-bottom: 30px; }
+.avatar-container { width: 100px; height: 100px; background: #ddd; border-radius: 50%; margin: 0 auto 10px; overflow: hidden; }
+.avatar-container img { width: 100%; height: 100%; object-fit: cover; }
+.user-display { margin-top: 15px; }
+.user-display h2 { font-size: 20px; color: #000; }
+.user-display p { font-size: 14px; color: #444; font-weight: 600; }
+.text-link { background: none; border: none; color: var(--primary-purple); font-weight: 700; cursor: pointer; font-size: 13px; }
+
+/* Forms */
+.main-form { display: flex; flex-direction: column; gap: 20px; }
+.form-group label, .verification-section label { display: block; font-size: 13px; font-weight: 700; margin-bottom: 5px; margin-left: 10px; }
+input { width: 100%; padding: 12px 20px; border-radius: 25px; border: 1.5px solid #777; background: transparent; font-size: 16px; outline: none; }
+input:focus { border-color: var(--primary-purple); }
+
+.verification-section .input-with-action { position: relative; }
+
+.action-icon { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--primary-purple); font-size: 20px; cursor: pointer; }
+
+.verify-fields { 
+margin-top: 10px; 
+background: rgba(255,255,255,0.1); 
+padding: 15px; 
+border-radius: 20px; 
+display: flex; 
+flex-direction: column; 
+gap: 12px; 
+}
+
+.verify-input {
+width: 100%;
+padding: 10px 15px;
+border-radius: 15px;
+border: 1px solid #999;
+background: white;
+font-size: 14px; 	
+}
+
+.verify-row { display: flex; gap: 10px; }
+.verify-btn { background: var(--primary-purple); color: white; border: none; border-radius: 20px; padding: 0 15px; cursor: pointer; }
+.hidden { display: none; }
+.divider { border: none; border-top: 1px solid rgba(0,0,0,0.1); }
+
+/* Buttons */
+.form-actions { display: flex; gap: 15px; margin-top: 20px; }
+.btn { flex: 1; padding: 14px; border-radius: 25px; font-weight: 700; border: none; cursor: pointer; }
+.btn-cancel { background: #777; color: white; }
+.btn-save { background: var(--primary-purple); color: white; }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <header class="header">
+            <button class="back-btn" onclick="window.location.href='settings.html'">
+                <i class="ph ph-caret-left"></i>
+            </button>
+            <h1>Edit Profile</h1>
+        </header>
+
+        <!-- Profile Section -->
+        <div class="profile-pic-section">
+            <div class="avatar-container">
+                <img src="https://via.placeholder.com/150" id="profile-img" alt="User">
+                <input type="file" id="file-upload" accept="image/*" hidden>
+            </div>
+            <button class="text-link" onclick="document.getElementById('file-upload').click()">Change picture</button>
+            
+            <!-- Dynamic Display Area -->
+            <div class="user-display">
+                <h2 id="top-display-name">Loading...</h2>
+                <p id="top-display-username">@username</p>
+            </div>
+        </div>
+
+        <form id="profile-form" class="main-form">
+            
+            <!-- Identity Group -->
+            <div class="form-group">
+                <label>Full Name</label>
+                <input type="text" id="input-name" required>
+            </div>
+
+            <div class="form-group">
+                <label>Username</label>
+                <input type="text" id="input-username" placeholder="e.g. sexyekpes">
+            </div>
+
+            <!-- Password Section (Now matches Email style) -->
+            <div class="verification-section">
+                <label>Security & Password</label>
+                <div class="input-with-action">
+                    <input type="text" value="********" readonly>
+                    <button type="button" class="action-icon" onclick="toggleVerify('pass-verify')"><i class="ph ph-lock-key"></i></button>
+                </div>
+                <div id="pass-verify" class="verify-fields hidden">
+                    <input type="password" id="old-pass" placeholder="Confirm Current Password" class="verify-input">
+                    <input type="password" id="new-pass" placeholder="New Password" class="verify-input">
+                    <input type="password" id="confirm-new-pass" placeholder="Confirm New Password" class="verify-input">
+                    <p id="pass-error" style="color:red; font-size:11px; display:none;">Passwords do not match.</p>
+                </div>
+            </div>
+
+
+
+            <div class="form-group">
+                <label>Location</label>
+                <input type="text" id="location" placeholder="Tema, Ghana">
+            </div>
+
+            <div class="form-group">
+                <label>Address</label>
+                <input type="text" id="address" placeholder="Sakumono">
+            </div>
+
+            <hr class="divider">
+
+            <!-- Email Section -->
+            <div class="verification-section">
+                <label>Email</label>
+                <div class="input-with-action">
+                    <input type="email" id="current-email" readonly>
+                    <button type="button" class="action-icon" onclick="toggleVerify('email-verify')"><i class="ph ph-note-pencil"></i></button>
+                </div>
+                <div id="email-verify" class="verify-fields hidden">
+                    <input type="password" placeholder="Confirm Current Password" class="verify-input">
+                    <div class="verify-row">
+                        <input type="email" placeholder="New Email" class="verify-input">
+                        <button type="button" class="verify-btn">Verify</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Phone Section -->
+            <div class="verification-section">
+                <label>Phone</label>
+                <div class="input-with-action">
+                    <input type="tel" id="current-phone" readonly value="+233 ...">
+                    <button type="button" class="action-icon" onclick="toggleVerify('phone-verify')"><i class="ph ph-note-pencil"></i></button>
+                </div>
+                <div id="phone-verify" class="verify-fields hidden">
+                    <div class="verify-row">
+                        <input type="tel" placeholder="New Phone Number" class="verify-input">
+                        <button type="button" class="verify-btn">Verify</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="button" class="btn btn-cancel" onclick="window.history.back()">Cancel</button>
+                <button type="submit" class="btn btn-save">Save Changes</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+
+	const STORAGE_KEY = "OPEN_USER_RECORDS";
+const SESSION_KEY = "OPEN_ACTIVE_SESSION";
+
+document.addEventListener('DOMContentLoaded', () => {
+    const topName = document.getElementById('top-display-name');
+    const topUser = document.getElementById('top-display-username');
+    const profileImg = document.getElementById('profile-img');
+    
+    const inputName = document.getElementById('input-name');
+    const inputUsername = document.getElementById('input-username');
+    const inputEmail = document.getElementById('current-email');
+    const fileUpload = document.getElementById('file-upload');
+
+    // 1. Fetch current user session
+    const session = JSON.parse(localStorage.getItem(SESSION_KEY));
+    const users = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+    
+   if (!session) {
+        window.location.href = "authenticate.html";
+        return;
+    }
+
+    let currentUser = users.find(u => u.email === session.email);
+
+    if (currentUser) {
+        // Load real data into inputs
+        inputName.value = currentUser.name || "";
+        inputEmail.value = currentUser.email || "";
+        inputUsername.value = currentUser.username || "";
+        
+        // Load Saved Image if exists
+        if (currentUser.profilePic) {
+            profileImg.src = currentUser.profilePic;
+        }
+
+        // Update display text
+        topName.innerText = currentUser.name || "User";
+        topUser.innerText = currentUser.username ? "@" + currentUser.username : "@username";
+    }
+
+    // 2. LIVE PROFILE PICTURE CHANGE
+    fileUpload.addEventListener('change', function() {
+        const file = this.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                // Set the image on screen immediately
+                profileImg.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    // 3. LIVE TEXT UPDATE
+    inputName.addEventListener('input', () => topName.innerText = inputName.value || "User");
+    inputUsername.addEventListener('input', () => topUser.innerText = inputUsername.value ? "@" + inputUsername.value : "@username");
+
+    // 4. SAVE ALL CHANGES
+    document.getElementById('profile-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        const userIndex = users.findIndex(u => u.email === session.email);
+        
+        if (userIndex !== -1) {
+            // Update Identity
+            users[userIndex].name = inputName.value;
+            users[userIndex].username = inputUsername.value;
+            
+            // Save Profile Pic (Store the src string)
+            users[userIndex].profilePic = profileImg.src;
+
+            // Handle Password Change Logic
+            const oldPassInput = document.getElementById('old-pass').value;
+            const newPassInput = document.getElementById('new-pass').value;
+            const confirmPassInput = document.getElementById('confirm-new-pass').value;
+
+            if (newPassInput !== "") {
+                if (oldPassInput !== users[userIndex].password) {
+                    alert("Current password is incorrect.");
+                    return;
+                }
+                if (newPassInput !== confirmPassInput) {
+                    alert("New passwords do not match.");
+                    return;
+                }
+                users[userIndex].password = newPassInput;
+            }
+
+            // Save back to Database
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(users));
+            alert("Changes saved successfully!");
+        }
+    });
+});
+
+function toggleVerify(id) {
+    document.getElementById(id).classList.toggle('hidden');
+}
+</script>
+</body>
+</html>

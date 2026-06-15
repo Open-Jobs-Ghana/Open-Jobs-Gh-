@@ -5,98 +5,231 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Identity Verification Flow Prototype</title>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        * { 
+            box-sizing: border-box; 
+            margin: 0; 
+            padding: 0; 
+        }
+
         html, body { 
-            width: 100%; height: 100%; overflow: hidden; 
+            width: 100%; 
+            height: 100%; 
+            overflow: hidden; 
             background-color: #F8F9FA; 
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             -webkit-font-smoothing: antialiased;
         }
         
         #app-container { 
-            position: relative; width: 100%; height: 100%; 
-            max-width: 480px; margin: 0 auto; 
-            background: #ffffff; box-shadow: 0 0 20px rgba(0,0,0,0.05); 
+            position: relative; 
+            width: 100%; 
+            height: 100%; 
+            max-width: 480px; 
+            margin: 0 auto; 
+            background: #ffffff; 
+            box-shadow: 0 0 20px rgba(0,0,0,0.05); 
         }
         
-        canvas { display: block; width: 100%; height: 100%; position: absolute; top: 0; left: 0; z-index: 1; }
+        canvas { 
+            display: block; 
+            width: 100%; 
+            height: 100%; 
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+            z-index: 1; 
+        }
         
         /* Spacious, Scrollable Document Pane Layer for Page 2 Form */
         #scrollable-verification-pane {
-            position: absolute; top: 80px; left: 0; width: 100%; 
-            height: calc(100% - 160px); overflow-y: auto; z-index: 8; 
-            padding: 24px; display: none; background: #FFF;
+            position: absolute; 
+            top: 80px; 
+            left: 0; 
+            width: 100%; 
+            height: calc(100% - 160px); 
+            overflow-y: auto; z-index: 8; 
+            padding: 24px; 
+            display: none; 
+            background: #FFF;
             -webkit-overflow-scrolling: touch;
         }
         
-        .label-text { font-size: 14px; font-weight: 600; margin-bottom: 12px; display: block; color: #374151; }
+        .label-text { 
+            font-size: 14px; 
+            font-weight: 600; 
+            margin-bottom: 12px; 
+            display: block; 
+            color: #374151; 
+        }
+
         
         .native-input {
-            width: 100%; height: 52px; border: 1px solid #D1D5DB; border-radius: 12px;
-            font-size: 16px; padding: 0 16px; outline: none; background: #FFFFFF;
-            color: #111827; font-family: inherit; margin-bottom: 28px;
+            width: 100%; 
+            height: 52px; 
+            border: 1px solid #D1D5DB; 
+            border-radius: 12px;
+            font-size: 16px; 
+            padding: 0 16px; 
+            outline: none; 
+            background: #FFFFFF;
+            color: #111827; 
+            font-family: inherit; 
+            margin-bottom: 28px;
         }
 
         .upload-zone { 
-            width: 100%; height: 150px; border: 2px dashed #9CA3AF; border-radius: 16px;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            background: #F9FAFB; cursor: pointer; margin-bottom: 28px; text-align: center; padding: 12px;
-            overflow: hidden; position: relative;
+            width: 100%; 
+            height: 150px; 
+            border: 2px dashed #9CA3AF; 
+            border-radius: 16px;
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center;
+            background: #F9FAFB; 
+            cursor: pointer; 
+            margin-bottom: 28px; 
+            text-align: center; 
+            padding: 12px;
+            overflow: hidden; 
+            position: relative;
         }
 
         .upload-zone img {
-            width: 100%; height: 100%; object-fit: contain; position: absolute; top: 0; left: 0; z-index: 2; background: #F9FAFB;
+            width: 100%; 
+            height: 100%; 
+            object-fit: contain; 
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+            z-index: 2; 
+            background: #F9FAFB;
         }
 
         /* Fixed Footer Action Bar for verification submission */
         #verification-footer {
-            position: absolute; bottom: 0; left: 0; width: 100%;
-            padding: 16px 24px 24px 24px; background: white; border-top: 1px solid #E5E7EB;
-            z-index: 9; display: none;
+            position: absolute; 
+            bottom: 0; 
+            left: 0; 
+            width: 100%;
+            padding: 16px 24px 24px 24px; 
+            background: white; 
+            border-top: 1px solid #E5E7EB;
+            z-index: 9; 
+            display: none;
         }
         
         .cta-btn {
-            width: 100%; height: 54px; background: #500E8C; color: white; border-radius: 27px;
-            font-weight: bold; border: none; font-size: 16px; cursor: pointer;
+            width: 100%; 
+            height: 54px; 
+            background: #500E8C; 
+            color: white; 
+            border-radius: 27px;
+            font-weight: bold; 
+            border: none; 
+            font-size: 16px; 
+            cursor: pointer;
         }
+
         .cta-btn:disabled { background: #9E9E9E; cursor: not-allowed; }
 
         /* Unified Hardware Camera Overlay Window */
         .camera-overlay {
-            position: absolute; z-index: 20; display: none; top: 0; left: 0; 
-            width: 100%; height: 100%; background: rgba(0,0,0,0.95);
-            flex-direction: column; align-items: center; justify-content: center; color: white;
+            position: absolute; 
+            z-index: 20; 
+            display: none; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            background: rgba(0,0,0,0.95);
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            color: white;
         }
         
         /* Unified Viewport Framework containing our stream track */
         #camera-viewport-frame {
-            position: relative; background: #000; margin-bottom: 24px;
+            position: relative; 
+            background: #000; 
+            margin-bottom: 24px;
             transition: all 0.3s ease;
         }
 
         /* Classes toggled dynamically based on active hardware profiles */
         .mode-document {
-            width: 85%; height: 240px; border: 3px solid #500E8C; border-radius: 12px;
+            width: 85%; 
+            height: 240px; 
+            border: 3px solid #500E8C; 
+            border-radius: 12px;
         }
+
         .mode-biometric {
-            width: 280px; height: 280px; border-radius: 50%; border: 4px solid #500E8C; overflow: hidden;
+            width: 280px; 
+            height: 280px; 
+            border-radius: 50%; 
+            border: 4px solid #500E8C; 
+            overflow: hidden;
         }
         
-        video { width: 100%; height: 100%; object-fit: cover; display: block; background: #000; }
-        .step-indicator { font-size: 18px; font-weight: 600; text-align: center; margin-bottom: 12px; color: #FFF; line-height: 1.4; padding: 0 20px; }
+        video { 
+            width: 100%; 
+            height: 100%; 
+            object-fit: cover; 
+            display: block; 
+            background: #000; 
+        }
+
+        .step-indicator { 
+            font-size: 18px; 
+            font-weight: 600; 
+            text-align: center; 
+            margin-bottom: 12px; 
+            color: #FFF; 
+            line-height: 1.4; 
+            padding: 0 20px; 
+        }
         
         /* Action Sheet Popover Option Lists */
         .choice-popover {
-            position: absolute; bottom: 0; left: 0; width: 100%; background: white;
-            border-top-left-radius: 16px; border-top-right-radius: 16px; z-index: 30;
-            padding: 24px; box-shadow: 0 -4px 10px rgba(0,0,0,0.1); display: none;
+            position: absolute; 
+            bottom: 0; 
+            left: 0; 
+            width: 100%; 
+            background: white;
+            border-top-left-radius: 16px; 
+            border-top-right-radius: 16px; 
+            z-index: 30;
+            padding: 24px; 
+            box-shadow: 0 -4px 10px rgba(0,0,0,0.1); 
+            display: none;
         }
-        .choice-title { font-weight: bold; margin-bottom: 16px; color: #111827; font-size: 16px; }
+
+        .choice-title { font-weight: bold; 
+            margin-bottom: 16px; 
+            color: #111827; 
+            font-size: 16px; 
+        }
+
         .choice-option { 
-            width: 100%; padding: 14px; text-align: left; background: #F3F4F6; 
-            border: none; border-radius: 8px; font-size: 15px; margin-bottom: 10px; font-weight: 500; cursor: pointer;
+            width: 100%; 
+            padding: 14px; 
+            text-align: left; 
+            background: #F3F4F6; 
+            border: none; 
+            border-radius: 8px; 
+            font-size: 15px; 
+            margin-bottom: 10px; 
+            font-weight: 500; 
+            cursor: pointer;
         }
-        .cursor-pointer-zone { position: absolute; z-index: 5; cursor: pointer; }
+
+        .cursor-pointer-zone { 
+            position: absolute; 
+            z-index: 5; cursor: pointer; 
+        }
+        
     </style>
 </head>
 <body>

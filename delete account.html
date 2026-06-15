@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delete Account</title>
+    <!-- Phosphor Icons for the back arrow -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+<style>
+
+/* General Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+body {
+    background-color: #9b9b9b; /* Grey background from image */
+    display: flex;
+    justify-content: center;
+    min-height: 100vh;
+}
+
+/* Responsive Container */
+.app-container {
+    width: 100%;
+    max-width: 500px; /* Limits width on desktop/tablets */
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding: 40px 25px;
+    background-color: #9b9b9b;
+}
+
+/* Header */
+.header {
+    margin-bottom: 40px;
+}
+
+.back-link {
+    text-decoration: none;
+    color: #3e1263; /* Purple navigation text */
+    font-weight: 700;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Content Area */
+.content {
+    flex: 1; /* This pushes the footer to the bottom */
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.content p {
+    font-size: 16px;
+    line-height: 1.4;
+    color: #000;
+    max-width: 95%;
+}
+
+/* Footer & Delete Button */
+.footer {
+    padding-bottom: 20px;
+    display: flex;
+    justify-content: center;
+    border-bottom: none; 
+}
+
+.delete-btn {
+    width: 100%;
+    max-width: 320px;
+    background-color: #b20000; /* Deep red for delete */
+    color: white;
+    border: none;
+    padding: 16px 0;
+    border-radius: 18px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.1s ease, background-color 0.2s;
+}
+
+.delete-btn:hover {
+    background-color: #8e0000;
+}
+
+.delete-btn:active {
+    transform: scale(0.98);
+}
+
+/* Responsiveness for Small Phones */
+@media (max-width: 360px) {
+    .app-container { padding: 30px 15px; }
+    .content p { font-size: 15px; }
+    .delete-btn { padding: 14px 0; }
+}
+</style>
+</head>
+<body>
+
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <a href="settings.html" class="back-link" onclick="window.history.back()">
+                <i class="ph ph-caret-left"></i> Delete Account
+            </a>
+        </header>
+
+        <!-- Main Content -->
+        <main class="content">
+            <p>This is a feature that cannot be undone. Once you delete your account, you will lose all you info and data you have with us.</p>
+            
+            <p>If you are sure you want to delete your account, press the delete button down below.</p>
+            
+            <p>It is rather unfortunate to see you leave but we will miss you.</p>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <button class="delete-btn" id="deleteBtn">Delete</button>
+        </footer>
+    </div>
+
+    <script>
+     document.addEventListener('DOMContentLoaded', () => {
+    const deleteBtn = document.getElementById('deleteBtn');
+
+    deleteBtn.addEventListener('click', () => {
+        // A standard confirmation popup
+        const confirmDelete = confirm("Are you absolutely sure? This action cannot be undone and all your data will be permanently removed.");
+
+        if (confirmDelete) {
+            console.log("Account Deletion Processed.");
+            // In a real app, you would call your API here:
+            // fetch('/api/delete-account', { method: 'DELETE' })
+            
+            alert("Your account has been successfully deleted.");
+            window.location.href = "index.html"; // Redirect to home or login
+        } else {
+            console.log("Deletion cancelled.");
+        }
+    });
+});
+
+</script>
+</body>
+</html>

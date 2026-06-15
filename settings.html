@@ -3,42 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <title>Open Jobs Ghana - Settings Environment</title>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        * { 
+            box-sizing: border-box; 
+            margin: 0; 
+            padding: 0; 
+        }
         
         body {
-            width: 100%; height: 100vh;
+            width: 100%; 
+            height: 100dvh;
             background-color: #F9FAFB;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             -webkit-font-smoothing: antialiased;
-            display: flex; flex-direction: column;
+            display: flex; 
+            flex-direction: column;
             overflow: hidden;
+            margin: 0;
+            align-items: flex-start;
+            justify-content: center;
         }
 
         #app-container {
-            width: 100%; height: 100%;
-            display: flex; flex-direction: column;
+            width: 100%; 
+            height: 100%;
+            display: flex; 
+            flex-direction: column;
             background: #ffffff;
+            position: relative;
+            box-shadow: 0 0 50px rgba(0,0,0,0.3);
         }
 
         /* Top Header Component */
         .header-nav {
-            padding: 20px 32px;
-            display: flex; align-items: center;
-            background: #FFF; border-bottom: 1px solid #F3F4F6;
+            padding: 30px 24px 15px;
+            display: flex; 
+            align-items: center;
+            background: #FFF; 
+            border-bottom: 1px solid #F3F4F6;
             z-index: 10;
         }
+
         .header-title {
-            font-size: 18px; font-weight: 700; color: #500E8C;
+            font-size: 20px; 
+            font-weight: 700; 
+            color: #500E8C;
         }
 
         /* Core Responsive Layout Spreading */
         .main-content {
-            flex: 1; overflow-y: auto; padding: 32px;
+            flex: 1; 
+            overflow-y: auto; 
+            padding: 20px 0;
             width: 100%; 
             -webkit-overflow-scrolling: touch;
-            padding-bottom: 120px; /* Leaves clean breathing room above bottom menu */
+            padding-bottom: 160px; /* Leaves clean breathing room above bottom menu */
         }
 
         /* ==========================================
@@ -49,34 +70,39 @@
             flex-direction: column;
             width: 100%;
             max-width: 800px; /* Restricts maximum stretch safely on big displays */
-            margin: 0; /* Forces alignment to the far left */
+            margin: 0 auto; /* Forces alignment to the far left */
             background: #FFF;
             border-radius: 20px;
             padding: 8px 0;
             box-shadow: 0 4px 20px rgba(0,0,0,0.02);
             border: 1px solid #F3F4F6;
         }
+
         .settings-item {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 20px 24px;
+            padding: 18px 24px;
             cursor: pointer;
             text-decoration: none;
             transition: background-color 0.15s ease;
             background: #FFF;
         }
+
         .settings-item:not(:last-child) {
             border-bottom: 1px solid #F3F4F6;
         }
+
         .settings-item:hover {
             background-color: #FBF9FE;
         }
+
         .settings-item-left {
             display: flex;
             align-items: center;
             gap: 16px;
         }
+
         .settings-icon-box {
             width: 40px;
             height: 40px;
@@ -85,66 +111,104 @@
             justify-content: center;
             color: #500E8C;
         }
-        .settings-icon-box svg {
-            width: 24px;
-            height: 24px;
-            fill: none;
-            stroke: currentColor;
-            stroke-width: 2;
-            stroke-linecap: round;
-            stroke-linejoin: round;
-        }
+
+        
+
         .settings-label-text {
             font-size: 16px;
             font-weight: 600;
             color: #500E8C;
         }
-        .settings-item.profile-item .settings-label-text {
+
+        .settings-item.profile-item 
+        .settings-label-text {
             font-size: 18px;
             font-weight: 700;
         }
+
         .settings-chevron {
             color: #500E8C;
             display: flex;
             align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            visibility: visible;
         }
-        .settings-chevron svg {
-            width: 20px;
-            height: 20px;
-            fill: none;
-            stroke: currentColor;
-            stroke-width: 2.5;
-            stroke-linecap: round;
-            stroke-linejoin: round;
+
+        .settings-chevron i {
+            font-size: 20px;
+            font-weight: bold;
+            color: #500E8C;
+            display: block  !important;
+            visibility: visible !important;
+            line-height: 1;
+        }
+
+
+        .settings-icon-box i {
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         /* ==========================================
            BOTTOM PINNED GLOBAL TAB MENU LAYOUT
         ========================================== */
         .bottom-nav {
-            position: fixed; bottom: 0; left: 0; width: 100%; height: 80px;
-            background: #FFF; border-top: 1px solid #E5E7EB; display: flex;
-            align-items: center; justify-content: space-around; z-index: 10;
-            box-shadow: 0 -4px 10px rgba(0,0,0,0.02); padding: 0 40px;
+            position: absolute; 
+            bottom: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 80px;
+            background: #FFF; 
+            border-top: 1px solid #E5E7EB; 
+            display: flex;
+            align-items: center; 
+            justify-content: space-around; 
+            z-index: 10;
+            box-shadow: 0 -4px 10px rgba(0,0,0,0.02); 
+            padding: 0 40px;
         }
+
         .nav-item {
-            display: flex; flex-direction: column; align-items: center; gap: 4px;
-            color: #6B7280; font-size: 13px; font-weight: 500; text-decoration: none; cursor: pointer;
-            width: 100px; padding: 8px 0;
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            gap: 4px;
+            color: #6B7280; 
+            font-size: 13px; 
+            font-weight: 500; 
+            text-decoration: none; 
+            cursor: pointer;
+            width: 100px; 
+            padding: 8px 0;
         }
+
         .nav-item.active { color: #500E8C; font-weight: 600; }
         
-        .nav-svg-icon {
-            width: 24px;
-            height: 24px;
-            fill: none;
-            stroke: #6B7280;
-            stroke-width: 2;
+        .bottom-nav .nav-item i {
+            font-size: 26px;
+            color: #6B7280;
+            transition: all 0.3s ease;
             margin-bottom: 2px;
-            transition: stroke 0.2s;
         }
-        .nav-item.active .nav-svg-icon {
-            stroke: #500E8C;
+
+        .bottom-nav .nav-item.active i {
+            font-size: 32px;
+            color: #500E8C;
+        }
+            
+        .bottom-nav .nav-item span {
+            font-size: 11px;
+            font-weight: 600;
+            color: #6B7280;
+            transition: color 0.3s ease;
+        }
+
+        .bottom-nav .nav-item.active span {
+            color: #500E8C;
         }
 
         /* Mobile Breakdowns */
@@ -175,12 +239,12 @@
             <div class="settings-item profile-item" data-setting="profile">
                 <div class="settings-item-left">
                     <div class="settings-icon-box">
-                        <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="5"/><path d="M3 21v-2a7 7 0 0 1 14 0v2"/></svg>
+                        <i class="ph ph-user-circle-gear" style="font-size: 28px;"></i>
                     </div>
-                    <div class="settings-label-text">Juliana Ekpetogi</div>
+                    <div class="settings-label-text" id="settings-name">Juliana Ekpetogi</div>
                 </div>
                 <div class="settings-chevron">
-                    <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+                    <i class="ph ph-caret-right"></i>
                 </div>
             </div>
 
@@ -189,12 +253,12 @@
             <div class="settings-item" data-setting="my-ads">
                 <div class="settings-item-left">
                     <div class="settings-icon-box">
-                        <svg viewBox="0 0 24 24"><path d="M2 22s1-4 4-4h5c3 0 4 4 4 4"/><circle cx="8.5" cy="7.5" r="4.5"/><path d="M22 5h-7l-2 3H9v11h13V5z"/></svg>
+                        <i class="ph ph-squares-four" style="font-size: 26px;"></i>
                     </div>
                     <div class="settings-label-text">My Ads</div>
                 </div>
                 <div class="settings-chevron">
-                    <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+                    <i class="ph ph-caret-right" style="font-size: 24px;"></i>
                 </div>
             </div>
 
@@ -203,12 +267,12 @@
             <div class="settings-item" data-setting="email">
                 <div class="settings-item-left">
                     <div class="settings-icon-box">
-                        <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                        <i class="ph ph-envelope-simple"></i>
                     </div>
                     <div class="settings-label-text">Email</div>
                 </div>
                 <div class="settings-chevron">
-                    <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+                    <i class="ph ph-caret-right"></i>
                 </div>
             </div>
 
@@ -217,12 +281,12 @@
             <div class="settings-item" data-setting="telephone">
                 <div class="settings-item-left">
                     <div class="settings-icon-box">
-                        <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                        <i class="ph ph-phone"></i>
                     </div>
                     <div class="settings-label-text">Telephone</div>
                 </div>
                 <div class="settings-chevron">
-                    <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+                    <i class="ph ph-caret-right"></i>
                 </div>
             </div>
 
@@ -231,12 +295,12 @@
             <div class="settings-item" data-setting="verification">
                 <div class="settings-item-left">
                     <div class="settings-icon-box">
-                        <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 11 11 13 15 9"/></svg>
+                        <i class="ph ph-seal-check"></i>
                     </div>
                     <div class="settings-label-text">Verification Status</div>
                 </div>
                 <div class="settings-chevron">
-                    <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+                    <i class="ph ph-caret-right"></i>
                 </div>
             </div>
 
@@ -245,12 +309,12 @@
             <div class="settings-item" data-setting="payments">
                 <div class="settings-item-left">
                     <div class="settings-icon-box">
-                        <svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2" ry="2"/><line x1="12" y1="18" x2="12" y2="18"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+                        <i class="ph ph-wallet"></i>
                     </div>
                     <div class="settings-label-text">Money and Payments</div>
                 </div>
                 <div class="settings-chevron">
-                    <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+                    <i class="ph ph-caret-right"></i>
                 </div>
             </div>
 
@@ -259,12 +323,12 @@
             <div class="settings-item" data-setting="password">
                 <div class="settings-item-left">
                     <div class="settings-icon-box">
-                        <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                        <i class="ph ph-lock"></i>
                     </div>
                     <div class="settings-label-text">Password</div>
                 </div>
                 <div class="settings-chevron">
-                    <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+                    <i class="ph ph-caret-right"></i>
                 </div>
             </div>
 
@@ -273,12 +337,12 @@
             <div class="settings-item" data-setting="language">
                 <div class="settings-item-left">
                     <div class="settings-icon-box">
-                        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                        <i class="ph ph-globe"></i>
                     </div>
                     <div class="settings-label-text">Language</div>
                 </div>
                 <div class="settings-chevron">
-                    <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+                    <i class="ph ph-caret-right"></i>
                 </div>
             </div>
 
@@ -287,12 +351,12 @@
             <div class="settings-item" data-setting="notifications">
                 <div class="settings-item-left">
                     <div class="settings-icon-box">
-                        <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                        <i class="ph ph-bell"></i>
                     </div>
                     <div class="settings-label-text">Notifications</div>
                 </div>
                 <div class="settings-chevron">
-                    <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+                    <i class="ph ph-caret-right"></i>
                 </div>
             </div>
 
@@ -301,12 +365,12 @@
             <div class="settings-item" data-setting="delete-account">
                 <div class="settings-item-left">
                     <div class="settings-icon-box">
-                        <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+                        <i class="ph ph-trash"></i>
                     </div>
                     <div class="settings-label-text">Delete Account</div>
                 </div>
                 <div class="settings-chevron">
-                    <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+                    <i class="ph ph-caret-right"></i>
                 </div>
             </div>
 
@@ -315,12 +379,12 @@
             <div class="settings-item" data-setting="help-support">
                 <div class="settings-item-left">
                     <div class="settings-icon-box">
-                        <svg viewBox="0 0 24 24"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg>
+                        <i class="ph ph-headphones"></i>
                     </div>
                     <div class="settings-label-text">Help & Support</div>
                 </div>
                 <div class="settings-chevron">
-                    <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+                    <i class="ph ph-caret-right"></i>
                 </div>
             </div>
 
@@ -329,12 +393,25 @@
             <div class="settings-item" data-setting="about">
                 <div class="settings-item-left">
                     <div class="settings-icon-box">
-                        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                        <i class="ph ph-info"></i>
                     </div>
                     <div class="settings-label-text">About</div>
                 </div>
                 <div class="settings-chevron">
-                    <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+                    <i class="ph ph-caret-right"></i>
+                </div>
+            </div>
+
+            <!-- 13. Logout Action -->
+            <div class="settings-item" data-setting="logout">
+                <div class="settings-item-left">
+                    <div class="settings-icon-box">
+                        <i class="ph ph-sign-out"></i>
+                    </div>
+                    <div class="settings-label-text">Logout</div>
+                </div>
+                <div class="settings-chevron">
+                    <i class="ph ph-caret-right"></i>
                 </div>
             </div>
 
@@ -346,27 +423,27 @@
     ========================================== -->
     <div class="bottom-nav">
         <div class="nav-item tab-trigger" data-route="home" onclick="window.location.href='home.html'">
-            <svg class="nav-svg-icon" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            <i class="ph ph-house"></i>
             <span>Home</span>
         </div>
 
         <div class="nav-item tab-trigger" data-route="messages" onclick="window.location.href='message.html'">
-            <svg class="nav-svg-icon" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            <i class="ph ph-chats-circle"></i>
             <span>Messages</span>
         </div>
 
         <div class="nav-item tab-trigger" data-route="add" onclick="window.location.href='add.html'">
-            <svg class="nav-svg-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+            <i class="ph ph-plus-circle"></i>
             <span>Add</span>
         </div>
 
-        <div class="nav-item tab-trigger" data-route="ads" onclick="window.location.href='ads.html'">
-            <svg class="nav-svg-icon" viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
-            <span>Ads</span>
+        <div class="nav-item tab-trigger" data-route="saved" onclick="window.location.href='saved.html'">
+            <i class="ph ph-bookmark-simple"></i>
+            <span>Saved</span>
         </div>
 
         <div class="nav-item tab-trigger" data-route="settings" onclick="window.location.href='settings.html'">
-            <svg class="nav-svg-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2 2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+            <i class="ph ph-gear"></i>
             <span>Settings</span>
         </div>
 
@@ -383,7 +460,7 @@
         
         const routeMap = {
             'add.html': 'add',
-            'ads.html': 'ads',
+            'saved.html': 'saved',
             'home.html': 'home',
             'message.html': 'messages',
             'settings.html': 'settings'
@@ -407,7 +484,7 @@
             
             switch(settingId) {
                 case 'profile':
-                    console.log("Trigger profile page initialization route.");
+                    window.location.href = 'account.html';
                     break;
                 case 'my-ads':
                     window.location.href = 'ads.html';
@@ -428,25 +505,50 @@
                     console.log("Trigger change credential input matrix window.");
                     break;
                 case 'language':
-                    console.log("Trigger internationalization dictionary change list.");
+                    window.location.href = 'language.html';
                     break;
                 case 'notifications':
-                    console.log("Trigger push configuration alerts state panel.");
+                    window.location.href = 'notification.html';
                     break;
                 case 'delete-account':
-                    console.log("Trigger high priority destructive verification warning dialog.");
+                    window.location.href = 'delete account.html';
                     break;
                 case 'help-support':
-                    console.log("Trigger connection ticket handler interface.");
+                    window.location.href = 'help & support.html';
                     break;
                 case 'about':
-                    console.log("Trigger diagnostics data metadata visualization.");
+                    window.location.href = 'about.html';
                     break;
+                case 'logout':
+                    window.location.href = 'logout.html';    
                 default:
                     break;
             }
         });
     });
+
+
+    
+    document.addEventListener('DOMContentLoaded', () => {
+        const STORAGE_KEY = "OPEN_USER_RECORDS";
+        const SESSION_KEY = "OPEN_ACTIVE_SESSION";
+
+        const session = JSON.parse(localStorage.getItem(SESSION_KEY));
+        const users = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+
+        if (session) {
+        const currentUser = users.find(u => u.email === session.email);
+            if (currentUser) {
+                // Find the span/h1 where the name is displayed
+                // Update this ID to match your settings name element
+                const nameDisplay = document.getElementById('settings-name');
+                if (nameDisplay) {
+                nameDisplay.innerText = currentUser.name;
+                }
+            }
+        }
+    });
+
 </script>
 </body>
 </html>
