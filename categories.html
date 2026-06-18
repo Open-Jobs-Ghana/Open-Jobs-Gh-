@@ -206,18 +206,20 @@ body {
     </div>
 
     <script>
-    function goBack() {
-    window.history.back();
-}
+        function goBack() {
+            window.history.back();
+        }
 
-function selectCategory(category) {
-    console.log("Category selected: " + category);
-}
+        function selectCategory(categoryName) {
+            // This sends the user back to home.html and passes the category name
+            window.location.href = `home.html?category=${encodeURIComponent(categoryName)}`;
 
-// Log current screen size for development testing
-window.addEventListener('resize', () => {
-    console.log("Current Width: " + window.innerWidth + "px");
-});
+
+            // Log current screen size for development testing
+            window.addEventListener('resize', () => {
+                console.log("Current Width: " + window.innerWidth + "px");
+            });
+        }    
 </script>
 </body>
 </html>
