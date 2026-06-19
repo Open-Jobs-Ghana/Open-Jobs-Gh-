@@ -417,7 +417,7 @@
             display: flex;
             width: 100%;
             height: 100%;
-            transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+            transition: transform 0.8s cubic-bezier(0.45, 0, 0.55, 1);
         }
 
         .carousel-slide-card {
@@ -1140,6 +1140,19 @@
                 const sortMenu = document.getElementById('msg-sort-menu-box');
                 if (sortMenu) sortMenu.classList.remove('open');
             });
+
+            const carouselContainer = document.querySelector('.hero-banner-carousel');
+
+            // Stop moving when mouse is over
+            carouselContainer.addEventListener('mouseenter', () => {
+                clearInterval(carouselInterval);
+            });
+
+            // Start moving again when mouse leaves
+            carouselContainer.addEventListener('mouseleave', () => {
+                const total = PLATFORM_DATABASE.filter(i => i.verified).length;
+                startCarouselAutoPlay(total);
+            });
         });
 
         function navigateToPane(targetPaneId) {
@@ -1165,19 +1178,37 @@
             }
         }
 
-        function updateNavigationDockIndicators(activePaneId) {
-            const homeItem = document.getElementById('bottom-nav-home');
-            if(homeItem) {
-                if(activePaneId === 'view-home') homeItem.classList.add('active-state');
-                else homeItem.classList.remove('active-state');
+    // Set active nav item based on current page
+        function setActiveNav() {
+            const currentPage = window.location.pathname.split('/').pop() || 'new home.html';
+            const navItems = document.querySelectorAll('.nav-item[data-route]');
+            navItems.forEach(item => item.classList.remove('active'));
+
+            const routeMap = {
+                'add.html': 'add',
+                'saved.html': 'saved',
+                'home.html': 'home',
+                'message.html': 'messages',
+                'settings.html': 'settings'
+            };
+
+            const currentRoute = routeMap[currentPage];
+            if(currentRoute) {
+                const activeItem = document.querySelector(`.nav-item[data-route="${currentRoute}"]`);
+                if(activeItem) activeItem.classList.add('active');
             }
         }
+
+        window.addEventListener('load', setActiveNav);
+
+        let carouselIndex = 0;
+        let carouselInterval;
 
         function initializeCarouselTrack() {
             const track = document.getElementById('verified-trending-carousel-track');
             const verifiedItems = PLATFORM_DATABASE.filter(i => i.verified);
             track.innerHTML = '';
-            
+    
             verifiedItems.forEach(item => {
                 const card = document.createElement('div');
                 card.className = 'carousel-slide-card';
@@ -1189,7 +1220,29 @@
                 `;
                 track.appendChild(card);
             });
+
+            // Start the Auto-Play
+            startCarouselAutoPlay(verifiedItems.length);
         }
+
+        function startCarouselAutoPlay(totalSlides) {
+            // Clear any existing timer first to prevent speed-up bugs
+            clearInterval(carouselInterval);
+
+            carouselInterval = setInterval(() => {
+                const track = document.getElementById('verified-trending-carousel-track');
+        
+                carouselIndex++;
+        
+                // If we reach the end, go back to the first slide
+                if (carouselIndex >= totalSlides) {
+                    carouselIndex = 0;
+                }
+
+                // Move the track
+                track.style.transform = `translateX(-${carouselIndex * 100}%)`;
+            }, 5000); // 5000ms = 5 seconds
+}
 
         function buildAdHTMLComponent(item) {
             return `
@@ -1209,7 +1262,7 @@
                         <div class="verification-status-meta-row">
                             ${item.verified ? `
                             <div class="verification-badge-group">
-                                <img src="verify.png" alt="Verified Status">
+                                <i class="ph ph-seal-check" style="font-size: 20px;"></i>
                                 <span>Verified</span>
                             </div>` : '<div></div>'}
                             ${item.contract ? `<span class="extra-modifier-tag-text">${item.contract}</span>` : ''}
@@ -1354,26 +1407,7 @@
             window.location.href = url;
         }
 
-        // Set active nav item based on current page
-        function setActiveNav() {
-            const currentPage = window.location.pathname.split('/').pop() || 'new home.html';
-            const navItems = document.querySelectorAll('.nav-item[data-route]');
-            navItems.forEach(item => item.classList.remove('active'));
-
-            const routeMap = {
-                'add.html': 'add',
-                'saved.html': 'saved',
-                'home.html': 'home',
-                'message.html': 'messages',
-                'settings.html': 'settings'
-            };
-
-            const currentRoute = routeMap[currentPage];
-            if(currentRoute) {
-                const activeItem = document.querySelector(`.nav-item[data-route="${currentRoute}"]`);
-                if(activeItem) activeItem.classList.add('active');
-            }
-        }
+        
     </script>
 </body>
 </html>
