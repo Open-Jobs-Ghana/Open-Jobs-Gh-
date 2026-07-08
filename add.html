@@ -6,420 +6,685 @@
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <title>Open Jobs Ghana | Add Ad</title>
     <style>
+        :root {
+            --bg-body: #F9FAFB;
+            --bg-card: #ffffff;
+            --primary-purple: #500E8C;
+            --primary-purple-light: #a362e6;
+            --text-main: #111827;
+            --text-muted: #6B7280;
+            --border-color: #E5E7EB;
+            --border-focus: #500E8C;
+            --input-bg: #FFFFFF;
+            --radio-border: #D1D5DB;
+            --radio-dot: #500E8C;
+            --nav-bg: #FFFFFF;
+            --nav-border: #E5E7EB;
+            --nav-text: #6B7280;
+            --nav-active: #500E8C;
+            --modal-bg: #FFFFFF;
+            --modal-overlay-bg: rgba(15, 23, 42, 0.4);
+            --btn-hover-bg: #400B70;
+            --btn-hover-text: #FFFFFF;
+            --danger-color: #EF4444;
+            --danger-light: #F87171;
+            --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            --modal-btn-bg: #2A2A2E;
+        }
+
+        .dark-theme {
+            --bg-body: #121212;
+            --bg-card: #1E1E1E;
+            --primary-purple: #a362e6;
+            --primary-purple-light: #b882f0;
+            --text-main: #F5F5F5;
+            --text-muted: #A0A0A5;
+            --border-color: #2D2D30;
+            --border-focus: #a362e6;
+            --input-bg: #1A1A1E;
+            --radio-border: #444449;
+            --radio-dot: #a362e6;
+            --nav-bg: #1E1E1E;
+            --nav-border: #2D2D30;
+            --nav-text: #A0A0A5;
+            --nav-active: #a362e6;
+            --modal-bg: #1A1A1E;
+            --modal-overlay-bg: rgba(0, 0, 0, 0.7);
+            --btn-hover-bg: #b882f0;
+            --btn-hover-text: #121212;
+            --danger-color: #EF4444;
+            --danger-light: #f36868;
+            --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            --modal-btn-bg: #2C2C2E;
+        }
+
         * { 
-            box-sizing: border-box; 
+            box-sizing: border-box;
             margin: 0; 
             padding: 0; 
         }
         
         body {
-            width: 100%; 
+            width: 100%;
             height: 100vh;
-            background-color: #F9FAFB;
+            background-color: var(--bg-body);
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             -webkit-font-smoothing: antialiased;
             display: flex; 
             flex-direction: column;
             overflow: hidden;
+            color: var(--text-main);
         }
 
         #app-container {
-            width: 100%; 
+            width: 100%;
             height: 100%;
             display: flex; 
             flex-direction: column;
-            background: #ffffff;
+            background: var(--bg-body);
         }
 
-        /* Top Header Component */
         .header-nav {
-            padding: 20px 32px;
+            padding: 18px 24px;
             display: flex; 
             align-items: center;
-            background: #FFF; 
-            border-bottom: 1px solid #F3F4F6;
+            background: var(--bg-card); 
+            border-bottom: 1px solid var(--nav-border);
             z-index: 10;
         }
 
         .back-link {
-            font-size: 18px; 
-            font-weight: 700; 
-            color: #500E8C;
+            font-size: 16px;
+            font-weight: 600; 
+            color: var(--primary-purple);
             text-decoration: none; 
             display: flex; 
             align-items: center; 
-            gap: 8px;
+            gap: 6px;
             cursor: pointer;
         }
 
-        /* Core Layout Spreading for Laptops */
         .main-content {
-            flex: 1; 
+            flex: 1;
             overflow-y: auto; 
-            padding: 32px;
-            max-width: 1300px; 
+            padding: 24px;
+            max-width: 800px; 
             width: 100%; 
             margin: 0 auto;
             -webkit-overflow-scrolling: touch;
-            padding-bottom: 160px;
+            padding-bottom: 140px;
         }
 
-        /* ==========================================
-           ADD FORM VIEW STYLING
-        ========================================== */
-        .form-section { display: flex; flex-direction: column; gap: 28px; }
+        .form-container-card {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 28px;
+            box-shadow: var(--card-shadow);
+        }
+
+        .persona-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-top: 16px;
+        }
+
+        .persona-card {
+            border: 2px solid var(--border-color);
+            background: var(--input-bg);
+            border-radius: 16px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .persona-card:hover {
+            border-color: var(--primary-purple-light);
+            transform: translateY(-2px);
+        }
+
+        .persona-card.selected {
+            border-color: var(--primary-purple);
+            background: rgba(80, 14, 140, 0.02);
+            box-shadow: 0 0 0 3px rgba(80, 14, 140, 0.08);
+        }
+
+        .persona-icon-heading {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .persona-icon-heading i {
+            font-size: 28px;
+            color: var(--primary-purple);
+        }
+
+        .persona-title {
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .persona-desc {
+            font-size: 13px;
+            color: var(--text-muted);
+            line-height: 1.4;
+        }
+
+        .form-section { 
+            display: flex;
+            flex-direction: column; 
+            gap: 24px; 
+        }
 
         .section-label { 
-            font-size: 15px; 
+            font-size: 15px;
             font-weight: 700; 
-            color: #111827; 
+            color: var(--text-main); 
             margin-bottom: 4px; 
         }
 
         .section-sublabel { 
-            font-size: 13px; 
-            color: #9CA3AF; 
+            font-size: 13px;
+            color: var(--text-muted); 
             margin-top: -2px; 
             margin-bottom: 12px; 
         }
         
-        .image-slots-grid { 
-            display: grid; 
-            grid-template-columns: repeat(5, 1fr); 
-            gap: 16px; 
+        .image-slots-grid, .video-slots-grid { 
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px; 
         }
 
-        .image-slot {
-            aspect-ratio: 1 / 1; 
-            border: 2px dashed #D1D5DB; 
-            border-radius: 16px;
+        .image-slot, .video-slot {
+            width: 85px;
+            height: 85px;
+            border: 2px dashed var(--border-color); 
+            border-radius: 14px;
             display: flex; 
             align-items: center; 
             justify-content: center;
             cursor: pointer; 
-            background: #FCFDFD; 
+            background: var(--input-bg);
             transition: all 0.2s ease;
             position: relative; 
             overflow: hidden;
         }
 
-        .image-slot:hover { 
-            border-color: #500E8C; 
-            background: rgba(80, 14, 140, 0.02); 
+        .image-slot:hover, .video-slot:hover { 
+            border-color: var(--primary-purple);
         }
 
-        .image-slot svg { width: 32px; height: 32px; fill: #9CA3AF; }
+        .image-slot i, .video-slot i { 
+            font-size: 26px;
+            color: var(--text-muted); 
+        }
 
-        .image-slot img { 
-            width: 100%; 
+        .image-slot img, .video-slot video { 
+            width: 100%;
             height: 100%; 
             object-fit: cover; 
             position: absolute; 
             top: 0; 
-            left: 0; 
+            left: 0;
         }
 
-        .image-slot input[type="file"] { display: none; }
+        .delete-slot-node {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            background: rgba(239, 68, 68, 0.9);
+            color: #FFFFFF;
+            border: none;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 5;
+        }
 
-        .field-group { display: flex; flex-direction: column; gap: 8px; }
+        .image-slot input[type="file"], .video-slot input[type="file"] { 
+            display: none;
+        }
+
+        .field-group { 
+            display: flex;
+            flex-direction: column; 
+            gap: 8px; 
+        }
 
         .field-header { 
-            display: flex; 
+            display: flex;
             justify-content: space-between; 
             align-items: center; 
         }
 
-        .char-counter { font-size: 12px; color: #9CA3AF; font-weight: 500; }
+        .char-counter { 
+            font-size: 12px;
+            color: var(--text-muted); 
+            font-weight: 500; 
+        }
         
-        .input-text, .select-dropdown {
-            width: 100%; 
-            height: 54px; 
-            border: 1.5px solid #500E8C; 
-            border-radius: 14px;
-            padding: 0 18px; 
+        .input-text, .custom-select-trigger, .textarea-input {
+            width: 100%;
+            background: var(--input-bg); 
+            color: var(--text-main); 
+            border: 1.5px solid var(--border-color); 
+            border-radius: 12px;
             font-size: 15px; 
-            color: #111827; 
-            background: #FFF; 
             outline: none;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .input-text, .custom-select-trigger {
+            height: 50px;
+            padding: 0 16px; 
+        }
+
+        .custom-select-trigger {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .custom-select-trigger.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background: var(--border-color);
+        }
+
+        .custom-select-trigger i {
+            color: var(--text-muted);
+            font-size: 16px;
         }
         
         .textarea-input {
-            width: 100%; 
-            height: 140px; 
-            border: 1.5px solid #500E8C; 
-            border-radius: 14px;
-            padding: 16px 18px; 
-            font-size: 15px; 
-            color: #111827; 
-            background: #FFF; 
-            outline: none; 
+            height: 130px;
+            padding: 14px 16px; 
             resize: none;
+            font-family: inherit;
         }
 
-        .select-dropdown {
-            appearance: none;
-            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23111827' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>");
-            background-repeat: no-repeat; 
-            background-position: right 18px center; 
-            background-size: 16px;
+        .input-text:focus, .custom-select-trigger.active, .textarea-input:focus {
+            border-color: var(--border-focus);
+            box-shadow: 0 0 0 3px rgba(80, 14, 140, 0.08);
+        }
+
+        .validation-error-glow {
+            border-color: var(--danger-color) !important;
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15) !important;
+        }
+
+        #image-gallery-row.validation-error-glow,
+        #video-gallery-row.validation-error-glow {
+            outline: 2px solid var(--danger-color);
+            outline-offset: 6px;
+            border-radius: 14px;
+        }
+
+        .currency-input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+            width: 100%;
+        }
+
+        .currency-input-wrapper .currency-symbol {
+            position: absolute;
+            left: 16px;
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-muted);
+            pointer-events: none;
+        }
+
+        .currency-input-wrapper input.input-text {
+            padding-left: 34px;
         }
 
         .form-split-row { 
-            display: grid; 
+            display: grid;
             grid-template-columns: 1fr 1fr; 
-            gap: 24px; 
+            gap: 20px; 
         }
 
         .radio-box-container { 
-            border: 1.5px solid #500E8C; 
-            border-radius: 16px; 
+            border: 1.5px solid var(--border-color);
+            border-radius: 14px; 
             display: flex; 
             flex-direction: column; 
             overflow: hidden; 
+            background: var(--input-bg);
         }
 
         .radio-option {
-            display: flex; 
+            display: flex;
             align-items: center; 
             justify-content: space-between;
-            padding: 18px 20px; 
+            padding: 14px 16px; 
             cursor: pointer; 
-            background: #FFF;
+            background: var(--input-bg);
         }
 
         .radio-option:not(:last-child) { 
-            border-bottom: 1px solid rgba(80, 14, 140, 0.15); 
+            border-bottom: 1px solid var(--nav-border);
+        }
+
+        .radio-label-text {
+            font-size: 14px;
+            font-weight: 500;
         }
 
         .radio-circle { 
-            width: 22px; 
-            height: 22px; 
-            border: 2px solid #500E8C; 
+            width: 20px;
+            height: 20px; 
+            border: 2px solid var(--radio-border); 
             border-radius: 50%; 
             display: flex; 
             align-items: center; 
-            justify-content: center; 
+            justify-content: center;
         }
 
-        input[type="radio"] { display: none; }
-        input[type="radio"]:checked + .radio-circle { background: #500E8C; box-shadow: inset 0 0 0 4px #FFF; }
+        input[type="radio"] { 
+            display: none;
+        }
+        
+        input[type="radio"]:checked + .radio-circle { 
+            border-color: var(--radio-dot);
+            background: var(--radio-dot); 
+            box-shadow: inset 0 0 0 4px var(--input-bg); 
+        }
 
         .form-actions-row { 
-            display: flex; 
-            gap: 20px; 
+            display: flex;
+            gap: 12px; 
             justify-content: flex-end; 
-            margin-top: 16px; 
+            margin-top: 12px; 
         }
 
         .form-btn {
-            width: 180px; 
-            height: 52px; 
-            border-radius: 14px; 
-            font-size: 15px; 
-            font-weight: 700;
-            cursor: pointer; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            background: transparent; 
-            transition: all 0.2s;
-        }
-
-        .btn-cancel, 
-        .btn-save { 
-            border: 1.5px solid #500E8C; 
-            color: #500E8C; 
-        }
-
-
-        .form-btn:hover { background: #500E8C; color: #FFF; }
-
-        /* ==========================================
-           GLOBAL REUSED STRUCTURES (NAV & MODAL)
-        ========================================== */
-        .bottom-nav {
-            position: fixed; 
-            bottom: 0; 
-            left: 0; 
-            width: 100%; 
-            height: 80px;
-            background: #FFF; 
-            border-top: 1px solid #E5E7EB; 
-            display: flex;
-            align-items: center; 
-            justify-content: space-around; 
-            z-index: 10;
-            box-shadow: 0 -4px 10px rgba(0,0,0,0.02); 
-            padding: 0 40px;
-        }
-
-        .nav-item {
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            gap: 4px;
-            color: #6B7280; 
-            font-size: 13px; 
-            font-weight: 500; 
-            text-decoration: none; 
-            cursor: pointer;
-            width: 100px; 
-            padding: 8px 0;
-        }
-
-        .nav-item.active { color: #500E8C; font-weight: 600; }
-
-        .nav-icon { font-size: 26px; }
-
-        .modal-overlay {
-            position: fixed; 
-            top: 0; 
-            left: 0; 
-            width: 100%; 
-            height: 100%;
-            background: rgba(0, 0, 0, 0.4); 
-            z-index: 100; 
-            display: none;
-            align-items: center; 
-            justify-content: center; 
-            padding: 24px; 
-            backdrop-filter: blur(2px);
-        }
-
-        .modal-box {
-            width: 100%; 
-            max-width: 440px; 
-            background: #FFF; 
-            border-radius: 24px; 
-            padding: 36px 24px;
-            text-align: center; 
-            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
-            animation: popUp 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-
-        .modal-title { 
-            font-size: 19px; 
-            font-weight: 700; 
-            color: #111827; 
-            line-height: 1.4; 
-            margin-bottom: 16px; 
-        }
-
-        .modal-desc { 
-            font-size: 14px; 
-            color: #4B5563; 
-            line-height: 1.5; 
-            margin-bottom: 28px; 
-        }
-
-        .modal-actions { display: flex; gap: 16px; }
-
-        .modal-btn {
-            flex: 1; 
-            height: 50px; 
+            width: 150px;
+            height: 48px; 
             border-radius: 12px; 
             font-size: 15px; 
             font-weight: 600;
             cursor: pointer; 
             display: flex; 
             align-items: center; 
+            justify-content: center; 
+            border: none;
+            outline: none;
+        }
+
+        .btn-cancel { 
+            background-color: var(--border-color);
+            color: var(--text-main);
+        }
+
+        .btn-save { 
+            background-color: var(--primary-purple);
+            color: #FFFFFF;
+        }
+
+        .dropdown-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 200;
+            display: none;
+            align-items: flex-end;
             justify-content: center;
-            background: transparent; 
-            border: 1.5px solid #500E8C; 
-            color: #500E8C; 
-            transition: all 0.2s;
         }
-
-        .modal-btn:hover { background: rgba(80, 14, 140, 0.05); }
-
-        @keyframes popUp { 
-            from { 
-                transform: scale(0.95) translateY(10px); 
-                opacity: 0; 
-            } 
-            to { 
-                transform: scale(1) translateY(0); 
-                opacity: 1; 
-            } 
-        }
-
-
-        /* ==========================================
-           BOTTOM PINNED GLOBAL TAB MENU LAYOUT
-            ========================================== */
-            .bottom-nav {
-            position: fixed; 
-            bottom: 0; 
-            left: 0; 
-            width: 100%; 
-            height: 80px;
-            background: #FFF; 
-            border-top: 1px solid #E5E7EB; 
+        .dropdown-sheet {
+            width: 100%;
+            max-width: 500px;
+            background: var(--bg-card);
+            border-radius: 24px 24px 0 0;
+            max-height: 70vh;
             display: flex;
-            align-items: center; 
-            justify-content: space-around; 
-            z-index: 10;
-            box-shadow: 0 -4px 10px rgba(0,0,0,0.02); 
-            padding: 0 40px;
+            flex-direction: column;
+            animation: slideUpOpen 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
-
-        
-        .nav-item {
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            gap: 4px;
-            color: #6B7280; 
-            font-size: 13px; 
-            font-weight: 500; 
-            text-decoration: none; 
+        .dropdown-sheet-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--nav-border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .dropdown-sheet-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+        .dropdown-sheet-close {
+            background: none;
+            border: none;
+            font-size: 22px; color: var(--text-muted); cursor: pointer;
+        }
+        .dropdown-sheet-body {
+            overflow-y: auto;
+            padding: 12px 0 30px;
+        }
+        .dropdown-custom-option {
+            padding: 16px 24px;
+            font-size: 15px;
+            color: var(--text-main);
             cursor: pointer;
-            width: 100px; 
-            padding: 8px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: background 0.2s;
+        }
+        .dropdown-custom-option:hover {
+            background: rgba(80, 14, 140, 0.05);
+        }
+        .dropdown-custom-option.selected {
+            color: var(--primary-purple);
+            font-weight: 600;
+            background: rgba(80, 14, 140, 0.03);
         }
 
-        .nav-item.active { color: #500E8C; font-weight: 600; }
-        
-        .bottom-nav .nav-item i {
-            font-size: 26px;
-            color: #6B7280;
-            transition: all 0.3s ease;
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--modal-overlay-bg); 
+            z-index: 100; 
+            display: none;
+            align-items: flex-end;
+            justify-content: center;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+
+        .error-toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-140%);
+            width: calc(100% - 32px);
+            max-width: 480px;
+            background: var(--modal-bg);
+            border: 1px solid rgba(239, 68, 68, 0.35);
+            border-radius: 16px;
+            padding: 16px 18px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.25);
+            z-index: 200;
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            pointer-events: none;
+        }
+
+        .error-toast.visible {
+            transform: translateX(-50%) translateY(0);
+            pointer-events: auto;
+        }
+
+        .error-toast i.ph-x-circle {
+            color: var(--danger-color);
+            font-size: 22px;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .error-toast-text { flex: 1; }
+
+        .error-toast-title {
+            font-weight: 700;
+            font-size: 15px;
+            color: var(--text-main);
             margin-bottom: 2px;
         }
 
-        .bottom-nav .nav-item.active i {
-            font-size: 32px;
-            color: #500E8C;
+        .error-toast-desc {
+            font-size: 13px;
+            color: var(--text-muted);
+            line-height: 1.4;
         }
 
-        .bottom-nav .nav-item span {
-            font-size: 11px;
-            font-weight: 600;
-            color: #6B7280;
-            transition: color 0.3s ease;
+        .error-toast-close {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 20px;
+            line-height: 1;
+            cursor: pointer;
+            padding: 0 2px;
+            flex-shrink: 0;
         }
 
-        .bottom-nav .nav-item.active span {
-            color: #500E8C;
+        .modal-box {
+            width: 100%;
+            max-width: 500px; 
+            background: var(--modal-bg); 
+            border-radius: 24px 24px 0 0; 
+            padding: 32px 24px 40px;
+            text-align: center; 
+            box-shadow: var(--card-shadow);
+            animation: slideUpOpen 0.35s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        /* Media Queries Breakdown Rules */
+        .modal-icon-wrapper {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: rgba(80, 14, 140, 0.06);
+            color: var(--primary-purple-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 28px;
+        }
+
+        .modal-icon-wrapper.danger-accent {
+            background: rgba(239, 68, 68, 0.08);
+            color: var(--danger-light);
+        }
+
+        .modal-title { 
+            font-size: 22px;
+            font-weight: 700; 
+            color: var(--text-main); 
+            line-height: 1.3; 
+            margin-bottom: 12px; 
+        }
+
+        .modal-desc { 
+            font-size: 14px;
+            color: var(--text-muted); 
+            line-height: 1.5; 
+            margin-bottom: 32px; 
+            padding: 0 16px;
+        }
+
+        .modal-actions { 
+            display: flex;
+            flex-direction: column;
+            gap: 12px; 
+        }
+
+        .modal-btn {
+            width: 100%;
+            height: 46px; 
+            border-radius: 30px; 
+            font-size: 16px; 
+            font-weight: 700;
+            cursor: pointer; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            border: none;
+            transition: opacity 0.2s;
+        }
+
+        .modal-btn-secondary {
+            background-color: var(--modal-btn-bg);
+            color: #FFFFFF;
+        }
+
+        .modal-btn-primary {
+            background-color: var(--primary-purple-light);
+            color: #FFFFFF;
+        }
+
+        .modal-btn-danger {
+            background-color: var(--danger-light);
+            color: #FFFFFF;
+        }
+
+        .modal-btn:active {
+            opacity: 0.85;
+        }
+
+        @keyframes slideUpOpen { 
+            from { transform: translateY(100%); } 
+            to { transform: translateY(0); } 
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0; left: 0; width: 100%; height: 80px;
+            background: var(--nav-bg); 
+            border-top: 1px solid var(--nav-border); 
+            display: flex; align-items: center; justify-content: space-around;
+            z-index: 10; padding: 0 40px;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column; align-items: center; gap: 4px;
+            color: var(--nav-text); font-size: 13px; font-weight: 500; text-decoration: none; width: 100px;
+        }
+
+        .nav-item.active { color: var(--nav-active); font-weight: 600; }
+        .bottom-nav .nav-item i { font-size: 26px; color: var(--nav-text); }
+        .bottom-nav .nav-item.active i { font-size: 32px; color: var(--nav-active); }
+        .bottom-nav .nav-item span { font-size: 11px; font-weight: 600; }
+        .bottom-nav .nav-item.active span { color: var(--nav-active); }
+
         @media (max-width: 768px) {
-            .form-split-row { grid-template-columns: 1fr; gap: 24px; }
-            .image-slots-grid { grid-template-columns: repeat(3, 1fr); gap: 12px; }
-            .main-content { padding: 20px; padding-bottom: 180px;}
-            .form-actions-row { 
-                justify-content: space-between; 
-                flex-direction: column;
-                margin-bottom: 20px;
-            }
-            .form-btn { flex: 1; width: 100%; }
-            .bottom-nav { padding: 0; height: 72px; }
-            .nav-item { font-size: 11px; width: auto; }
-            .nav-icon { font-size: 22px; }
-        }
-        @media (max-width: 480px) {
-            .image-slots-grid { grid-template-columns: repeat(2, 1fr); }
+            .form-split-row { grid-template-columns: 1fr; gap: 20px; }
+            .main-content { padding: 16px; padding-bottom: 160px; }
+            .form-container-card { padding: 20px; }
+            .form-actions-row { flex-direction: column; margin-top: 24px; gap: 10px; }
+            .form-btn { width: 100% !important; height: 52px; font-size: 16px; }
+            .bottom-nav { padding: 0; height: 75px; }
+            .persona-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -427,159 +692,258 @@
 
 <div id="app-container">
     <div class="header-nav">
-        <div class="back-link" id="form-header-back-btn"><span>‹</span> Back</div>
+        <div class="back-link" id="form-header-back-btn"><i class="ph ph-caret-left"></i> Back</div>
     </div>
 
     <div class="main-content">
-        <form class="form-section" id="real-creation-form" onsubmit="event.preventDefault();">
+        <div class="form-container-card">
             
-            <div class="image-upload-container">
-                <div class="section-label">Upload image of ad</div>
-                <div class="section-sublabel">(You can upload only a maximum of 5 images)</div>
-                <div class="image-slots-grid">
-                    <label class="image-slot"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zm-5.04-6.71l-2.75 3.54-1.96-2.36L6.5 17h11l-3.54-4.71z"/></svg><input type="file" accept="image/*" onchange="processSlotPreview(this)"></label>
-                    <label class="image-slot"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zm-5.04-6.71l-2.75 3.54-1.96-2.36L6.5 17h11l-3.54-4.71z"/></svg><input type="file" accept="image/*" onchange="processSlotPreview(this)"></label>
-                    <label class="image-slot"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zm-5.04-6.71l-2.75 3.54-1.96-2.36L6.5 17h11l-3.54-4.71z"/></svg><input type="file" accept="image/*" onchange="processSlotPreview(this)"></label>
-                    <label class="image-slot"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zm-5.04-6.71l-2.75 3.54-1.96-2.36L6.5 17h11l-3.54-4.71z"/></svg><input type="file" accept="image/*" onchange="processSlotPreview(this)"></label>
-                    <label class="image-slot"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zm-5.04-6.71l-2.75 3.54-1.96-2.36L6.5 17h11l-3.54-4.71z"/></svg><input type="file" accept="image/*" onchange="processSlotPreview(this)"></label>
-                </div>
-            </div>
-
-            <div class="field-group">
-                <div class="field-header"><label class="section-label">Title:</label><span class="char-counter" id="title-counter">0/700</span></div>
-                <input type="text" class="input-text" id="form-title-in" maxlength="700" placeholder="Enter ad title...">
-            </div>
-
-            <div class="field-group">
-                <div class="field-header"><label class="section-label">Description:</label><span class="char-counter" id="desc-counter">0/2500</span></div>
-                <textarea class="textarea-input" id="form-desc-in" maxlength="2500" placeholder="Enter ad description details..."></textarea>
-            </div>
-
-            <div class="form-split-row">
-                <div class="field-group">
-                    <label class="section-label">Ad Type:</label>
-                    <div class="radio-box-container">
-                        <label class="radio-option"><span class="radio-label-text">Job</span><input type="radio" name="ad-type-group" value="Job" checked><span class="radio-circle"></span></label>
-                        <label class="radio-option"><span class="radio-label-text">CV</span><input type="radio" name="ad-type-group" value="CV"><span class="radio-circle"></span></label>
+            <div id="persona-selection-step">
+                <div class="section-label" style="font-size: 18px;">What type of listing are you posting?</div>
+                <div class="section-sublabel">Choose the option that best describes you.</div>
+                
+                <div class="persona-grid">
+                    <div class="persona-card" onclick="selectPersonaTrack('Business')">
+                        <div class="persona-icon-heading">
+                            <i class="ph ph-buildings"></i>
+                            <div class="persona-title">Business / Employer</div>
+                        </div>
+                        <div class="persona-desc">Post a corporate job opening, vacancy position, or company placement opportunity.</div>
                     </div>
-                </div>
-                <div class="field-group">
-                    <label class="section-label">Experience Level</label>
-                    <div class="radio-box-container">
-                        <label class="radio-option"><span class="radio-label-text">Intern</span><input type="radio" name="exp-level-group" value="Intern" checked><span class="radio-circle"></span></label>
-                        <label class="radio-option"><span class="radio-label-text">Entry Level</span><input type="radio" name="exp-level-group" value="Entry Level"><span class="radio-circle"></span></label>
-                        <label class="radio-option"><span class="radio-label-text">Intermediate Level</span><input type="radio" name="exp-level-group" value="Intermediate Level"><span class="radio-circle"></span></label>
-                        <label class="radio-option"><span class="radio-label-text">Middle Level</span><input type="radio" name="exp-level-group" value="Middle Level"><span class="radio-circle"></span></label>
-                        <label class="radio-option"><span class="radio-label-text">Senior Level</span><input type="radio" name="exp-level-group" value="Senior Level"><span class="radio-circle"></span></label>
-                        <label class="radio-option"><span class="radio-label-text">Executive Level</span><input type="radio" name="exp-level-group" value="Executive Level"><span class="radio-circle"></span></label>
+
+                    <div class="persona-card" onclick="selectPersonaTrack('Jobseeker')">
+                        <div class="persona-icon-heading">
+                            <i class="ph ph-user"></i>
+                            <div class="persona-title">Jobseeker Profile</div>
+                        </div>
+                        <div class="persona-desc">Upload your qualifications, active availability, or CV details for hiring scouts.</div>
+                    </div>
+
+                    <div class="persona-card" onclick="selectPersonaTrack('Freelancer')">
+                        <div class="persona-icon-heading">
+                            <i class="ph ph-lightning"></i>
+                            <div class="persona-title">Freelance Gig / Service</div>
+                        </div>
+                        <div class="persona-desc">Advertise optimized package tiers, delivery frameworks, or deep service catalogs.</div>
+                    </div>
+
+                    <div class="persona-card" onclick="selectPersonaTrack('Intern')">
+                        <div class="persona-icon-heading">
+                            <i class="ph ph-student"></i>
+                            <div class="persona-title">Intern / Student</div>
+                        </div>
+                        <div class="persona-desc">List academic attachment request profiles, projects, or national service entries.</div>
                     </div>
                 </div>
             </div>
 
-            <div class="form-split-row">
-                <div class="field-group"><label class="section-label">Region:</label><select class="select-dropdown" id="region-selector"><option value="">All regions</option></select></div>
-                <div class="field-group"><label class="section-label">City/Town/Area:</label><select class="select-dropdown" id="area-selector" disabled><option value="">All areas</option></select></div>
-            </div>
+            <form class="form-section" id="real-creation-form" style="display:none;" onsubmit="event.preventDefault();">
+                
+                <div class="image-upload-container">
+                    <div class="section-label" id="dynamic-image-label">Upload Presentation Images <span style="color:var(--danger-color);">*</span></div>
+                    <div class="section-sublabel">(Min 1 image, Max 6 images required. Click '×' to remove)</div>
+                    <div class="image-slots-grid" id="image-gallery-row">
+                        <label class="image-slot" id="plus-slot-trigger">
+                            <i class="ph ph-plus"></i>
+                            <input type="file" id="hidden-file-input" accept="image/*" onchange="handleImageSelection(this)">
+                        </label>
+                    </div>
+                </div>
 
-            <div class="form-split-row">
-                <div class="field-group"><label class="section-label">Ad Category:</label><select class="select-dropdown" id="category-selector"><option value="">All Categories</option></select></div>
-                <div class="field-group"><label class="section-label">Choose sub category</label><select class="select-dropdown" id="subcategory-selector" disabled><option value="">All sub categories</option></select></div>
-            </div>
+                <div class="video-upload-container">
+                    <div class="section-label" id="dynamic-video-label">Upload Presentation Video <span style="color:var(--danger-color);">*</span></div>
+                    <div class="section-sublabel" id="dynamic-video-sublabel">(Minimum of 1 video required. Max 25MB file size)</div>
+                    <div class="video-slots-grid" id="video-gallery-row">
+                        <label class="video-slot" id="video-slot-trigger">
+                            <i class="ph ph-video-camera"></i>
+                            <input type="file" id="hidden-video-input" accept="video/*" onchange="handleVideoSelection(this)">
+                        </label>
+                    </div>
+                </div>
 
-            <div class="form-actions-row">
-                <button type="button" class="form-btn btn-cancel" id="form-cancel-trigger">Cancel</button>
-                <button type="button" class="form-btn btn-save" id="form-save-trigger">Save</button>
+                <div class="field-group">
+                    <div class="field-header">
+                        <label class="section-label" id="dynamic-title-label">Title: <span style="color:var(--danger-color);">*</span></label>
+                        <span class="char-counter" id="title-counter">0/700</span>
+                    </div>
+                    <input type="text" class="input-text" id="form-title-in" maxlength="700" placeholder="Enter title..." required>
+                </div>
+
+                <div class="field-group">
+                    <div class="field-header">
+                        <label class="section-label" id="dynamic-desc-label">Description: <span style="color:var(--danger-color);">*</span></label>
+                        <span class="char-counter" id="desc-counter">0/2500</span>
+                    </div>
+                    <textarea class="textarea-input" id="form-desc-in" maxlength="2500" placeholder="Enter details..." required></textarea>
+                </div>
+
+                <div class="field-group">
+                    <label class="section-label">Contact Phone Number <span style="color:var(--danger-color);">*</span></label>
+                    <input type="tel" inputmode="tel" class="input-text" id="form-contact-in" maxlength="20" placeholder="e.g., 024 123 4567" oninput="sanitizePhoneInput(this)" required>
+                </div>
+
+                <div id="persona-specific-fields-container" style="display: flex; flex-direction: column; gap: 24px;"></div>
+
+                <div class="form-split-row">
+                    <div class="field-group">
+                        <label class="section-label" id="dynamic-region-label">Region:</label>
+                        <div class="custom-select-trigger" id="region-trigger" onclick="openCustomPicker('region')">
+                            <span class="trigger-label">Select region</span>
+                            <i class="ph ph-caret-down"></i>
+                        </div>
+                    </div>
+
+                    <div class="field-group">
+                        <label class="section-label" id="dynamic-area-label">City/Town/Area:</label>
+                        <div class="custom-select-trigger disabled" id="area-trigger" onclick="openCustomPicker('area')">
+                            <span class="trigger-label">Select area</span>
+                            <i class="ph ph-caret-down"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-split-row">
+                    <div class="field-group">
+                        <label class="section-label">Ad Category: <span style="color:var(--danger-color);">*</span></label>
+                        <div class="custom-select-trigger" id="category-trigger" onclick="openCustomPicker('category')">
+                            <span class="trigger-label">Select Category</span>
+                            <i class="ph ph-caret-down"></i>
+                        </div>
+                    </div>
+        
+                    <div class="field-group">
+                        <label class="section-label">Choose sub category <span style="color:var(--danger-color);">*</span></label>
+                        <div class="custom-select-trigger disabled" id="subcategory-trigger" onclick="openCustomPicker('subcategory')">
+                            <span class="trigger-label">Select sub category</span>
+                            <i class="ph ph-caret-down"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-actions-row">
+                    <button type="button" class="form-btn btn-save" id="form-save-trigger">Save</button>
+                    <button type="button" class="form-btn btn-cancel" id="form-cancel-trigger">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="dropdown-overlay" id="custom-picker-overlay" onclick="closeCustomPicker()">
+        <div class="dropdown-sheet" onclick="event.stopPropagation()">
+            <div class="dropdown-sheet-header">
+                <span class="dropdown-sheet-title" id="picker-sheet-title">Select Option</span>
+                <button type="button" class="dropdown-sheet-close" onclick="closeCustomPicker()">×</button>
             </div>
-        </form>
+            <div class="dropdown-sheet-body" id="picker-options-container"></div>
+        </div>
     </div>
 
     <div class="modal-overlay" id="cancel-modal-overlay">
         <div class="modal-box">
-            <h3 class="modal-title">Are you sure you want to Cancel?</h3>
-            <p class="modal-desc">Your progress will not be saved. If you are sure you want to cancel, confirm below, if not, press the cancel button.</p>
+            <div class="modal-icon-wrapper danger-accent">
+                <i class="ph ph-warning-octagon"></i>
+            </div>
+            <h3 class="modal-title">Discard unsaved changes?</h3>
+            <p class="modal-desc">Everything you've entered will be lost. Are you sure you want to leave without saving?</p>
             <div class="modal-actions">
-                <button class="modal-btn" style="font-weight:700;" id="modal-cancel-confirm">Confirm</button>
-                <button class="modal-btn" style="font-weight:700;" id="modal-cancel-close">Cancel</button>
+                <button class="modal-btn modal-btn-secondary" id="modal-cancel-close">Keep Editing</button>
+                <button class="modal-btn modal-btn-danger" id="modal-cancel-confirm">Discard Changes</button>
             </div>
         </div>
+    </div>
+
+    <!-- NON-BLOCKING TOP TOAST NOTIFICATION (replaces the old blocking modal) -->
+    <div id="error-toast" class="error-toast">
+        <i class="ph ph-x-circle"></i>
+        <div class="error-toast-text">
+            <div class="error-toast-title" id="toast-error-title">Missing Information</div>
+            <div class="error-toast-desc" id="toast-error-desc">Some fields still need your attention.</div>
+        </div>
+        <button type="button" class="error-toast-close" id="toast-error-close">×</button>
     </div>
 
     <div class="modal-overlay" id="save-modal-overlay">
-        <div class="modal-box">
-            <h3 class="modal-title">Are you sure you want to Save this Ad?</h3>
-            <p class="modal-desc">Your listing parameters will be validated and pushed live into your portfolio interface stream instantly.</p>
+         <div class="modal-box">
+            <div class="modal-icon-wrapper">
+                <i class="ph ph-cloud-arrow-up"></i>
+            </div>
+            <h3 class="modal-title" id="modal-save-title">Publish advertisement?</h3>
+            <p class="modal-desc" id="modal-save-desc">Your ad will go live right away and others will be able to see it.</p>
             <div class="modal-actions">
-                <button class="modal-btn" style="font-weight:700;" id="modal-save-confirm">Confirm</button>
-                <button class="modal-btn" style="font-weight:700;" id="modal-save-close">Cancel</button>
+                <button class="modal-btn modal-btn-secondary" id="modal-save-close">Review Ad</button>
+                <button class="modal-btn modal-btn-primary" id="modal-save-confirm">Publish Now</button>
             </div>
         </div>
     </div>
 
-
-    <!-- ==========================================
-    BOTTOM PINNED GLOBAL TAB MENU LAYOUT
- ========================================== -->
     <div class="bottom-nav">
-        <div class="nav-item tab-trigger" data-route="home" onclick="window.location.href='home.html'">
-                <i class="ph ph-house"></i>
-                <span>Home</span>
-        </div>
-
-        <div class="nav-item tab-trigger" data-route="messages" onclick="window.location.href='message.html'">
-              <i class="ph ph-chats-circle"></i>
-              <span>Messages</span>
-        </div>
-
-        <div class="nav-item tab-trigger" data-route="add" onclick="window.location.href='add.html'">
-              <i class="ph ph-plus-circle"></i>
-              <span>Add</span>
-        </div>
-
-        <div class="nav-item tab-trigger" data-route="saved" onclick="window.location.href='saved.html'">
-              <i class="ph ph-bookmark-simple"></i>
-              <span>Saved</span>
-        </div>
-
-        <div class="nav-item tab-trigger" data-route="settings" onclick="window.location.href='settings.html'">
-              <i class="ph ph-gear"></i>
-              <span>Settings</span>
-        </div>
-  </div>
+        <div class="nav-item tab-trigger" onclick="window.location.href='home.html'"><i class="ph ph-house"></i><span>Home</span></div>
+        <div class="nav-item tab-trigger" onclick="window.location.href='message.html'"><i class="ph ph-chats-circle"></i><span>Messages</span></div>
+        <div class="nav-item tab-trigger active" onclick="window.location.href='add.html'"><i class="ph ph-plus-circle"></i><span>Add</span></div>
+        <div class="nav-item tab-trigger" onclick="window.location.href='saved.html'"><i class="ph ph-bookmark-simple"></i><span>Saved</span></div>
+        <div class="nav-item tab-trigger" onclick="window.location.href='settings.html'"><i class="ph ph-gear"></i><span>Settings</span></div>
+    </div>
 </div>
 
 <script>
-    // Set active nav item based on current page
-    function setActiveNav() {
-        const currentPage = window.location.pathname.split('/').pop() || 'add.html';
-        const navItems = document.querySelectorAll('.nav-item[data-route]');
-        navItems.forEach(item => item.classList.remove('active'));
-        
-        const routeMap = {
-            'add.html': 'add',
-            'saved.html': 'saved',
-            'home.html': 'home',
-            'message.html': 'messages',
-            'settings.html': 'settings'
-        };
-        
-        const currentRoute = routeMap[currentPage];
-        if(currentRoute) {
-            const activeItem = document.querySelector(`.nav-item[data-route="${currentRoute}"]`);
-            if(activeItem) activeItem.classList.add('active');
-        }
-    }
-    
-    window.addEventListener('load', setActiveNav);
+    let editingAdIndex = null;
+    let editingAdId = null;
 
-    /* Databases Maps Initialization */
+    if (localStorage.getItem('theme') === 'dark') {
+        document.documentElement.classList.add('dark-theme');
+    }
+
+    // --- MEDIA STORAGE (IndexedDB) ---
+    // Images/videos are too large for localStorage (which caps out around 5-10MB),
+    // so they live in IndexedDB. localStorage only keeps lightweight ad details.
+    const MEDIA_DB_NAME = 'OpenJobsMediaDB';
+    const MEDIA_STORE_NAME = 'adMedia';
+
+    function openMediaDB() {
+        return new Promise((resolve, reject) => {
+            const req = indexedDB.open(MEDIA_DB_NAME, 1);
+            req.onupgradeneeded = () => {
+                if (!req.result.objectStoreNames.contains(MEDIA_STORE_NAME)) {
+                    req.result.createObjectStore(MEDIA_STORE_NAME, { keyPath: 'adId' });
+                }
+            };
+            req.onsuccess = () => resolve(req.result);
+            req.onerror = () => reject(req.error);
+        });
+    }
+
+    async function saveAdMedia(adId, images, videos) {
+        const db = await openMediaDB();
+        return new Promise((resolve, reject) => {
+            const tx = db.transaction(MEDIA_STORE_NAME, 'readwrite');
+            tx.objectStore(MEDIA_STORE_NAME).put({ adId, images, videos });
+            tx.oncomplete = () => resolve();
+            tx.onerror = () => reject(tx.error);
+        });
+    }
+
+    async function getAdMedia(adId) {
+        const db = await openMediaDB();
+        return new Promise((resolve, reject) => {
+            const tx = db.transaction(MEDIA_STORE_NAME, 'readonly');
+            const req = tx.objectStore(MEDIA_STORE_NAME).get(adId);
+            req.onsuccess = () => resolve(req.result || { images: [], videos: [] });
+            req.onerror = () => reject(req.error);
+        });
+    }
+
+    function generateAdId() {
+        return 'ad_' + Date.now() + '_' + Math.random().toString(36).slice(2, 9);
+    }
+
     const geoDatabase = {
-"Ahafo Region": ["Goaso", "Duayaw Nkwanta", "Mim", "Bechem"],
+        "Ahafo Region": ["Goaso", "Duayaw Nkwanta", "Mim", "Bechem"],
         "Ashanti Region": ["Kumasi", "Obuasi", "Ejisu", "Konongo", "Mampong", "Bekwai"],
         "Bono East Region": ["Techiman", "Kintampo", "Nkoranza", "Yeji"],
         "Bono Region": ["Sunyani", "Berekum", "Dormaa Ahenkro", "Sampa"],
         "Central Region": ["Cape Coast", "Winneba", "Kasoa", "Elmina", "Agona Swedru"],
         "Eastern Region": ["Koforidua", "Nkawkaw", "Nsawam", "Asamankese", "Somanya"],
-        "Greater Accra Region": ["Abeka", "Abelemkpe", "Abokobi", "Accra Newtown", "Achimota", "Adenta", "Airport Residential Area", "Amasaman", "Ashaiman", "Ashaley Botwe", "Afienya", "Bortianor", "Burma Camp", "Baatsona", "Cantonments", "Chorkor", "Dansoman", "Dawhennya", "Dodowa", "Dzorwulu", "Darkuman", "Dome", "Gbawe", "Haatso"],
+        "Greater Accra Region": ["Accra", "Abeka", "Abelemkpe", "Abokobi", "Accra Newtown", "Achimota", "Adenta", "Airport Residential Area", "Amasaman", "Ashaiman", "Ashaley Botwe", "Afienya", "Bortianor", "Burma Camp", "Baatsona", "Cantonments", "Chorkor", "Dansoman", "Dawhennya", "Dodowa", "Dzorwulu", "Darkuman", "Dome", "Gbawe", "Haatso", "Tema", "Sakumono"],
         "North East Region": ["Nalerigu", "Gambaga", "Walewale"],
         "Northern Region": ["Tamale", "Yendi", "Savelugu"],
         "Oti Region": ["Dambai", "Jasikan", "Kete Krachi", "Nkwanta"],
@@ -592,7 +956,7 @@
     };
 
     const functionalCategories = {
-       "Agriculture & Environment": ["Agronomy", "Animal Husbandry", "Horticulture", "Environmental Science", "Farm Management"],
+        "Agriculture & Environment": ["Agronomy", "Animal Husbandry", "Horticulture", "Environmental Science", "Farm Management"],
         "Business, Finance & Administration": ["Accounting", "Human Resources", "Banking", "Auditing", "Administrative Assistant", "Business Strategy"],
         "Creative & Media": ["Graphic Design", "UI/UX Design", "Copywriting", "Video Editing", "Photography", "Journalism"],
         "Education & Training": ["Teaching", "Curriculum Design", "Tutoring", "Educational Consulting"],
@@ -609,121 +973,750 @@
         "Transport & Logistics": ["Supply Chain Management", "Fleet Logistics", "Warehouse Operations", "Distribution Operations"]
     };
 
-    /* Dropdown Fields Engine setup */
-    const regionSelect = document.getElementById('region-selector');
-    const areaSelect = document.getElementById('area-selector');
-    const categorySelect = document.getElementById('category-selector');
-    const subcategorySelect = document.getElementById('subcategory-selector');
+    let activePersonaTrack = "";
+    let selectedRegion = "";
+    let selectedArea = "";
+    let selectedCategory = "";
+    let selectedSubcategory = "";
+    let slotBase64Array = [];
+    let videoBase64Array = [];
+    const MAX_IMAGES = 6;
+    let MIN_VIDEOS = 1;
 
-    Object.keys(geoDatabase).forEach(r => regionSelect.options.add(new Option(r, r)));
-    Object.keys(functionalCategories).forEach(c => categorySelect.options.add(new Option(c, c)));
-
-    regionSelect.addEventListener('change', function() {
-        areaSelect.innerHTML = '<option value="">All areas</option>';
-        if(!this.value) { areaSelect.disabled = true; return; }
-        geoDatabase[this.value].forEach(a => areaSelect.options.add(new Option(a, a)));
-        areaSelect.disabled = false;
-    });
-
-    categorySelect.addEventListener('change', function() {
-        subcategorySelect.innerHTML = '<option value="">All sub categories</option>';
-        if(!this.value) { subcategorySelect.disabled = true; return; }
-        functionalCategories[this.value].forEach(s => subcategorySelect.options.add(new Option(s, s)));
-        subcategorySelect.disabled = false;
-    });
-
-    /* Live Local Character Counter Shunts */
     const titleIn = document.getElementById('form-title-in');
     const descIn = document.getElementById('form-desc-in');
-    titleIn.addEventListener('input', () => document.getElementById('title-counter').textContent = `${titleIn.value.length}/700`);
-    descIn.addEventListener('input', () => document.getElementById('desc-counter').textContent = `${descIn.value.length}/2500`);
+    const contactIn = document.getElementById('form-contact-in');
+    const regionTrigger = document.getElementById('region-trigger');
+    const areaTrigger = document.getElementById('area-trigger');
 
-    /* Memory Local Image URL Processing Slot */
-    let capturedImageBase64 = "";
-    function processSlotPreview(input) {
-        if (input.files && input.files[0]) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                capturedImageBase64 = e.target.result;
-                let slot = input.parentElement;
-                let existingImg = slot.querySelector('img');
-                if(existingImg) existingImg.src = capturedImageBase64;
-                else {
-                    let img = document.createElement('img');
-                    img.src = capturedImageBase64;
-                    slot.appendChild(img);
-                }
+    // Custom Error Display Helper Function — non-blocking top toast, auto-dismisses
+    let toastHideTimer = null;
+    function showAppError(title, msg) {
+        const toast = document.getElementById('error-toast');
+        document.getElementById('toast-error-title').textContent = title;
+        document.getElementById('toast-error-desc').textContent = msg;
+        toast.classList.add('visible');
+
+        clearTimeout(toastHideTimer);
+        toastHideTimer = setTimeout(() => {
+            toast.classList.remove('visible');
+        }, 4500);
+    }
+
+    document.getElementById('toast-error-close').onclick = () => {
+        clearTimeout(toastHideTimer);
+        document.getElementById('error-toast').classList.remove('visible');
+    };
+
+    // Keeps money fields strictly numeric (digits + one decimal point, max 2 decimal places)
+    function sanitizeCurrencyInput(input) {
+        let value = input.value.replace(/[^0-9.]/g, '');
+        const firstDotIndex = value.indexOf('.');
+        if (firstDotIndex !== -1) {
+            value = value.slice(0, firstDotIndex + 1) + value.slice(firstDotIndex + 1).replace(/\./g, '');
+        }
+        const parts = value.split('.');
+        if (parts.length === 2 && parts[1].length > 2) {
+            value = parts[0] + '.' + parts[1].slice(0, 2);
+        }
+        input.value = value;
+    }
+
+    // Keeps the contact field to phone-appropriate characters only
+    function sanitizePhoneInput(input) {
+        input.value = input.value.replace(/[^0-9+ ]/g, '');
+    }
+
+    // The moment a highlighted field is edited, clear its red error state
+    document.getElementById('real-creation-form').addEventListener('input', (e) => {
+        if (e.target.classList && e.target.classList.contains('validation-error-glow')) {
+            e.target.classList.remove('validation-error-glow');
+        }
+    });
+
+    function selectPersonaTrack(track) {
+        activePersonaTrack = track;
+        document.querySelectorAll('.persona-card').forEach(card => {
+            card.classList.remove('selected');
+        });
+        
+        const cards = document.querySelectorAll('.persona-card');
+        if(track === 'Business') cards[0].classList.add('selected');
+        if(track === 'Jobseeker') cards[1].classList.add('selected');
+        if(track === 'Freelancer') cards[2].classList.add('selected');
+        if(track === 'Intern') cards[3].classList.add('selected');
+
+        document.getElementById('persona-selection-step').style.display = 'none';
+        document.getElementById('real-creation-form').style.display = 'flex';
+
+        const imgLabel = document.getElementById('dynamic-image-label');
+        const videoLabel = document.getElementById('dynamic-video-label');
+        const videoSublabel = document.getElementById('dynamic-video-sublabel');
+        const regionLabel = document.getElementById('dynamic-region-label');
+        const areaLabel = document.getElementById('dynamic-area-label');
+
+        // Reset inputs and labels cleanly
+        regionLabel.textContent = "Region:";
+        areaLabel.textContent = "City/Town/Area:";
+        enableLocationSelectors();
+
+        if(track === 'Freelancer') {
+            imgLabel.innerHTML = 'Service Gallery / Portfolio Mockups <span style="color:var(--danger-color);">*</span>';
+            videoLabel.innerHTML = 'Upload Showreel / Service Videos <span style="color:var(--danger-color);">*</span>';
+            videoSublabel.innerHTML = '(Minimum 1 video required. Max 25MB each file)';
+            titleIn.placeholder = "e.g., I will build your ecommerce store using Node.js & React";
+            descIn.placeholder = "Break down exactly what value you bring, your methodology, and what makes your gig delivery stand out...";
+        } else {
+            videoLabel.innerHTML = 'Upload Presentation Video <span style="color:var(--danger-color);">*</span>';
+            videoSublabel.innerHTML = '(Minimum 1 video required. Max 25MB file size)';
+            
+            if(track === 'Business') {
+                regionLabel.textContent = "Business Region:";
+                areaLabel.textContent = "Business Location/Area:";
+                imgLabel.innerHTML = 'Company Logo / Banner Images <span style="color:var(--danger-color);">*</span>';
+                titleIn.placeholder = "e.g., Senior Full-Stack Engineer Needed";
+                descIn.placeholder = "Provide full summary of job responsibilities, structural daily tasks, perks and organizational culture context...";
+            } else if(track === 'Jobseeker') {
+                imgLabel.innerHTML = 'Professional Headshot / Portfolio Images <span style="color:var(--danger-color);">*</span>';
+                titleIn.placeholder = "e.g., Experienced Chartered Accountant seeking executive placement";
+                descIn.placeholder = "Detail your key corporate career achievements, system certificates, tools mastered, and core execution competencies...";
+            } else {
+                imgLabel.innerHTML = 'Student Profile / Institutional Documents <span style="color:var(--danger-color);">*</span>';
+                titleIn.placeholder = "e.g., Final Year Computer Science Student seeking 3-Month Internship";
+                descIn.placeholder = "Introduce your course track background, institutional internship target guidelines, areas of research interest, and timeline needs...";
             }
-            reader.readAsDataURL(input.files[0]);
+        }
+
+        renderVideoThumbnails();
+        buildDynamicPersonaInputs(track);
+    }
+
+    function disableLocationSelectors() {
+        selectedRegion = "";
+        selectedArea = "";
+        regionTrigger.querySelector('.trigger-label').textContent = "Not Applicable (Remote)";
+        areaTrigger.querySelector('.trigger-label').textContent = "Not Applicable (Remote)";
+        regionTrigger.classList.add('disabled');
+        areaTrigger.classList.add('disabled');
+        regionTrigger.style.pointerEvents = "none";
+        areaTrigger.style.pointerEvents = "none";
+    }
+
+    function enableLocationSelectors() {
+        regionTrigger.classList.remove('disabled');
+        regionTrigger.style.pointerEvents = "auto";
+        if (!selectedRegion) {
+            regionTrigger.querySelector('.trigger-label').textContent = "Select region";
+            areaTrigger.querySelector('.trigger-label').textContent = "Select area";
+            areaTrigger.classList.add('disabled');
+            areaTrigger.style.pointerEvents = "none";
+        } else {
+            areaTrigger.classList.remove('disabled');
+            areaTrigger.style.pointerEvents = "auto";
         }
     }
 
-    /* Modal System Intercept Operations */
-    const cancelOverlay = document.getElementById('cancel-modal-overlay');
-    const saveOverlay = document.getElementById('save-modal-overlay');
-
-    document.getElementById('form-header-back-btn').addEventListener('click', () => cancelOverlay.style.display = 'flex');
-    document.getElementById('form-cancel-trigger').addEventListener('click', () => cancelOverlay.style.display = 'flex');
-    document.getElementById('modal-cancel-close').addEventListener('click', () => cancelOverlay.style.display = 'none');
-    document.getElementById('modal-cancel-confirm').addEventListener('click', () => {
-        cancelOverlay.style.display = 'none';
-        document.getElementById('real-creation-form').reset();
-        goToDashboard();
-    });
-
-    // Save Intercept Logic Flow
-    document.getElementById('form-save-trigger').addEventListener('click', () => {
-        if(!titleIn.value.trim()) { alert("Please complete the title field before updating."); return; }
-        saveOverlay.style.display = 'flex';
-    });
-    document.getElementById('modal-save-close').addEventListener('click', () => saveOverlay.style.display = 'none');
-    
-    /* ==========================================
-       DYNAMIC CARD SUBMISSION DATA ENGINE
-    ========================================== */
-    document.getElementById('modal-save-confirm').addEventListener('click', () => {
-        saveOverlay.style.display = 'none';
-
-        const inputTitle = titleIn.value.trim();
-        const inputDesc = descIn.value.trim() || "No detailed layout description parameters specified.";
-        const inputType = document.querySelector('input[name="ad-type-group"]:checked').value;
-        const inputExp = document.querySelector('input[name="exp-level-group"]:checked').value;
-        const inputRegion = regionSelect.value || "Any Region";
-        const inputArea = areaSelect.value || "Any Locality";
-        const inputCat = categorySelect.value || "General Domain";
-        const inputSubcat = subcategorySelect.value || "General Support";
-        const inputImage = capturedImageBase64 || "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'><rect width='100%' height='100%' fill='%23500E8C'/><circle cx='50' cy='40' r='22' fill='%23FFF'/><path d='M15,85 C15,65 30,58 50,58 C70,58 85,65 85,85 Z' fill='%23FFF'/></svg>";
-
-        // Store ad data in sessionStorage to pass to ads.html
-        let adsData = JSON.parse(sessionStorage.getItem('adsData') || '[]');
-        adsData.push({
-            title: inputTitle,
-            desc: inputDesc,
-            type: inputType,
-            exp: inputExp,
-            region: inputRegion,
-            area: inputArea,
-            category: inputCat,
-            subcategory: inputSubcat,
-            image: inputImage
-        });
-        sessionStorage.setItem('adsData', JSON.stringify(adsData));
-
-        document.getElementById('real-creation-form').reset();
-        document.querySelectorAll('.image-slot img').forEach(img => img.remove());
-        capturedImageBase64 = "";
-        document.getElementById('title-counter').textContent = "0/700";
-        document.getElementById('desc-counter').textContent = "0/2500";
-        areaSelect.disabled = true;
-        subcategorySelect.disabled = true;
-
-        // Redirect to ads.html
-        window.location.href = 'ads.html';
-    });
-
-    function goToDashboard() {
-        window.location.href = 'home.html';
+    function setAllRegionsDefault() {
+        selectedRegion = "All Regions";
+        selectedArea = "All Areas";
+        regionTrigger.querySelector('.trigger-label').textContent = "All Regions";
+        areaTrigger.querySelector('.trigger-label').textContent = "All Areas";
+        regionTrigger.classList.remove('disabled');
+        regionTrigger.style.pointerEvents = "auto";
+        areaTrigger.classList.add('disabled');
+        areaTrigger.style.pointerEvents = "none";
+        regionTrigger.classList.remove('validation-error-glow');
+        areaTrigger.classList.remove('validation-error-glow');
     }
+
+    function checkLocationLogic() {
+        let isRemote = false;
+        if (activePersonaTrack === 'Freelancer') {
+            isRemote = document.querySelector('input[name="free-location"]:checked')?.value === 'Remote';
+        } else if (activePersonaTrack === 'Business') {
+            isRemote = document.querySelector('input[name="business-model"]:checked')?.value === 'Remote';
+        }
+        if (isRemote && activePersonaTrack === 'Business') {
+            // Business has no meaningful location for a fully remote job
+            disableLocationSelectors();
+        } else if (isRemote && activePersonaTrack === 'Freelancer') {
+            // Freelancer working remotely defaults to "All Regions" but can still narrow it down
+            setAllRegionsDefault();
+        } else {
+            enableLocationSelectors();
+        }
+    }
+
+    function buildDynamicPersonaInputs(track) {
+        const fieldContainer = document.getElementById('persona-specific-fields-container');
+        fieldContainer.innerHTML = "";
+        let htmlString = "";
+
+        if (track === "Freelancer") {
+            htmlString = `
+                <div class="form-split-row">
+                    <div class="field-group">
+                        <label class="section-label">Where will you offer your service? <span style="color:var(--danger-color);">*</span></label>
+                        <div class="radio-box-container">
+                            <label class="radio-option"><span class="radio-label-text">In Person</span><input type="radio" name="free-location" value="Physical" checked onchange="checkLocationLogic()"><span class="radio-circle"></span></label>
+                            <label class="radio-option"><span class="radio-label-text">Remote / Online</span><input type="radio" name="free-location" value="Remote" onchange="checkLocationLogic()"><span class="radio-circle"></span></label>
+                        </div>
+                    </div>
+                    <div class="field-group">
+                        <label class="section-label">Your Price (Optional)</label>
+                        <div class="currency-input-wrapper">
+                            <span class="currency-symbol">₵</span>
+                            <input type="text" inputmode="decimal" class="input-text" id="meta-service-cost" placeholder="500.00" oninput="sanitizeCurrencyInput(this)">
+                        </div>
+                    </div>
+                </div>
+                <div class="form-split-row">
+                    <div class="field-group">
+                        <label class="section-label">How Do You Charge? <span style="color:var(--danger-color);">*</span></label>
+                        <div class="radio-box-container">
+                            <label class="radio-option"><span class="radio-label-text">Fixed Price for the Whole Job</span><input type="radio" name="free-pricing" value="Fixed" checked><span class="radio-circle"></span></label>
+                            <label class="radio-option"><span class="radio-label-text">Hourly Rate</span><input type="radio" name="free-pricing" value="Hourly"><span class="radio-circle"></span></label>
+                        </div>
+                    </div>
+                    <div class="field-group">
+                        <label class="section-label">How Fast Can You Deliver? <span style="color:var(--danger-color);">*</span></label>
+                        <div class="radio-box-container">
+                            <label class="radio-option"><span class="radio-label-text">1 - 3 Days</span><input type="radio" name="free-turnaround" value="1-3 Days" checked><span class="radio-circle"></span></label>
+                            <label class="radio-option"><span class="radio-label-text">Within 1 Week</span><input type="radio" name="free-turnaround" value="1 Week"><span class="radio-circle"></span></label>
+                            <label class="radio-option"><span class="radio-label-text">Flexible / Depends on Project</span><input type="radio" name="free-turnaround" value="Flexible"><span class="radio-circle"></span></label>
+                        </div>
+                    </div>
+                </div>
+                <div class="field-group">
+                    <label class="section-label">What's Included? (Optional)</label>
+                    <input type="text" class="input-text" id="meta-free-inclusions" placeholder="e.g., 3 Revisions, Source Code, 1 Month Support">
+                </div>
+                <div class="field-group">
+                    <label class="section-label">Portfolio Link (Optional)</label>
+                    <input type="url" class="input-text" id="meta-free-portfolio" placeholder="e.g., https://behance.net/username">
+                </div>
+            `;
+        } else if (track === "Business") {
+            htmlString = `
+                <div class="form-split-row">
+                    <div class="field-group">
+                        <label class="section-label">Job Type <span style="color:var(--danger-color);">*</span></label>
+                        <div class="radio-box-container">
+                            <label class="radio-option"><span class="radio-label-text">Full-Time</span><input type="radio" name="business-model" value="Full-Time" checked onchange="checkLocationLogic()"><span class="radio-circle"></span></label>
+                            <label class="radio-option"><span class="radio-label-text">Part-Time / Flexible</span><input type="radio" name="business-model" value="Part-Time" onchange="checkLocationLogic()"><span class="radio-circle"></span></label>
+                            <label class="radio-option"><span class="radio-label-text">Remote / Work From Home</span><input type="radio" name="business-model" value="Remote" onchange="checkLocationLogic()"><span class="radio-circle"></span></label>
+                        </div>
+                    </div>
+                    <div class="field-group">
+                        <label class="section-label">Monthly Salary <span style="color:var(--danger-color);">*</span></label>
+                        <div class="currency-input-wrapper">
+                            <span class="currency-symbol">₵</span>
+                            <input type="text" inputmode="decimal" class="input-text" id="meta-salary-offer" placeholder="4000.00" oninput="sanitizeCurrencyInput(this)" required>
+                        </div>
+                    </div>
+                </div>
+            `;
+        } else if (track === "Jobseeker") {
+            htmlString = `
+                <div class="form-split-row">
+                    <div class="field-group">
+                        <label class="section-label">Experience Level <span style="color:var(--danger-color);">*</span></label>
+                        <div class="radio-box-container">
+                            <label class="radio-option"><span class="radio-label-text">Entry Level (0-2 yrs)</span><input type="radio" name="seeker-exp" value="Entry Level" checked><span class="radio-circle"></span></label>
+                            <label class="radio-option"><span class="radio-label-text">Intermediate (2-5 yrs)</span><input type="radio" name="seeker-exp" value="Intermediate"><span class="radio-circle"></span></label>
+                            <label class="radio-option"><span class="radio-label-text">Senior Executive (5+ yrs)</span><input type="radio" name="seeker-exp" value="Senior Level"><span class="radio-circle"></span></label>
+                        </div>
+                    </div>
+                    <div class="field-group">
+                        <label class="section-label">Expected Monthly Pay <span style="color:var(--danger-color);">*</span></label>
+                        <div class="currency-input-wrapper">
+                            <span class="currency-symbol">₵</span>
+                            <input type="text" inputmode="decimal" class="input-text" id="meta-salary-expect" placeholder="3500.00" oninput="sanitizeCurrencyInput(this)" required>
+                        </div>
+                    </div>
+                </div>
+            `;
+        } else if (track === "Intern") {
+            htmlString = `
+                <div class="form-split-row">
+                    <div class="field-group">
+                        <label class="section-label">How Long is the Internship? <span style="color:var(--danger-color);">*</span></label>
+                        <div class="radio-box-container">
+                            <label class="radio-option"><span class="radio-label-text">Short Term (1 - 3 Months)</span><input type="radio" name="intern-window" value="Short Term" checked><span class="radio-circle"></span></label>
+                            <label class="radio-option"><span class="radio-label-text">Long Term (6+ Months)</span><input type="radio" name="intern-window" value="Long Term"><span class="radio-circle"></span></label>
+                        </div>
+                    </div>
+                    <div class="field-group">
+                        <label class="section-label">Monthly Allowance <span style="color:var(--danger-color);">*</span></label>
+                        <div class="currency-input-wrapper">
+                            <span class="currency-symbol">₵</span>
+                            <input type="text" inputmode="decimal" class="input-text" id="meta-intern-allowance" placeholder="800.00" oninput="sanitizeCurrencyInput(this)" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="field-group">
+                    <label class="section-label">School / Institution Name <span style="color:var(--danger-color);">*</span></label>
+                    <input type="text" class="input-text" id="meta-intern-school" placeholder="e.g., Kwame Nkrumah University of Science and Technology" required>
+                </div>
+            `;
+        }
+        fieldContainer.innerHTML = htmlString;
+    }
+
+    // CHAR COUNTERS
+    titleIn.addEventListener('input', () => {
+        document.getElementById('title-counter').textContent = `${titleIn.value.length}/700`;
+    });
+    descIn.addEventListener('input', () => {
+        document.getElementById('desc-counter').textContent = `${descIn.value.length}/2500`;
+    });
+
+    // MEDIA RENDERING & SELECTIONS
+    function handleImageSelection(input) {
+        if (!input.files || !input.files[0]) return;
+        if (slotBase64Array.length >= MAX_IMAGES) return;
+
+        const file = input.files[0];
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            slotBase64Array.push(e.target.result);
+            renderImageThumbnails();
+        };
+        reader.readAsDataURL(file);
+        input.value = "";
+    }
+
+    function renderImageThumbnails() {
+        const row = document.getElementById('image-gallery-row');
+        row.classList.remove('validation-error-glow');
+        document.querySelectorAll('.image-slot:not(#plus-slot-trigger)').forEach(node => node.remove());
+
+        slotBase64Array.forEach((base64, idx) => {
+            const node = document.createElement('div');
+            node.className = "image-slot";
+            node.innerHTML = `
+                <img src="${base64}">
+                <button type="button" class="delete-slot-node" onclick="removeImageNode(${idx})">×</button>
+            `;
+            row.insertBefore(node, document.getElementById('plus-slot-trigger'));
+        });
+
+        if(slotBase64Array.length >= MAX_IMAGES) {
+            document.getElementById('plus-slot-trigger').style.display = 'none';
+        } else {
+            document.getElementById('plus-slot-trigger').style.display = 'flex';
+        }
+    }
+
+    function removeImageNode(idx) {
+        slotBase64Array.splice(idx, 1);
+        renderImageThumbnails();
+    }
+
+    function handleVideoSelection(input) {
+        if (!input.files || !input.files[0]) return;
+
+        const file = input.files[0];
+        if (file.size > 25 * 1024 * 1024) {
+            showAppError("Video Too Large", "Video files must be under 25MB.");
+            input.value = "";
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            videoBase64Array.push(e.target.result);
+            renderVideoThumbnails();
+        };
+        reader.readAsDataURL(file);
+        input.value = "";
+    }
+
+    function renderVideoThumbnails() {
+        const row = document.getElementById('video-gallery-row');
+        row.classList.remove('validation-error-glow');
+        document.querySelectorAll('.video-slot:not(#video-slot-trigger)').forEach(node => node.remove());
+
+        videoBase64Array.forEach((base64, idx) => {
+            const node = document.createElement('div');
+            node.className = "video-slot";
+            node.innerHTML = `
+                <video src="${base64}"></video>
+                <button type="button" class="delete-slot-node" onclick="removeVideoNode(${idx})">×</button>
+            `;
+            row.insertBefore(node, document.getElementById('video-slot-trigger'));
+        });
+    }
+
+    function removeVideoNode(idx) {
+        videoBase64Array.splice(idx, 1);
+        renderVideoThumbnails();
+    }
+
+    // DROPDOWN STRUCTS
+    let currentPickerTarget = "";
+    function openCustomPicker(target) {
+        currentPickerTarget = target;
+        const overlay = document.getElementById('custom-picker-overlay');
+        const title = document.getElementById('picker-sheet-title');
+        const container = document.getElementById('picker-options-container');
+
+        container.innerHTML = "";
+        overlay.style.display = "flex";
+
+        if(target === 'region') {
+            title.textContent = "Select Region";
+            const allOpt = document.createElement('div');
+            allOpt.className = `dropdown-custom-option ${selectedRegion === 'All Regions' ? 'selected' : ''}`;
+            allOpt.textContent = "All Regions";
+            allOpt.onclick = () => {
+                selectedRegion = "All Regions";
+                selectedArea = "All Areas";
+                regionTrigger.querySelector('.trigger-label').textContent = "All Regions";
+                areaTrigger.querySelector('.trigger-label').textContent = "All Areas";
+                areaTrigger.classList.add('disabled');
+                areaTrigger.style.pointerEvents = "none";
+                regionTrigger.classList.remove('validation-error-glow');
+                areaTrigger.classList.remove('validation-error-glow');
+                closeCustomPicker();
+            };
+            container.appendChild(allOpt);
+            Object.keys(geoDatabase).forEach(r => {
+                const opt = document.createElement('div');
+                opt.className = `dropdown-custom-option ${selectedRegion === r ? 'selected' : ''}`;
+                opt.textContent = r;
+                opt.onclick = () => {
+                    selectedRegion = r;
+                    selectedArea = "";
+                    regionTrigger.querySelector('.trigger-label').textContent = r;
+                    areaTrigger.querySelector('.trigger-label').textContent = "Select area";
+                    areaTrigger.classList.remove('disabled');
+                    areaTrigger.style.pointerEvents = "auto";
+                    regionTrigger.classList.remove('validation-error-glow');
+                    closeCustomPicker();
+                };
+                container.appendChild(opt);
+            });
+        } else if(target === 'area') {
+            title.textContent = `Select Area in ${selectedRegion}`;
+            if(!selectedRegion || !geoDatabase[selectedRegion]) return;
+            geoDatabase[selectedRegion].forEach(a => {
+                const opt = document.createElement('div');
+                opt.className = `dropdown-custom-option ${selectedArea === a ? 'selected' : ''}`;
+                opt.textContent = a;
+                opt.onclick = () => {
+                    selectedArea = a;
+                    areaTrigger.querySelector('.trigger-label').textContent = a;
+                    areaTrigger.classList.remove('validation-error-glow');
+                    closeCustomPicker();
+                };
+                container.appendChild(opt);
+            });
+        } else if(target === 'category') {
+            title.textContent = "Select Functional Category";
+            Object.keys(functionalCategories).forEach(cat => {
+                const opt = document.createElement('div');
+                opt.className = `dropdown-custom-option ${selectedCategory === cat ? 'selected' : ''}`;
+                opt.textContent = cat;
+                opt.onclick = () => {
+                    selectedCategory = cat;
+                    selectedSubcategory = "";
+                    document.getElementById('category-trigger').querySelector('.trigger-label').textContent = cat;
+                    document.getElementById('subcategory-trigger').querySelector('.trigger-label').textContent = "Select sub category";
+                    document.getElementById('subcategory-trigger').classList.remove('disabled');
+                    document.getElementById('category-trigger').classList.remove('validation-error-glow');
+                    closeCustomPicker();
+                };
+                container.appendChild(opt);
+            });
+        } else if(target === 'subcategory') {
+            title.textContent = `Subcategories for ${selectedCategory}`;
+            if(!selectedCategory || !functionalCategories[selectedCategory]) return;
+            functionalCategories[selectedCategory].forEach(sub => {
+                const opt = document.createElement('div');
+                opt.className = `dropdown-custom-option ${selectedSubcategory === sub ? 'selected' : ''}`;
+                opt.textContent = sub;
+                opt.onclick = () => {
+                    selectedSubcategory = sub;
+                    document.getElementById('subcategory-trigger').querySelector('.trigger-label').textContent = sub;
+                    document.getElementById('subcategory-trigger').classList.remove('validation-error-glow');
+                    closeCustomPicker();
+                };
+                container.appendChild(opt);
+            });
+        }
+    }
+
+    function closeCustomPicker() {
+        document.getElementById('custom-picker-overlay').style.display = "none";
+    }
+
+    // MODAL DIALOG MANAGEMENT
+    document.getElementById('form-header-back-btn').onclick = () => {
+        document.getElementById('cancel-modal-overlay').style.display = "flex";
+    };
+    document.getElementById('form-cancel-trigger').onclick = () => {
+        document.getElementById('cancel-modal-overlay').style.display = "flex";
+    };
+    document.getElementById('modal-cancel-close').onclick = () => {
+        document.getElementById('cancel-modal-overlay').style.display = "none";
+    };
+    document.getElementById('modal-cancel-confirm').onclick = () => {
+        window.location.href = "home.html";
+    };
+    document.getElementById('modal-save-close').onclick = () => {
+        document.getElementById('save-modal-overlay').style.display = "none";
+    };
+
+    // SAVE/SUBMIT AND VALIDATION LOGIC
+    document.getElementById('form-save-trigger').onclick = () => {
+        let errors = false;
+        document.querySelectorAll('.validation-error-glow').forEach(el => el.classList.remove('validation-error-glow'));
+
+        if(slotBase64Array.length === 0) {
+            document.getElementById('image-gallery-row').classList.add('validation-error-glow');
+            errors = true;
+        }
+
+        // Enforce that at least one video is loaded
+        if(videoBase64Array.length < MIN_VIDEOS) {
+            document.getElementById('video-gallery-row').classList.add('validation-error-glow');
+            errors = true;
+        }
+
+        if(!titleIn.value.trim()) {
+            titleIn.classList.add('validation-error-glow');
+            errors = true;
+        }
+        if(!descIn.value.trim()) {
+            descIn.classList.add('validation-error-glow');
+            errors = true;
+        }
+        if(!contactIn.value.trim()) {
+            contactIn.classList.add('validation-error-glow');
+            errors = true;
+        }
+
+        // Comprehensive programmatic evaluation for custom compensation fields
+        // Note: Freelancer pricing/inclusion fields are optional, so no checks needed here.
+        if(activePersonaTrack === "Business") {
+            const offer = document.getElementById('meta-salary-offer');
+            if(!offer || !offer.value.trim()) { offer?.classList.add('validation-error-glow'); errors = true; }
+        } else if(activePersonaTrack === "Jobseeker") {
+            const expect = document.getElementById('meta-salary-expect');
+            if(!expect || !expect.value.trim()) { expect?.classList.add('validation-error-glow'); errors = true; }
+        } else if(activePersonaTrack === "Intern") {
+            const allowance = document.getElementById('meta-intern-allowance');
+            const school = document.getElementById('meta-intern-school');
+            if(!allowance || !allowance.value.trim()) { allowance?.classList.add('validation-error-glow'); errors = true; }
+            if(!school || !school.value.trim()) { school?.classList.add('validation-error-glow'); errors = true; }
+        }
+
+        if(activePersonaTrack !== 'Freelancer') {
+            if(!regionTrigger.classList.contains('disabled') && !selectedRegion) {
+                regionTrigger.classList.add('validation-error-glow');
+                errors = true;
+            }
+            if(!areaTrigger.classList.contains('disabled') && !selectedArea) {
+                areaTrigger.classList.add('validation-error-glow');
+                errors = true;
+            }
+        }
+
+        if(!selectedCategory) {
+            document.getElementById('category-trigger').classList.add('validation-error-glow');
+            errors = true;
+        }
+        if(!selectedSubcategory) {
+            document.getElementById('subcategory-trigger').classList.add('validation-error-glow');
+            errors = true;
+        }
+
+        if(errors) {
+            showAppError("Missing Information", "Some fields still need your attention. We've marked them in red — please fill them in to continue.");
+            const firstErrorEl = document.querySelector('.validation-error-glow');
+            if (firstErrorEl) {
+                firstErrorEl.scrollIntoView({ behavior: "smooth", block: "center" });
+            }
+            return;
+        }
+
+        document.getElementById('save-modal-overlay').style.display = "flex";
+    };
+
+    // Uses the same per-user storage key scheme as ads.html so published ads show up there
+    function getAdsStorageKey() {
+        const currentUser = JSON.parse(localStorage.getItem('currentUser') || 'null');
+        if (currentUser && currentUser.email) {
+            return `openJobsAdvertisements_${currentUser.email}`;
+        }
+        return 'openJobsAdvertisements_guest';
+    }
+
+    document.getElementById('modal-save-confirm').onclick = async () => {
+        const confirmBtn = document.getElementById('modal-save-confirm');
+        const originalBtnText = confirmBtn.textContent;
+        confirmBtn.textContent = "Publishing...";
+        confirmBtn.disabled = true;
+
+        try {
+            const adsStorageKey = getAdsStorageKey();
+            let storage = JSON.parse(localStorage.getItem(adsStorageKey) || "[]");
+
+            const adId = editingAdId || generateAdId();
+
+            let targetObject = {
+                adId: adId,
+                type: activePersonaTrack,
+                title: titleIn.value.trim(),
+                description: descIn.value.trim(),
+                contact: contactIn.value.trim(),
+                region: selectedRegion || "All Regions",
+                area: selectedArea || "All Areas",
+                category: selectedCategory,
+                subcategory: selectedSubcategory,
+                timestamp: new Date().toISOString()
+            };
+
+            if(activePersonaTrack === "Freelancer") {
+                targetObject.locationModel = document.querySelector('input[name="free-location"]:checked').value;
+                targetObject.pricingStructure = document.querySelector('input[name="free-pricing"]:checked').value;
+                targetObject.financialScale = document.getElementById('meta-service-cost').value.trim();
+                targetObject.turnaround = document.querySelector('input[name="free-turnaround"]:checked').value;
+                targetObject.inclusions = document.getElementById('meta-free-inclusions').value.trim();
+                targetObject.portfolioUrl = document.getElementById('meta-free-portfolio').value.trim();
+            } else if(activePersonaTrack === "Business") {
+                targetObject.subTypeModel = document.querySelector('input[name="business-model"]:checked').value;
+                targetObject.financialScale = document.getElementById('meta-salary-offer').value.trim();
+            } else if(activePersonaTrack === "Jobseeker") {
+                targetObject.exp = document.querySelector('input[name="seeker-exp"]:checked').value;
+                targetObject.financialScale = document.getElementById('meta-salary-expect').value.trim();
+            } else if(activePersonaTrack === "Intern") {
+                targetObject.subTypeModel = document.querySelector('input[name="intern-window"]:checked').value;
+                targetObject.financialScale = document.getElementById('meta-intern-allowance').value.trim();
+                targetObject.affiliation = document.getElementById('meta-intern-school').value.trim();
+            }
+
+            // Images/videos go to IndexedDB — they're too large for localStorage
+            await saveAdMedia(adId, slotBase64Array, videoBase64Array);
+
+            if(editingAdIndex !== null) {
+                storage[editingAdIndex] = targetObject;
+            } else {
+                storage.push(targetObject);
+            }
+
+            localStorage.setItem(adsStorageKey, JSON.stringify(storage));
+            document.getElementById('save-modal-overlay').style.display = "none";
+            window.location.href = "home.html";
+        } catch (err) {
+            console.error("Failed to publish ad:", err);
+            document.getElementById('save-modal-overlay').style.display = "none";
+            showAppError("Couldn't Publish Ad", "Something went wrong while saving your ad. Please try again, or use a smaller video/image file.");
+        } finally {
+            confirmBtn.textContent = originalBtnText;
+            confirmBtn.disabled = false;
+        }
+    };
+
+    // POPULATE SYSTEM STATE ON CONTEXT EDIT REQUESTS
+    window.addEventListener('DOMContentLoaded', async () => {
+        const index = sessionStorage.getItem('editAdIndex');
+        if (index !== null) {
+            editingAdIndex = parseInt(index);
+            let storage = JSON.parse(localStorage.getItem(getAdsStorageKey()) || "[]");
+            let targetedAd = storage[editingAdIndex];
+
+            if(targetedAd) {
+                editingAdId = targetedAd.adId || null;
+                selectPersonaTrack(targetedAd.type);
+
+                titleIn.value = targetedAd.title || "";
+                descIn.value = targetedAd.description || "";
+                contactIn.value = targetedAd.contact || "";
+                document.getElementById('title-counter').textContent = `${titleIn.value.length}/700`;
+                document.getElementById('desc-counter').textContent = `${descIn.value.length}/2500`;
+
+                if(targetedAd.category) {
+                    selectedCategory = targetedAd.category;
+                    document.getElementById('category-trigger').querySelector('.trigger-label').textContent = selectedCategory;
+                    document.getElementById('subcategory-trigger').classList.remove('disabled');
+                }
+                if(targetedAd.subcategory) {
+                    selectedSubcategory = targetedAd.subcategory;
+                    document.getElementById('subcategory-trigger').querySelector('.trigger-label').textContent = selectedSubcategory;
+                }
+
+                if (targetedAd.type === "Freelancer") {
+                    if (targetedAd.locationModel) {
+                        const rbl = document.querySelector(`input[name="free-location"][value="${targetedAd.locationModel}"]`);
+                        if(rbl) { rbl.checked = true; checkLocationLogic(); }
+                    }
+                    document.getElementById('meta-service-cost').value = targetedAd.financialScale || "";
+                    document.getElementById('meta-free-inclusions').value = targetedAd.inclusions || "";
+                    document.getElementById('meta-free-portfolio').value = targetedAd.portfolioUrl || "";
+                    
+                    const rbp = document.querySelector(`input[name="free-pricing"][value="${targetedAd.pricingStructure}"]`);
+                    if(rbp) rbp.checked = true;
+                    const rbt = document.querySelector(`input[name="free-turnaround"][value="${targetedAd.turnaround}"]`);
+                    if(rbt) rbt.checked = true;
+                }
+
+                // Restore whichever region/area was saved, including "All Regions"/"All Areas"
+                if (targetedAd.region) {
+                    selectedRegion = targetedAd.region;
+                    regionTrigger.querySelector('.trigger-label').textContent = selectedRegion;
+                    if (selectedRegion === "All Regions") {
+                        areaTrigger.classList.add('disabled');
+                        areaTrigger.style.pointerEvents = "none";
+                    } else {
+                        areaTrigger.classList.remove('disabled');
+                        areaTrigger.style.pointerEvents = "auto";
+                    }
+                }
+                if (targetedAd.area) {
+                    selectedArea = targetedAd.area;
+                    areaTrigger.querySelector('.trigger-label').textContent = selectedArea;
+                }
+
+                if(targetedAd.type === "Business") {
+                    document.getElementById('meta-salary-offer').value = targetedAd.financialScale || "";
+                    const rb = document.querySelector(`input[name="business-model"][value="${targetedAd.subTypeModel}"]`);
+                    if(rb) { rb.checked = true; checkLocationLogic(); }
+                } else if(targetedAd.type === "Jobseeker") {
+                    document.getElementById('meta-salary-expect').value = targetedAd.financialScale || "";
+                    const rb = document.querySelector(`input[name="seeker-exp"][value="${targetedAd.exp}"]`);
+                    if(rb) rb.checked = true;
+                } else if(targetedAd.type === "Intern") {
+                    document.getElementById('meta-intern-allowance').value = targetedAd.financialScale || "";
+                    document.getElementById('meta-intern-school').value = targetedAd.affiliation || "";
+                    const rb = document.querySelector(`input[name="intern-window"][value="${targetedAd.subTypeModel}"]`);
+                    if(rb) rb.checked = true;
+                }
+
+                if (editingAdId) {
+                    try {
+                        const media = await getAdMedia(editingAdId);
+                        if (media.images && Array.isArray(media.images)) {
+                            slotBase64Array = [...media.images];
+                            renderImageThumbnails();
+                        }
+                        if (media.videos && Array.isArray(media.videos)) {
+                            videoBase64Array = [...media.videos];
+                            renderVideoThumbnails();
+                        }
+                    } catch (err) {
+                        console.error("Failed to load ad media for editing:", err);
+                    }
+                }
+
+                document.getElementById('form-save-trigger').textContent = "Update";
+                document.getElementById('modal-save-title').textContent = "Update advertisement?";
+                document.getElementById('modal-save-desc').textContent = "Your changes will be saved and the ad will update right away.";
+            }
+            sessionStorage.removeItem('editAdIndex');
+        }
+    });
 </script>
 </body>
 </html>

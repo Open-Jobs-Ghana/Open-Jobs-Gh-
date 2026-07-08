@@ -12,7 +12,7 @@
 </head>
 <body>
   <div class="login-page">
-    <form class="login-card" action="#" method="post">
+    <form class="login-card" action="#" method="post" id="loginForm">
       <div class="brand-header">
         <img src="icons/Open Logo.png" alt="Open logo" class="brand-logo">
         <h1>OPEN</h1>
@@ -22,11 +22,12 @@
       <input id="email" type="email" name="email" placeholder="Email Address" required>
 
       <input id="password" type="password" name="password" placeholder="Password" required>
-      <div class="error-message" id="passwordError">
-        ❌ Password must start with capital letter, contain special character (@#$%!&*), and end with 1-2 numbers
+      
+      <div class="error-message" id="accountError" style="display: none; color: red; margin-top: 10px; font-weight: 500;">
+        ❌ Sorry, account does not exist
       </div>
 
-      <button type="submit" class="primary-btn"><a href="index.html"></a>Sign In</button>
+      <button type="submit" class="primary-btn">Sign In</button>
 
       <div class="divider"><span>or continue with:</span></div>
 
@@ -41,21 +42,17 @@
   </div>
 </body>
 <script>
- 
 document.addEventListener('DOMContentLoaded', function() {
-  // Find all password inputs
+  // Find all password inputs and set up eye toggle icons
   const passwordInputs = document.querySelectorAll('input[type="password"]');
   
   passwordInputs.forEach((input, index) => {
-    // Create wrapper div
     const wrapper = document.createElement('div');
     wrapper.className = 'password-wrapper';
     
-    // Wrap the input
     input.parentNode.insertBefore(wrapper, input);
     wrapper.appendChild(input);
     
-    // Create toggle button
     const toggleBtn = document.createElement('button');
     toggleBtn.type = 'button';
     toggleBtn.className = 'toggle-password';
@@ -64,7 +61,6 @@ document.addEventListener('DOMContentLoaded', function() {
     
     wrapper.appendChild(toggleBtn);
     
-    // Add click handler
     toggleBtn.addEventListener('click', function() {
       const type = input.type === 'password' ? 'text' : 'password';
       input.type = type;
@@ -74,54 +70,69 @@ document.addEventListener('DOMContentLoaded', function() {
       this.innerHTML = `<img src="${iconSrc}" alt="${ariaLabel}">`;
     });
   });
-});
-
-
-
-// Password validation function
-  function validatePassword(password) {
-    return (
-      /^[A-Z]/.test(password) &&           // Starts with capital letter
-      /[@#$%!&*]/.test(password) &&        // Contains special character
-      /[0-9]{1,2}$/.test(password) &&      // Ends with 1-2 numbers
-      password.length >= 8                  // Minimum length
-    );
-  }
   
   const form = document.getElementById('loginForm');
+  const emailInput = document.getElementById('email');
   const passwordInput = document.getElementById('password');
-  const errorMessage = document.getElementById('passwordError');
-  
-  // Sow errors when user types  
+  const accountErrorMessage = document.getElementById('accountError');
+
+  // Clear error notes dynamically while typing a new attempt
   passwordInput.addEventListener('input', function() {
-    const password = this.value;
-    
-    if (password && !validatePassword(password)) {
-      this.classList.add('invalid');
-      errorMessage.style.display = 'block';
-    } else {
-      this.classList.remove('invalid');
-      errorMessage.style.display = 'none';
-    }
+    this.classList.remove('invalid');
+    accountErrorMessage.style.display = 'none';
   });
-  
-  // Form submission validation
-  form.addEventListener('submit', function(e) {
-    const password = passwordInput.value;
-    
-    if (!validatePassword(password)) {
-      e.preventDefault(); // STOP form submission
-      errorMessage.style.display = 'block';
-      passwordInput.classList.add('invalid');
-      passwordInput.focus();
-      return false;
-    }
-    
-    // If we get here, password is valid
-    // You would normally check against database here
-    alert('✅ Password format valid! Checking credentials...');
-    
-    e.preventDefault();
+
+  emailInput.addEventListener('input', function() {
+    passwordInput.classList.remove('invalid');
+    accountErrorMessage.style.display = 'none';
   });
+
+  // Form submission handling logic
+  if (form) {
+    form.addEventListener('submit', function(e) {
+      e.preventDefault(); // STOP automatic form processing
+      
+      const email = emailInput.value.trim().toLowerCase();
+      const password = passwordInput.value;
+      
+      // Reset layout configurations
+      accountErrorMessage.style.display = 'none';
+      passwordInput.classList.remove('invalid');
+
+      // Fetch existing system database records
+      const STORAGE_KEY = "OPEN_USER_RECORDS";
+      const SESSION_KEY = "OPEN_ACTIVE_SESSION";
+      const users = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+      
+      // Step 1: Verify if the email exists at all
+      const userExists = users.find(user => user.email === email);
+      
+      if (!userExists) {
+        // Condition A: Email is nowhere to be found
+        accountErrorMessage.innerText = "❌ Sorry, account does not exist";
+        accountErrorMessage.style.display = 'block';
+        return false;
+      }
+      
+      // Step 2: Email exists, now evaluate the password
+      if (userExists.password !== password) {
+        // Condition B: Email is valid but password fails matching criteria
+        accountErrorMessage.innerText = "❌ Incorrect password";
+        accountErrorMessage.style.display = 'block';
+        passwordInput.classList.add('invalid');
+        passwordInput.focus();
+        return false;
+      }
+      
+      // Step 3: Success authentication state mapping
+      localStorage.setItem(SESSION_KEY, JSON.stringify({ email: email }));
+      window.location.href = 'home.html';
+    });
+  }
+});
+
+if (localStorage.getItem('theme') === 'dark') {
+    document.documentElement.classList.add('dark-theme');
+}
 </script>
 </html>

@@ -156,6 +156,10 @@ body {
         function goBack() {
             window.history.back();
         }
+
+        if (localStorage.getItem('theme') === 'dark') {
+        document.documentElement.classList.add('dark-theme');
+    }
     </script>
 </body>
 </html>

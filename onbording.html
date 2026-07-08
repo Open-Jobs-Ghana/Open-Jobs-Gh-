@@ -55,7 +55,7 @@
                   justify-content: center;
                   gap: 10px;
                   margin-bottom: 24px;
-}
+            }
 
             .progress-dot {
                   width: 12px;
@@ -63,6 +63,8 @@
                   border-radius: 50%;
                   background: #ffffff;
                   border: 1px solid #c8c3c0;
+                  cursor: pointer;
+                  transition: all 0.3s ease;
             }
 
             .progress-dot.active {
@@ -79,16 +81,7 @@
             .progress-dot.unvisited {
                   background: #ffffff;
                   border-color: #c8c3c0;
-            }
-
-            .progress-dot {
-                  width: 12px;
-                  height: 12px;
-                  border-radius: 50%;
-                  background: #ffffff;
-                  border: 1px solid #c8c3c0;
-                  cursor: pointer;
-                  transition: all 0.3s ease;
+                  cursor: default;
             }
 
             .options-container {
@@ -169,142 +162,47 @@
                   background: rgb(50, 5, 80);
             }
 
-            /* Mobile Devices (320px - 480px) */
+            /* Mobile Devices */
             @media (max-width: 480px) {
-                  body.onboarding-page {
-                        padding: 12px;
-                  }
-
-                  .section {
-                        padding: 20px 16px;
-                        border-radius: 20px;
-                  }
-
-                  .section h1 {
-                        font-size: 20px;
-                        margin-bottom: 12px;
-                  }
-
-                  .section p {
-                        font-size: 14px;
-                        line-height: 1.6;
-                        margin-bottom: 20px;
-                  }
-
-                  .progress-dots {
-                        gap: 8px;
-                        margin-bottom: 16px;
-                  }
-
-                  .progress-dot {
-                        width: 10px;
-                        height: 10px;
-                  }
-
-                  .section button {
-                        padding: 12px 16px;
-                        font-size: 14px;
-                        border-radius: 24px;
-                  }
-
-                  .button-group {
-                        gap: 8px;
-                        margin-top: 6px;
-                  }
+                  body.onboarding-page { padding: 12px; }
+                  .section { padding: 20px 16px; border-radius: 20px; }
+                  .section h1 { font-size: 20px; margin-bottom: 12px; }
+                  .section p { font-size: 14px; line-height: 1.6; margin-bottom: 20px; }
+                  .progress-dots { gap: 8px; margin-bottom: 16px; }
+                  .progress-dot { width: 10px; height: 10px; }
+                  .section button { padding: 12px 16px; font-size: 14px; border-radius: 24px; }
+                  .button-group { gap: 8px; margin-top: 6px; }
             }
 
-            /* Tablets (481px - 768px) */
+            /* Tablets */
             @media (min-width: 481px) and (max-width: 768px) {
-                  body.onboarding-page {
-                        padding: 20px;
-                  }
-
-                  .section {
-                        padding: 32px 28px;
-                        border-radius: 24px;
-                  }
-
-                  .section h1 {
-                        font-size: 22px;
-                        margin-bottom: 14px;
-                  }
-
-                  .section p {
-                        font-size: 15px;
-                        margin-bottom: 24px;
-                  }
-
-                  .button-group {
-                        gap: 12px;
-                  }
+                  body.onboarding-page { padding: 20px; }
+                  .section { padding: 32px 28px; border-radius: 24px; }
+                  .section h1 { font-size: 22px; margin-bottom: 14px; }
+                  .section p { font-size: 15px; margin-bottom: 24px; }
+                  .button-group { gap: 12px; }
             }
 
-            /* Desktop and Larger (769px+) */
+            /* Desktop and Larger */
             @media (min-width: 769px) {
-                  body.onboarding-page {
-                        padding: 24px;
-                  }
-
-                  .section {
-                        width: 100%;
-                        max-width: 520px;
-                        padding: 40px 36px;
-                        border-radius: 32px;
-                  }
-
-                  .section h1 {
-                        font-size: 26px;
-                        margin-bottom: 18px;
-                  }
-
-                  .section p {
-                        font-size: 17px;
-                        line-height: 1.8;
-                        margin-bottom: 32px;
-                  }
-
-                  .progress-dots {
-                        gap: 12px;
-                        margin-bottom: 28px;
-                  }
-
-                  .progress-dot {
-                        width: 14px;
-                        height: 14px;
-                  }
-
-                  .section button {
-                        padding: 18px 28px;
-                        font-size: 17px;
-                        border-radius: 30px;
-                  }
-
-                  .button-group {
-                        gap: 16px;
-                        margin-top: 12px;
-                  }
+                  body.onboarding-page { padding: 24px; }
+                  .section { width: 100%; max-width: 520px; padding: 40px 36px; border-radius: 32px; }
+                  .section h1 { font-size: 26px; margin-bottom: 18px; }
+                  .section p { font-size: 17px; line-height: 1.8; margin-bottom: 32px; }
+                  .progress-dots { gap: 12px; margin-bottom: 28px; }
+                  .progress-dot { width: 14px; height: 14px; }
+                  .section button { padding: 18px 28px; font-size: 17px; border-radius: 30px; }
+                  .button-group { gap: 16px; margin-top: 12px; }
             }
-            
       </style>
 </head>
 <body class="onboarding-page">
       <div class="section">
             <img src="icons/onbord.jpg" alt="Onboarding illustration" class="onboard-image">
-            <div class="progress-dots" aria-label="Onboarding progress">
-                  <span class="progress-dot"></span>
-                  <span class="progress-dot"></span>
-                  <span class="progress-dot"></span>
-                  <span class="progress-dot"></span>
-                  <span class="progress-dot"></span>
-                  <span class="progress-dot"></span>
-                  <span class="progress-dot"></span>
-            </div>
+            <div class="progress-dots" id="progressDotsContainer" aria-label="Onboarding progress"></div>
 
             <h1 id="pageTitle">Hey there!</h1>
-            <p id="pageText">
-                  We're excited to have you here. Before we get into the career opportunities waiting for you, we just need a few quick details to personalize your journey.
-                  Ready to find your next big move? Tap on Next to get started! 🚀
-            </p>
+            <p id="pageText">Loading setup details...</p>
 
             <div id="optionsContainer" class="options-container"></div>
 
@@ -313,13 +211,17 @@
                   <button id="nextBtn">Next</button>
             </div>
       </div>
+
       <script>
-            const pages = [
+            // Step definitions across branches
+            const commonBasePages = [
                   {
+                        id: 'welcome',
                         title: 'Hey there!',
                         text: 'We\'re excited to have you here. Before we get into the career opportunities waiting for you, we just need a few quick details to personalize your journey. Ready to find your next big move? Tap Next to get started! 🚀'
                   },
                   {
+                        id: 'attribution',
                         title: 'How did you find out about OPEN?',
                         options: [
                               { value: "Family or Friend", label: "Family or friend" },
@@ -330,142 +232,281 @@
                         ]
                   },
                   {
+                        id: 'role_selection',
                         title: 'What brings you here today?',
                         options: [
-                              { value: "Looking for a job", label: "I'm looking for a job" },
-                              { value: "Hiring talent", label: "I'm here to hire talent" },
-                              { value: "Exploring opportunities", label: "I'm just exploring " },
-                              { value: "Other", label: "Other" }
+                              { value: "Jobseeker", label: "I am a Jobseeker" },
+                              { value: "Business Owner", label: "I am a Business owner" },
+                              { value: "Freelancer", label: "I am a Freelancer" },
+                              { value: "Internship Seeker", label: "I am looking for internship opportunities" }
                         ]
-                  },
-                  {
-                        title: 'Which field are you most interested in?',
-                        options: [
-                              { value: "Healthcare", label: "Healthcare" },
-                              { value: "Business or Finance", label: "Business or Finance" },
-                              { value: "Agriculture", label: "Agriculture" },
-                              { value: "Engineering", label: "Engineering" },
-                              { value: "Transport", label: "Transport" },
-                              { value: "Other", label: "Other" }
-                        ]
-                  },
-                  {
-                        title: 'Where would you prefer to work?',
-                        options: [
-                              { value: "Physical Workplace", label: "Physical Workplace" },
-                              { value: "Remotely", label: "Remotely (online or from home)" },
-                        ]
-                  },
-                  {
-                        title: 'What\'s your current professional level?',
-                        options: [
-                              { value: "Student", label: "Student / Intern" },
-                              { value: "Entry level", label: "Entry level" },
-                              { value: "Middle level", label: "Middle level" },
-                              { value: "Senior level", label: "Senior level" },
-                        ]
-                  },
-                  {
-                        title: '🥳 Hooray!',
-                        text: 'You are all done. Now all you need to do is explore the app to find and secure the best talent or job for yourself.'
                   }
             ];
 
-            const progressDots = document.querySelectorAll('.progress-dot');
+            const tracks = {
+                  "Jobseeker": [
+                        {
+                              id: 'js_field',
+                              title: 'Which field are you most interested in?',
+                              options: [
+                                    { value: "Healthcare", label: "Healthcare" },
+                                    { value: "Business or Finance", label: "Business or Finance" },
+                                    { value: "Agriculture", label: "Agriculture" },
+                                    { value: "Engineering", label: "Engineering" },
+                                    { value: "Transport", label: "Transport" },
+                                    { value: "Other", label: "Other" }
+                              ]
+                        },
+                        {
+                              id: 'js_workspace',
+                              title: 'Where would you prefer to work?',
+                              options: [
+                                    { value: "Physical Workplace", label: "Physical Workplace" },
+                                    { value: "Remotely", label: "Remotely (online or from home)" }
+                              ]
+                        },
+                        {
+                              id: 'js_level',
+                              title: 'What\'s your current professional level?',
+                              options: [
+                                    { value: "Entry level", label: "Entry level" },
+                                    { value: "Middle level", label: "Middle level" },
+                                    { value: "Senior level", label: "Senior level" }
+                              ]
+                        }
+                  ],
+                  "Internship Seeker": [
+                        {
+                              id: 'intern_field',
+                              title: 'Which industry are you looking to intern in?',
+                              options: [
+                                    { value: "Healthcare", label: "Healthcare" },
+                                    { value: "Business or Finance", label: "Business or Finance" },
+                                    { value: "Agriculture", label: "Agriculture" },
+                                    { value: "Engineering", label: "Engineering" },
+                                    { value: "Tech", label: "Technology / IT" },
+                                    { value: "Other", label: "Other" }
+                              ]
+                        },
+                        {
+                              id: 'intern_type',
+                              title: 'What type of internship are you targetting?',
+                              options: [
+                                    { value: "Physical", label: "On-site / Physical" },
+                                    { value: "Remote", label: "Remote Internship" }
+                              ]
+                        },
+                        {
+                              id: 'intern_status',
+                              title: 'What is your current status?',
+                              options: [
+                                    { value: "Student", label: "Current Student" },
+                                    { value: "Graduate", label: "Recent Graduate" },
+                                    { value: "Career Changer", label: "Career Changer" }
+                              ]
+                        }
+                  ],
+                  "Business Owner": [
+                        {
+                              id: 'biz_size',
+                              title: 'What is the scale of your business?',
+                              options: [
+                                    { value: "Solo", label: "Solo Founder / Micro Enterprise" },
+                                    { value: "Small", label: "2 - 10 Employees" },
+                                    { value: "Medium", label: "11 - 50 Employees" },
+                                    { value: "Large", label: "50+ Employees" }
+                              ]
+                        },
+                        {
+                              id: 'biz_sector',
+                              title: 'Which sector does your business operate in?',
+                              options: [
+                                    { value: "Agriculture", label: "Agriculture" },
+                                    { value: "Commerce", label: "Retail / Commerce" },
+                                    { value: "Tech", label: "Technology & Software" },
+                                    { value: "Hospitality", label: "Hospitality & Tourism" },
+                                    { value: "Other", label: "Other Domain" }
+                              ]
+                        },
+                        {
+                              id: 'biz_need',
+                              title: 'What talent do you need to find first?',
+                              options: [
+                                    { value: "Full-Time", label: "Permanent Full-time Workers" },
+                                    { value: "Freelancers", label: "Project Contractors / Freelancers" },
+                                    { value: "Interns", label: "Short-term Interns" }
+                              ]
+                        }
+                  ],
+                  "Freelancer": [
+                        {
+                              id: 'free_skill',
+                              title: 'What is your primary freelance domain?',
+                              options: [
+                                    { value: "Development", label: "Software / Web Development" },
+                                    { value: "Design", label: "Graphic Design / Creative Media" },
+                                    { value: "Finance", label: "Accounting, Legal or Tax" },
+                                    { value: "Writing", label: "Content Writing & Marketing" },
+                                    { value: "Other", label: "Other Professional Service" }
+                              ]
+                        },
+                        {
+                              id: 'free_load',
+                              title: 'What is your structural work availability?',
+                              options: [
+                                    { value: "Full-Time", label: "Available Full-Time for Gigs" },
+                                    { value: "Part-Time", label: "Part-Time / Side-Hustle Only" }
+                              ]
+                        },
+                        {
+                              id: 'free_billing',
+                              title: 'How do you typically bill your clients?',
+                              options: [
+                                    { value: "Hourly", label: "Hourly Billing Rates" },
+                                    { value: "Project", label: "Fixed Project Milestones" },
+                                    { value: "Retainer", label: "Monthly Retainer Agreements" }
+                              ]
+                        }
+                  ]
+            };
+
+            const endPage = {
+                  id: 'hooray',
+                  title: '🎉 Hooray!',
+                  text: 'You are all done. Now all you need to do is explore the app to find and secure the best talent or job for yourself.'
+            };
+
+            // Global State Engine
+            let currentIndex = 0;
+            let maxVisited = 0;
+            const selections = {};
+
             const pageTitle = document.getElementById('pageTitle');
             const pageText = document.getElementById('pageText');
             const nextBtn = document.getElementById('nextBtn');
             const backBtn = document.getElementById('backBtn');
             const optionsContainer = document.getElementById('optionsContainer');
-            let currentIndex = 0;
-            let maxVisited = 0;
-            const selections = {};
+            const progressDotsContainer = document.getElementById('progressDotsContainer');
 
-            function updateButtons() {
-                  const hasSelection = !pages[currentIndex].options || selections[currentIndex];
+            // Evaluates and merges the dynamic sequence steps based on current choice context
+            function buildActivePagesArray() {
+                  const currentPages = [...commonBasePages];
+                  const chosenRole = selections['role_selection'];
+                  
+                  if (chosenRole && tracks[chosenRole]) {
+                        currentPages.push(...tracks[chosenRole]);
+                  }
+                  currentPages.push(endPage);
+                  return currentPages;
+            }
+
+            function updateButtons(activePages) {
+                  const currentPageObject = activePages[currentIndex];
+                  const hasSelection = !currentPageObject.options || selections[currentPageObject.id];
                   nextBtn.disabled = !hasSelection;
             }
 
-            function updatePage() {
-                  const currentProgressDots = document.querySelectorAll('.progress-dot');
-                  
-                  currentProgressDots.forEach((dot, index) => {
+            function buildProgressDots(activePages) {
+                  progressDotsContainer.innerHTML = '';
+                  activePages.forEach((_, index) => {
+                        const dot = document.createElement('span');
                         dot.className = 'progress-dot';
+                        
                         if (index === currentIndex) {
                               dot.classList.add('active');
                         } else if (index <= maxVisited) {
                               dot.classList.add('visited');
-                        } else {
-                              dot.classList.add('unvisited');
-                        }
-                  });
-
-                  currentProgressDots.forEach((dot, index) => {
-                        const newDot = dot.cloneNode(true);
-                        dot.parentNode.replaceChild(newDot, dot);
-                  });
-
-                  const updatedProgressDots = document.querySelectorAll('.progress-dot');
-                  updatedProgressDots.forEach((dot, index) => {
-                        if (index <= maxVisited) {
-                              dot.style.cursor = 'pointer';
                               dot.addEventListener('click', () => {
                                     currentIndex = index;
                                     updatePage();
                               });
                         } else {
-                              dot.style.cursor = 'default';
+                              dot.classList.add('unvisited');
                         }
+                        progressDotsContainer.appendChild(dot);
                   });
-                  pageTitle.textContent = pages[currentIndex].title;
-                  if (pages[currentIndex].text) {
-                        pageText.textContent = pages[currentIndex].text;
-                  } else {
-                        pageText.textContent = '';
+            }
+
+            function updatePage() {
+                  const activePages = buildActivePagesArray();
+                  const currentPageObject = activePages[currentIndex];
+
+                  // Safeguard index mismatch if paths change abruptly
+                  if (!currentPageObject) {
+                        currentIndex = activePages.length - 1;
+                        updatePage();
+                        return;
                   }
-                  
-                  // Show image only on first page
+
+                  // Build steps tracking dots
+                  buildProgressDots(activePages);
+
+                  // Update strings
+                  pageTitle.textContent = currentPageObject.title;
+                  pageText.textContent = currentPageObject.text || '';
+
+                  // Show visual asset layout only on home hero frame
                   const onboardImage = document.querySelector('.onboard-image');
                   onboardImage.style.display = currentIndex === 0 ? 'block' : 'none';
-                  
-                  // Clear and render options
+
+                  // Render contextual options components
                   optionsContainer.innerHTML = '';
-                  if (pages[currentIndex].options) {
-                        pages[currentIndex].options.forEach(option => {
+                  if (currentPageObject.options) {
+                        currentPageObject.options.forEach(option => {
                               const card = document.createElement('div');
                               card.className = 'option-card';
                               card.textContent = option.label;
                               card.dataset.value = option.value;
-                              if (selections[currentIndex] === option.value) {
+
+                              if (selections[currentPageObject.id] === option.value) {
                                     card.classList.add('selected');
                               }
+
                               card.addEventListener('click', () => {
-                                    // Remove selected from others
                                     optionsContainer.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
                                     card.classList.add('selected');
-                                    selections[currentIndex] = option.value;
-                                    updateButtons();
+                                    
+                                    const oldSelection = selections[currentPageObject.id];
+                                    selections[currentPageObject.id] = option.value;
+
+                                    // Clear path memory if role selection shifts
+                                    if (currentPageObject.id === 'role_selection' && oldSelection !== option.value) {
+                                          maxVisited = currentIndex;
+                                          Object.keys(selections).forEach(key => {
+                                                if(key !== 'welcome' && key !== 'attribution' && key !== 'role_selection') {
+                                                      delete selections[key];
+                                                }
+                                          });
+                                    }
+
+                                    updateButtons(activePages);
                               });
                               optionsContainer.appendChild(card);
                         });
                   }
 
-                  if (currentIndex === pages.length - 1) {
+                  // Establish standard layout pagination operations buttons UI
+                  backBtn.style.display = currentIndex > 0 ? 'block' : 'none';
+                  if (currentIndex === activePages.length - 1) {
                         nextBtn.textContent = 'Continue';
-                        nextBtn.style.display = 'block';
-                        backBtn.style.display = currentIndex > 0 ? 'block' : 'none';
                   } else {
-                        nextBtn.style.display = 'block';
-                        backBtn.style.display = currentIndex > 0 ? 'block' : 'none';
                         nextBtn.textContent = 'Next';
                   }
-                  updateButtons();
+
+                  updateButtons(activePages);
             }
 
             nextBtn.addEventListener('click', () => {
-                  if (currentIndex === pages.length - 1) {
+                  const activePages = buildActivePagesArray();
+                  const currentPageObject = activePages[currentIndex];
+
+                  if (currentIndex === activePages.length - 1) {
+                        // Persist onboarding results inside browser context
+                        localStorage.setItem('open_user_role', selections['role_selection'] || 'Exploring');
+                        localStorage.setItem('open_onboarding_data', JSON.stringify(selections));
+                        
                         window.location.href = 'home.html';
-                  } else if (currentIndex < pages.length - 1 && (!pages[currentIndex].options || selections[currentIndex])) {
+                  } else if (currentIndex < activePages.length - 1 && (!currentPageObject.options || selections[currentPageObject.id])) {
                         currentIndex += 1;
                         maxVisited = Math.max(maxVisited, currentIndex);
                         updatePage();
@@ -479,6 +520,7 @@
                   }
             });
 
+            // Run application initialize engine core
             updatePage();
       </script>
 </body>

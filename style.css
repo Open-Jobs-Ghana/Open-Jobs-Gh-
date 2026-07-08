@@ -1,3 +1,44 @@
+/* ==========================================
+   THEME CONFIGURATION (LIGHT/DARK MODE)
+   ========================================== */
+:root {
+      /* Light Theme Variables */
+      --body-bg: linear-gradient(135deg, #eef2ff 0%, #fdfcfb 100%);
+      --home-bg: #f7f5ef;
+      --card-bg: #ffffff;
+      --input-bg: #f8fafc;
+      --text-main: #1f2937;
+      --text-input: #111827;
+      --text-muted: #6b7280;
+      --border-color: rgba(15, 23, 42, 0.12);
+      --input-border: #2d333a;
+      --shadow-color: rgba(15, 23, 42, 0.08);
+      
+      /* Brand Accent Colors (Kept consistent across themes) */
+      --brand-primary: #500E8C;
+      --brand-secondary: rgb(71, 8, 119);
+}
+
+/* Global root target mapping matching your scripts perfectly */
+.dark-theme {
+      /* Dark Theme Variables - Swapped to Premium Dark Charcoal Greys */
+      --body-bg: #121212;             /* Sleek dark charcoal grey background */
+      --home-bg: #121212;             /* Matching system background */
+      --card-bg: #1E1E1E;             /* Elevated darker grey for cards/containers */
+      --input-bg: #2A2A2A;            /* Visible contrasting grey for input bars */
+      --text-main: #F3F4F6;           /* Sharp off-white text for easy reading */
+      --text-input: #FFFFFF;          /* True white text for form entry fields */
+      --text-muted: #9CA3AF;          /* Subdued grey text for secondary labels */
+      --border-color: rgba(255, 255, 255, 0.08); /* Faint borders */
+      --input-border: #3A3A3A;         /* Slate borders for inputs */
+      --shadow-color: rgba(0, 0, 0, 0.5);        /* Heavy shadows for deep contrast */
+      --brand-primary: #a370db;       /* Adjusted accessible violet accent for dark visibility */
+      --brand-secondary: #c39bed;
+}
+
+/* ==========================================
+   GLOBAL STYLES
+   ========================================== */
 * {
       box-sizing: border-box;
 }
@@ -9,18 +50,22 @@ html, body {
 
 body {
       font-family: 'Poppins', sans-serif;
-      background: linear-gradient(135deg, #eef2ff 0%, #fdfcfb 100%);
-      color: #1f2937;
+      background: var(--body-bg);
+      color: var(--text-main);
       display: flex;
       align-items: center;
       justify-content: center;
       padding: 16px;
       min-height: 100vh;
+      transition: background 0.3s ease, color 0.3s ease;
 }
 
+/* ==========================================
+   HOME PAGE LAYOUT
+   ========================================== */
 .home-page {
       justify-content: flex-start;
-      background: #f7f5ef;
+      background: var(--home-bg);
       padding: 24px;
 }
 
@@ -29,10 +74,10 @@ body {
       display: flex;
       flex-direction: column;
       gap: 16px;
-      background: #ffffff;
+      background: var(--card-bg);
       border-radius: 24px;
       padding: 16px 20px;
-      box-shadow: 0 14px 40px rgba(15, 23, 42, 0.08);
+      box-shadow: 0 14px 40px var(--shadow-color);
 }
 
 .header-top {
@@ -64,17 +109,17 @@ body {
       width: 100%;
       padding: 14px 18px 14px 16px;
       border-radius: 18px;
-      border: 1px solid rgba(15, 23, 42, 0.12);
-      background: #ffffff;
-      box-shadow: 0 16px 30px rgba(15, 23, 42, 0.08);
+      border: 1px solid var(--border-color);
+      background: var(--card-bg);
+      box-shadow: 0 16px 30px var(--shadow-color);
       font: inherit;
       font-size: 16px;
-      color: #111827;
+      color: var(--text-input);
 }
 
 .search-input:focus {
       outline: none;
-      border-color: #500E8C;
+      border-color: var(--brand-primary);
       box-shadow: 0 0 0 3px rgba(80, 14, 140, 0.12);
 }
 
@@ -84,23 +129,27 @@ body {
       right: 16px;
       transform: translateY(-50%);
       font-size: 18px;
-      color: #6b7280;
+      color: var(--text-muted);
       pointer-events: none;
 }
 
+/* ==========================================
+   LOGIN & SIGNUP CARD LAYOUT
+   ========================================== */
 .login-page {
       width: 100%;
       max-width: 420px;
 }
 
 .login-card {
-      background: #ffffff;
+      background: var(--card-bg);
       border-radius: 24px;
       padding: 24px 20px;
-      box-shadow: 0 20px 60px rgba(15, 23, 42, 0.08);
+      box-shadow: 0 20px 60px var(--shadow-color);
       display: flex;
       flex-direction: column;
       gap: 16px;
+      transition: background 0.3s ease, box-shadow 0.3s ease;
 }
 
 .brand-header {
@@ -121,26 +170,36 @@ body {
       margin: 0;
       font-size: 1.75rem;
       letter-spacing: -0.02em;
-      color: #500E8C;
+      color: var(--brand-primary);
 }
 
 .subtitle {
       margin: 4px 0 12px;
-      color: #500E8C;
+      color: var(--brand-primary);
       font-size: 0.9rem;
       text-align: center;
 }
 
+/* ==========================================
+   FORM INPUTS
+   ========================================== */
 input {
       width: 100%;
       padding: 16px 16px;
-      border: 1px solid #2d333a;
+      border: 1px solid var(--input-border);
       border-radius: 30px;
-      background: #f8fafc;
+      background: var(--input-bg);
       font: inherit;
       font-size: 16px;
-      color: #111827;
+      color: var(--text-input);
       appearance: none;
+      transition: background 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+}
+
+input:focus {
+      outline: none;
+      border-color: var(--brand-primary);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
 }
 
 .error-message {
@@ -148,40 +207,39 @@ input {
       font-size: 12px;
       margin-top: 5px;
       display: none;
-    }
-
-
-/* Make the wrapper position relative */
-.password-wrapper {
-  position: relative;
-  display: inline-block;  /* or block, depending on your layout */
-  width: 100%;  /* Adjust as needed */
 }
 
-/* Style the password input to have space on the right */
+/* ==========================================
+   PASSWORD TOGGLE FEATURE
+   ========================================== */
+.password-wrapper {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+}
+
 .password-wrapper input {
   width: 100%;
-  padding-right: 40px !important;  /* Creates space for the eye */
+  padding-right: 40px !important; 
   box-sizing: border-box;
 }
 
-/* Position the eye INSIDE the input */
 .password-wrapper .toggle-password {
   position: absolute;
-  right: 12px;  /* Distance from right edge */
+  right: 12px;
   top: 50%;
-  transform: translateY(-50%);  /* Centers vertically */
+  transform: translateY(-50%); 
   background: transparent;
   border: none;
   cursor: pointer;
   padding: 0;
   font-size: 18px;
-  color: #666;
+  color: var(--text-muted);
   z-index: 1;
 }
 
 .password-wrapper .toggle-password:hover {
-  color: #333;
+  color: var(--text-main);
 }
 
 .password-wrapper .toggle-password img {
@@ -191,30 +249,27 @@ input {
   display: block;
 }
 
-input:focus {
-      outline: none;
-      border-color: #500E8C;
-      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
-}
-
+/* ==========================================
+   BUTTONS & DIVIDERS
+   ========================================== */
 .primary-btn {
       width: 100%;
       border: none;
       border-radius: 30px;
       padding: 16px 16px;
-      background: #500E8C;
+      background: var(--brand-primary);
       color: #ffffff;
       cursor: pointer;
       font-weight: 600;
       font-size: 1rem;
-      transition: background 0.2s ease;
+      transition: background 0.2s ease, opacity 0.2s ease;
       -webkit-appearance: none;
       appearance: none;
       touch-action: manipulation;
 }
 
 .primary-btn:active {
-      background: #500E8C;
+      background: var(--brand-primary);
       opacity: 0.9;
 }
 
@@ -227,7 +282,7 @@ input:focus {
       display: flex;
       align-items: center;
       gap: 12px;
-      color: #500E8C;
+      color: var(--brand-primary);
       font-size: 0.9rem;
 }
 
@@ -236,9 +291,12 @@ input:focus {
       content: '';
       flex: 1;
       height: 1px;
-      background: #e5e7eb;
+      background: var(--border-color);
 }
 
+/* ==========================================
+   SOCIAL LOGIN OPTIONS
+   ========================================== */
 .social-options {
       display: flex;
       gap: 12px;
@@ -246,9 +304,9 @@ input:focus {
 }
 
 .social-btn {
-      border: 2px solid #500E8C;
+      border: 2px solid var(--brand-primary);
       border-radius: 50%;
-      background: #f8fafc;
+      background: var(--input-bg);
       width: 56px;
       height: 56px;
       cursor: pointer;
@@ -263,13 +321,13 @@ input:focus {
 }
 
 .social-btn:active {
-      background: #500E8C;
-      border-color: #500E8C;
+      background: var(--brand-primary);
+      border-color: var(--brand-primary);
 }
 
 .social-btn i {
       font-size: 20px;
-      color: #500E8C;
+      color: var(--brand-primary);
 }
 
 .social-btn img {
@@ -284,17 +342,20 @@ input:focus {
 
 .switch-text {
       margin: 0;
-      color: rgb(71, 8, 119);
+      color: var(--brand-secondary);
       font-size: 0.9rem;
       text-align: center;
 }
 
 .switch-text a {
-      color: rgb(71, 8, 119);
+      color: var(--brand-secondary);
       text-decoration: none;
       font-weight: 600;
 }
 
+/* ==========================================
+   RESPONSIVE MEDIA QUERIES
+   ========================================== */
 @media (max-width: 480px) {
       body {
             padding: 12px;
@@ -307,6 +368,7 @@ input:focus {
 
       .login-card h1 {
             font-size: 1.5rem;
+          color: var(--brand-primary);
       }
 
       .subtitle {

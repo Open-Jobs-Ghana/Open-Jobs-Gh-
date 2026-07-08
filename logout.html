@@ -111,6 +111,10 @@
             // 2. Redirect to the login/signup page
             window.location.href = "index.html";
         }
+
+        if (localStorage.getItem('theme') === 'dark') {
+        document.documentElement.classList.add('dark-theme');
+    }
     </script>
 </body>
 </html>

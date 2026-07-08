@@ -11,6 +11,13 @@
       <title>Open Jobs Ghana | Sign Up</title>
 </head>
 <body>
+
+<script>
+    if (localStorage.getItem('theme') === 'dark') {
+        document.documentElement.classList.add('dark-theme');
+    }
+</script>
+
   <div class="login-page">
     <form class="login-card" action="#" method="post" id="signup-page">
       <div class="brand-header">
@@ -110,7 +117,7 @@
             // --- START OF DATA SAVING LOGIC ---
             const STORAGE_KEY = "OPEN_USER_RECORDS";
             const SESSION_KEY = "OPEN_ACTIVE_SESSION";
-            
+      
             let users = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
             // B. Check if email already exists
             if (users.some(u => u.email === email)) {
@@ -126,9 +133,11 @@
                 username: "",      // Empty for now, user adds in Account page
                 profilePic: null   // Placeholder for profile pic
             };
+
             // D. Save to "Database"
             users.push(newUser);
             localStorage.setItem(STORAGE_KEY, JSON.stringify(users));
+
             // E. Set "Active Session" (This tells Account.html who is logged in)
             localStorage.setItem(SESSION_KEY, JSON.stringify({ email: email }));
             // --- END OF DATA SAVING LOGIC ---

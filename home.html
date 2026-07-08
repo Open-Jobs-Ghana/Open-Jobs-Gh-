@@ -6,9 +6,16 @@
     <title>Open Jobs Ghana</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    
+    <!-- Instant Dark Mode Switch Check to Prevent Flashing -->
+    <script>
+        if (localStorage.getItem('theme') === 'dark') {
+            document.documentElement.classList.add('dark-theme');
+        }
+    </script>
+    
     <style>
-
-                /* --- CORE CONFIGURATION & MATERIAL SYSTEM --- */
+        /* --- CORE CONFIGURATION & MATERIAL SYSTEM --- */
         :root {
             --purple-main: #500e8c;
             --purple-text-title: #500e8c;
@@ -19,6 +26,25 @@
             --border-card: #f2f2f7;
             --shadow-card: rgba(0, 0, 0, 0.06);
             --screen-edge-margin: 16px;
+            --card-sub-bg: #ffffff;
+            --badge-text-fallback: #1c1c1e;
+            --badge-bg-fallback: #e5e5ea;
+            --list-row-icon-bg: #f4ebfc;
+        }
+
+        .dark-theme {
+            --purple-main: #a370db;
+            --purple-text-title: #c39bed;
+            --bg-light: #121212;
+            --bg-search: #2a2a2a;
+            --text-dark: #f3f4f6;
+            --text-muted: #9ca3af;
+            --border-card: rgba(255, 255, 255, 0.08);
+            --shadow-card: rgba(0, 0, 0, 0.4);
+            --card-sub-bg: #1e1e1e;
+            --badge-text-fallback: #f3f4f6;
+            --badge-bg-fallback: rgba(255, 255, 255, 0.1);
+            --list-row-icon-bg: rgba(163, 112, 219, 0.15);
         }
 
         * {
@@ -35,6 +61,7 @@
             min-height: 100vh;
             width: 100%;
             overflow-x: hidden;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
         .app-container {
@@ -66,11 +93,11 @@
             align-items: center;
             padding: 16px var(--screen-edge-margin);
             gap: 12px;
-            background: #ffffff;
+            background: var(--bg-light);
             position: sticky;
             top: 0;
             z-index: 50;
-            border-bottom: 1px solid #f8f9fa;
+            border-bottom: 1px solid var(--border-card);
         }
 
         .header-logo-brand-box {
@@ -86,8 +113,8 @@
         /* --- VIEW AD DETAIL MODIFICATIONS --- */
         .sub-header-navigation-sticky-row {
             padding: 16px var(--screen-edge-margin, 16px);
-            background: #ffffff;
-            border-bottom: 1px solid #eeeff2;
+            background: var(--bg-light);
+            border-bottom: 1px solid var(--border-card);
             position: sticky;
             top: 0;
             z-index: 40;
@@ -97,7 +124,7 @@
         }
 
         .back-arrow-action-btn {
-            color: #500e8c;
+            color: var(--purple-main);
             font-weight: 700;
             cursor: pointer;
             font-size: 15px;
@@ -107,7 +134,7 @@
             position: relative;
             width: 100%;
             height: 240px;
-            background-color: #eaeaea;
+            background-color: var(--bg-search);
         }
 
         /* --- AD DETAIL SLIDER --- */
@@ -128,8 +155,8 @@
             position: absolute;
             top: 50%;
             transform: translateY(-50%);
-            background: rgba(255, 255, 255, 0.7);
-            color: #500e8c;
+            background: var(--bg-light);
+            color: var(--purple-main);
             border: none;
             width: 40px;
             height: 40px;
@@ -177,7 +204,7 @@
         }
 
         .image-slider-dots .dot.active {
-            background: #500e8c;
+            background: var(--purple-main);
             width: 8px;
             height: 8px;
         }
@@ -198,14 +225,14 @@
         #detail-pane-title {
             font-size: 16px;
             font-weight: 800;
-            color: #500e8c;
+            color: var(--purple-main);
             margin: 0 0 4px 0;
         }
 
         #detail-pane-subtitle {
             font-size: 13px;
             font-weight: 700;
-            color: #000000;
+            color: var(--text-dark);
             margin: 0;
         }
 
@@ -215,7 +242,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            color: #500e8c;
+            color: var(--purple-main);
             font-size: 11px;
             font-weight: 600;
             cursor: pointer;
@@ -226,20 +253,20 @@
             width: 20px;
             height: 20px;
             fill: none;
-            stroke: #500e8c;
+            stroke: var(--purple-main);
             stroke-width: 2;
             margin-bottom: 2px;
         }
 
         .detail-specifications-card-block {
-            background: #ffffff;
+            background: var(--card-sub-bg);
             border-radius: 12px;
             padding: 16px;
         }
 
         .detail-specifications-card-block h3 {
             font-size: 13px;
-            color: #666666;
+            color: var(--text-muted);
             margin: 0 0 10px 0;
             font-weight: 600;
         }
@@ -247,7 +274,7 @@
         #detail-pane-description {
             font-size: 13px;
             line-height: 1.5;
-            color: #1a1a1a;
+            color: var(--text-dark);
             margin: 0;
             display: -webkit-box;
             -webkit-line-clamp: 3;
@@ -265,7 +292,7 @@
             align-items: center;
             justify-content: center;
             gap: 2px;
-            color: #500e8c;
+            color: var(--purple-main);
             font-size: 12px;
             font-weight: 700;
             margin-top: 12px;
@@ -275,7 +302,7 @@
         .chevron-down-icon {
             width: 14px;
             height: 14px;
-            fill: #500e8c;
+            fill: var(--purple-main);
             transition: transform 0.2s ease;
         }
 
@@ -303,12 +330,12 @@
 
         .meta-technical-attributes-grid label {
             font-size: 11px;
-            color: #666666;
+            color: var(--text-muted);
         }
 
         .meta-technical-attributes-grid strong {
             font-size: 13px;
-            color: #1a1a1a;
+            color: var(--text-dark);
             font-weight: 700;
         }
 
@@ -321,7 +348,7 @@
         .doc-icon {
             width: 14px;
             height: 14px;
-            fill: #666666;
+            fill: var(--text-muted);
         }
 
         .card-action-footer-row {
@@ -339,14 +366,14 @@
             cursor: pointer;
             background: transparent;
             text-align: center;
-            border: 1.5px solid #500e8c;
-            color: #500e8c;
+            border: 1.5px solid var(--purple-main);
+            color: var(--purple-main);
         }
 
         .similar-ads-section-header {
             font-size: 16px;
             font-weight: 700;
-            color: #000000;
+            color: var(--text-dark);
             margin: 12px 0 4px 0;
         }
 
@@ -406,7 +433,7 @@
         .hero-banner-carousel {
             margin: 4px var(--screen-edge-margin) 16px var(--screen-edge-margin);
             height: 180px;
-            background-color: var(--purple-main);
+            background-color: #500e8c;
             border-radius: 20px;
             position: relative;
             overflow: hidden;
@@ -475,7 +502,7 @@
         .section-heading-row h2 {
             font-size: 15px;
             font-weight: 700;
-            color: #000000;
+            color: var(--text-dark);
         }
 
         .section-heading-row .arrow-nav-trigger {
@@ -510,19 +537,26 @@
         .category-square-icon-box {
             width: 65px;
             height: 65px;
-            background-color: #500E8C; /* The specific deep purple from categories.html */
-            border-radius: 18px; /* The rounded square look */
+            background-color: #500E8C;
+            border-radius: 18px;
             display: flex;
             align-items: center;
             justify-content: center;
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
             transition: transform 0.2s ease;
+            color: #ffffff;
+        }
+
+        .category-square-icon-box img {
+            width: 28px;
+            height: 28px;
+            object-fit: contain;
         }
 
         .category-square-card span {
             font-size: 12px;
             font-weight: 600;
-            color: #000000;
+            color: var(--text-dark);
         }
 
         .category-square-card:active 
@@ -545,7 +579,7 @@
         }
 
         .ad-card-wrapper {
-            background-color: #ffffff;
+            background-color: var(--card-sub-bg);
             border: 1px solid var(--border-card);
             border-radius: 20px;
             overflow: hidden;
@@ -584,7 +618,7 @@
 
         .ad-card-subtitle-text {
             font-size: 13px;
-            color: #1c1c1e;
+            color: var(--text-dark);
             margin-bottom: 10px;
             line-height: 1.4;
         }
@@ -604,8 +638,8 @@
             gap: 5px;
             font-size: 11px;
             font-weight: 500;
-            color: #1c1c1e;
-            background-color: #e5e5ea;
+            color: var(--badge-text-fallback);
+            background-color: var(--badge-bg-fallback);
             padding: 5px 10px;
             border-radius: 6px;
             height: 26px;
@@ -634,14 +668,16 @@
         }
 
         .verification-badge-group img {
-            width: 14px;
-            height: 14px;
+            width: 20px;
+            height: 20px;
+            object-fit: contain;
+            vertical-align: middle;
         }
 
         .extra-modifier-tag-text {
             font-size: 11.5px;
             font-weight: 500;
-            color: #1c1c1e;
+            color: var(--text-dark);
         }
 
         .ad-card-footer-location-metrics {
@@ -649,7 +685,7 @@
             display: flex;
             flex-direction: column;
             padding-top: 10px;
-            border-top: 1px solid #f2f2f7;
+            border-top: 1px solid var(--border-card);
             font-size: 11.5px;
             color: var(--text-muted);
             gap: 4px;
@@ -659,7 +695,7 @@
             .ad-card-footer-location-metrics { flex-direction: row; justify-content: space-between; align-items: center; }
         }
 
-        .sub-header-navigation-sticky-row h1 { font-size: 15px; font-weight: 700; }
+        .sub-header-navigation-sticky-row h1 { font-size: 15px; font-weight: 700; color: var(--text-dark); }
 
         .vertical-categories-stack-wrapper { display: flex; flex-direction: column; padding: 10px var(--screen-edge-margin); }
 
@@ -667,14 +703,14 @@
             display: flex;
             align-items: center;
             padding: 14px 0;
-            border-bottom: 1px solid #f5f6f9;
+            border-bottom: 1px solid var(--border-card);
             cursor: pointer;
         }
 
         .category-list-row-item .icon-wrapper-box {
             width: 38px;
             height: 38px;
-            background: #f4ebfc;
+            background: var(--list-row-icon-bg);
             border-radius: 10px;
             margin-right: 12px;
             display: flex;
@@ -683,7 +719,7 @@
             color: var(--purple-main);
         }
 
-        .category-list-row-item span { font-size: 13.5px; font-weight: 600; }
+        .category-list-row-item span { font-size: 13.5px; font-weight: 600; color: var(--text-dark); }
 
         .runtime-filters-capsule-row { display: flex; gap: 8px; padding: 12px var(--screen-edge-margin); overflow-x: auto; }
         .runtime-filters-capsule-row::-webkit-scrollbar { display: none; }
@@ -714,8 +750,8 @@
             left: 0; 
             width: 100%; 
             height: 80px;
-            background: #FFF; 
-            border-top: 1px solid #E5E7EB; 
+            background: var(--card-sub-bg); 
+            border-top: 1px solid var(--border-card); 
             display: flex;
             align-items: center; 
             justify-content: space-around; 
@@ -724,56 +760,48 @@
             padding: 0 40px;
         }
 
-        
         .nav-item {
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             gap: 4px;
-            color: #6B7280; 
-            font-size: 13px; 
-            font-weight: 500; 
-            text-decoration: none; 
+            color: var(--text-muted);
+            font-size: 13px;
+            font-weight: 500;
+            text-decoration: none;
             cursor: pointer;
-            width: 100px; 
+            width: 100px;
             padding: 8px 0;
         }
 
-        .nav-item.active { color: #500E8C; font-weight: 600; }
+        .nav-item.active { color: var(--purple-main); font-weight: 600; }
         
         .bottom-nav .nav-item i {
             font-size: 26px;
-            color: #6B7280;
+            color: var(--text-muted);
             transition: all 0.3s ease;
             margin-bottom: 2px;
         }
-
         .bottom-nav .nav-item.active i {
             font-size: 32px;
-            color: #500E8C;
+            color: var(--purple-main);
         }
 
         .bottom-nav .nav-item span {
             font-size: 11px;
             font-weight: 600;
-            color: #6B7280;
+            color: var(--text-muted);
             transition: color 0.3s ease;
         }
 
         .bottom-nav .nav-item.active span {
-            color: #500E8C;
+            color: var(--purple-main);
         }
 
-        @media (min-width: 768px) {
-            .bottom-nav {
-                padding: 0;
-                height: 72px;
-            }
-
-            .nav-item {
-                font-size: 11px;
-                width: auto;
-            }
+        @media (max-width: 768px) {
+            .main-content { padding: 16px; }
+            .bottom-nav { padding: 0; height: 72px; }
+            .nav-item { font-size: 11px; width: auto; }
         }
     </style>
 </head>
@@ -800,33 +828,36 @@
 
             <div class="section-heading-row">
                 <h2>Explore categories</h2>
-                <div class="arrow-nav-trigger" onclick="window.location.href = 'categories.html'">
+                <div class="arrow-nav-trigger" onclick="navigateToPane('view-categories')">
                     <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
                 </div>
             </div>
             <div class="horizontal-scrollable-categories" id="home-categories-shortcut-track"></div>
 
-            <div class="section-heading-row"><h2>For you</h2></div>
-            <div class="adaptive-ads-grid-container" id="feed-for-you"></div>
+            <!-- DYNAMIC SECTIONS LOADED VIA ROLE ENGINE -->
+            <div id="dynamic-role-sections-container">
+                <div class="section-heading-row"><h2 id="dynamic-feed-title">For you</h2></div>
+                <div class="adaptive-ads-grid-container" id="feed-for-you"></div>
 
-            <div class="section-heading-row">
-                <h2>Trending Jobs</h2>
-                <div class="arrow-nav-trigger" onclick="openFilteredListWithContext('All', 'Trending Jobs')">
-                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+                <div class="section-heading-row" id="heading-track-one">
+                    <h2 id="title-track-one">Trending Jobs</h2>
+                    <div class="arrow-nav-trigger" id="arrow-track-one">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+                    </div>
                 </div>
-            </div>
-            <div class="adaptive-ads-grid-container" id="feed-trending-jobs"></div>
+                <div class="adaptive-ads-grid-container" id="feed-trending-jobs"></div>
 
-            <div class="section-heading-row">
-                <h2>Trending CVs</h2>
-                <div class="arrow-nav-trigger" onclick="openFilteredListWithContext('All', 'Trending CVs')">
-                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+                <div class="section-heading-row" id="heading-track-two">
+                    <h2 id="title-track-two">Trending CVs</h2>
+                    <div class="arrow-nav-trigger" id="arrow-track-two">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+                    </div>
                 </div>
+                <div class="adaptive-ads-grid-container" id="feed-trending-cvs"></div>
             </div>
-            <div class="adaptive-ads-grid-container" id="feed-trending-cvs"></div>
 
             <div class="section-heading-row">
-                <h2>Discover all ads</h2>
+                <h2 id="title-track-all">Discover all ads</h2>
                 <div class="arrow-nav-trigger" onclick="openFilteredListWithContext('All', 'Discover all ads')">
                     <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
                 </div>
@@ -861,10 +892,8 @@
             </header>
 
             <div class="detail-presentation-hero-frame">
-                <!-- Navigation Buttons For Moving Images -->
                 <button type="button" class="slider-nav-btn prev-btn" onclick="moveAdSlide(-1)">❮</button>
-                <button type="button" class="slider-nav-btn next-btn" 
-                onclick="moveAdSlide(1)">❯</button>
+                <button type="button" class="slider-nav-btn next-btn" onclick="moveAdSlide(1)">❯</button>
 
                 <div class="hero-image-slider-container" id="imageSlider">
                     <img id="detail-pane-image" class="detail-pane-slide-image" src="" alt="Ad Visual Frame">
@@ -887,15 +916,15 @@
                         <h2 id="detail-pane-title"></h2>
                         <p id="detail-pane-subtitle"></p>
                     </div>
-                    <button class="save-ad-action-btn">
+                    <button class="save-ad-action-btn" id="btn-save-ad-toggle">
                         <svg class="bookmark-icon" viewBox="0 0 24 24"><path d="M17 3H7c-1.1 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2z"/></svg>
-                        <span>Save ad</span>
+                        <span id="save-ad-text">Save ad</span>
                     </button>
                 </div>
                 <div class="detail-specifications-card-block white-card">
                     <h3>Description:</h3>
                     <p id="detail-pane-description"></p>
-                    <div class="see-more-toggle">
+                    <div class="see-more-toggle" id="description-see-more">
                         <span>See more</span>
                         <svg class="chevron-down-icon" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
                     </div>
@@ -919,11 +948,11 @@
                         </div>
                         <div>
                             <label>Experience level:</label>
-                            <strong id="meta-attr-experience">Entry level</strong>
+                            <strong id="meta-attr-experience"></strong>
                         </div>
                         <div>
                             <label>Sub Category:</label>
-                            <strong id="meta-attr-sub-category">Aviation Transport</strong>
+                            <strong id="meta-attr-sub-category"></strong>
                         </div>
                         <div>
                             <label>Upload Date:</label>
@@ -935,18 +964,18 @@
                         </div>
                     </div>
                     <div class="card-action-footer-row">
-                        <button class="footer-btn btn-report">Report</button>
+                        <button class="footer-btn btn-report" onclick="alert('Ad reported successfully.')">Report</button>
                         <button class="footer-btn btn-message" id="ad-detail-message-action-trigger" onclick="routeAdPresenterToChatThread()">Message</button>
                     </div>
                 </div>
-                <h3 class="similar-ads-section-header">See similar ads</h3>
+                <h3 class="similar-ads-section-header" id="detail-similar-heading">See similar ads</h3>
                 <div class="similar-ads-horizontal-scroll-container" id="detail-similar-ads-track"></div>
             </div>
         </section>
 
         <!-- BOTTOM PINNED GLOBAL TAB MENU LAYOUT -->
         <nav class="bottom-nav">
-            <div id="bottom-nav-home" class="nav-item tab-trigger" data-route="home" onclick="window.location.href='home.html'">
+            <div id="bottom-nav-home" class="nav-item tab-trigger active" data-route="home" onclick="window.location.href='home.html'">
                 <i class="ph ph-house"></i>
                 <span>Home</span>
             </div>
@@ -975,63 +1004,6 @@
     </div>
 
     <script>
-
-        let currentAdSlideIndex = 0; // Global variable
-
-        function moveAdSlide(direction) {
-            const slider = document.getElementById('imageSlider');
-            const slides = document.querySelectorAll('.detail-pane-slide-image');
-            const dots = document.querySelectorAll('#sliderDots .dot');
-
-            if (!slider || slides.length === 0) return;
-
-            // 1. Update index
-            currentAdSlideIndex += direction;
-
-            // 2. Loop logic
-            if (currentAdSlideIndex >= slides.length) currentAdSlideIndex = 0;
-            if (currentAdSlideIndex < 0) currentAdSlideIndex = slides.length - 1;
-
-            // 3. Move the slider
-            const containerWidth = slider.offsetWidth;
-            slider.scrollLeft = containerWidth * currentAdSlideIndex;
-
-            // 4. Update Dots
-            dots.forEach((dot, i) => {
-                dot.classList.toggle('active', i === currentAdSlideIndex);
-            });
-        }
-
-        function openAdDetailPresentation(itemId) {
-            const target = PLATFORM_DATABASE.find(i => i.id === itemId);
-            if (!target) return;
-
-            // --- RESET SLIDER ---
-            currentAdSlideIndex = 0;
-            const slider = document.getElementById('imageSlider');
-            if (slider) slider.scrollLeft = 0;
-    
-            const dots = document.querySelectorAll('#sliderDots .dot');
-            dots.forEach((dot, i) => dot.classList.toggle('active', i === 0));
-
-            // Load data as before
-            document.getElementById('detail-pane-image').src = target.image;
-            document.getElementById('detail-pane-title').innerText = target.title;
-            document.getElementById('detail-pane-subtitle').innerText = target.subtitle;
-            document.getElementById('detail-pane-description').innerText = target.description;
-
-            document.getElementById('meta-attr-type').innerText = target.type;
-            document.getElementById('meta-attr-verified').innerText = target.verified ? "Verified Professional" : "Standard Profile";
-            document.getElementById('meta-attr-category').innerText = target.category;
-            document.getElementById('meta-attr-date').innerText = target.date;
-            document.getElementById('meta-attr-location').innerText = target.location;
-
-    
-
-            navigateToPane('view-ad-detail');
-        }
-
-
         // System wide Runtime State Data Cache
         const PLATFORM_DATABASE = [
             {
@@ -1041,6 +1013,8 @@
                 description: "Professional services management and domestic coordination across high demand regional areas.",
                 type: "CV",
                 category: "Travel & Logistics",
+                subCategory: "Logistics Operations",
+                experience: "Mid-level",
                 date: "03/04/2026",
                 verified: false,
                 contract: "",
@@ -1055,6 +1029,8 @@
                 description: "Maths Teacher wanted urgently for immediate employment to handle junior high departments. Candidates must possess certified educational backgrounds.",
                 type: "Job",
                 category: "Education & Training",
+                subCategory: "Junior High Education",
+                experience: "Entry level",
                 date: "25/04/2026",
                 verified: true,
                 contract: "Full-Time",
@@ -1069,6 +1045,8 @@
                 description: "Kumi law & Associates needs interns and workers to process immediate documentation, general support indexing, and client coordination operations.",
                 type: "Job",
                 category: "Healthcare",
+                subCategory: "Corporate Administration",
+                experience: "Internship",
                 date: "04/02/2026",
                 verified: true,
                 contract: "Full-Time",
@@ -1084,6 +1062,8 @@
                 type: "CV",
                 date: "06/02/2026",
                 category: "Entertainment",
+                subCategory: "Sports & Coaching",
+                experience: "Expert",
                 verified: false,
                 contract: "",
                 location: "Tseado, Greater Accra",
@@ -1097,6 +1077,8 @@
                 description: "We require professional hands skilled in beverage preparation, specifically indigenous Sobolo juice production, packaging and stock tracking management.",
                 type: "Job",
                 category: "Agriculture",
+                subCategory: "Food Production",
+                experience: "Entry level",
                 date: "04/02/2026",
                 verified: true,
                 contract: "Full-time",
@@ -1107,25 +1089,34 @@
         ];
 
         const CATEGORIES_DATABASE = [
-            { name: "Agriculture", label: "Agric", icon: "ph ph-plant" },
-            { name: "Education & Training", label: "Education", icon: "ph ph-chalkboard-teacher" },
-            { name: "Healthcare", label: "Healthcare", icon: "ph ph-heartbeat" },
-            { name: "Entertainment", label: "Entertainment", icon: "ph ph-mask-happy" },
-            { name: "Travel & Logistics", label: "Logistics", icon: "ph ph-truck" },
-            { name: "Sales & Marketing", label: "Sales", icon: "ph ph-megaphone" },
+            { name: "Agriculture", label: "Agric", icon: "icons/categories/agriculture.png" },
+            { name: "Education & Training", label: "Education", icon: "icons/categories/education.png" },
+            { name: "Healthcare", label: "Healthcare", icon: "icons/categories/healthcare.png" },
+            { name: "Entertainment", label: "Entertainment", icon: "icons/categories/entertainment.png" },
+            { name: "Travel & Logistics", label: "Logistics", icon: "icons/categories/logistics.png" },
+            { name: "Sales & Marketing", label: "Sales", icon: "icons/categories/sales.png" },
         ];
 
+        let currentAdSlideIndex = 0;
         let historyStack = ['view-home'];
         let currentFilterType = "All"; 
         let currentFilterCategory = "All";
+        let carouselIndex = 0;
+        let carouselInterval;
+        let currentAdOwner = null;
+        let currentActiveItemData = null;
 
-        // Global Dom Initialization Engine
+        // Active Track Profile Configurations
+        let userRole = localStorage.getItem('open_user_role') || 'Jobseeker'; 
+
         window.addEventListener('DOMContentLoaded', () => {
+            applyAdaptiveUserRoleUI();
             renderCategoriesShortcutTrack();
             renderFullCategoriesListPanel();
             renderDashboardFeeds();
             initializeCarouselTrack();
             initializeAdDetailInteractions();
+            setActiveNav();
 
             const urlParams = new URLSearchParams(window.location.search);
             const categoryFromUrl = urlParams.get('category');
@@ -1135,25 +1126,76 @@
                 window.history.replaceState({}, document.title, "home.html");
             }    
 
-
-            window.addEventListener('click', () => {
-                const sortMenu = document.getElementById('msg-sort-menu-box');
-                if (sortMenu) sortMenu.classList.remove('open');
-            });
-
             const carouselContainer = document.querySelector('.hero-banner-carousel');
-
-            // Stop moving when mouse is over
-            carouselContainer.addEventListener('mouseenter', () => {
-                clearInterval(carouselInterval);
-            });
-
-            // Start moving again when mouse leaves
-            carouselContainer.addEventListener('mouseleave', () => {
-                const total = PLATFORM_DATABASE.filter(i => i.verified).length;
-                startCarouselAutoPlay(total);
-            });
+            if (carouselContainer) {
+                carouselContainer.addEventListener('mouseenter', () => clearInterval(carouselInterval));
+                carouselContainer.addEventListener('mouseleave', () => {
+                    const total = PLATFORM_DATABASE.filter(i => i.verified).length;
+                    startCarouselAutoPlay(total);
+                });
+            }
         });
+
+        function applyAdaptiveUserRoleUI() {
+            const searchInput = document.getElementById('runtime-global-search');
+            const feedTitle = document.getElementById('dynamic-feed-title');
+            
+            const titleTrackOne = document.getElementById('title-track-one');
+            const titleTrackTwo = document.getElementById('title-track-two');
+            const titleTrackAll = document.getElementById('title-track-all');
+            
+            const arrowTrackOne = document.getElementById('arrow-track-one');
+            const arrowTrackTwo = document.getElementById('arrow-track-two');
+
+            if (userRole === 'Business Owner') {
+                if(searchInput) searchInput.placeholder = "Search candidate files, CVs, specialists...";
+                if(feedTitle) feedTitle.innerText = "Top Talent For You";
+                
+                if(titleTrackOne) titleTrackOne.innerText = "Available Specialists (CVs)";
+                if(arrowTrackOne) arrowTrackOne.setAttribute('onclick', "openFilteredListWithContext('CV', 'Available Specialists')");
+                
+                if(titleTrackTwo) titleTrackTwo.innerText = "Active Intern Candidates";
+                if(arrowTrackTwo) arrowTrackTwo.setAttribute('onclick', "openFilteredListWithContext('CV', 'Active Intern Candidates')");
+                
+                if(titleTrackAll) titleTrackAll.innerText = "Discover all available talent profiles";
+            } 
+            else if (userRole === 'Freelancer') {
+                if(searchInput) searchInput.placeholder = "Search contract projects, gigs, retainers...";
+                if(feedTitle) feedTitle.innerText = "Contract Work For You";
+                
+                if(titleTrackOne) titleTrackOne.innerText = "Trending Projects & Gigs";
+                if(arrowTrackOne) arrowTrackOne.setAttribute('onclick', "openFilteredListWithContext('Job', 'Trending Projects')");
+                
+                if(titleTrackTwo) titleTrackTwo.innerText = "Available Subcontract Partners (CVs)";
+                if(arrowTrackTwo) arrowTrackTwo.setAttribute('onclick', "openFilteredListWithContext('CV', 'Subcontract Partners')");
+                
+                if(titleTrackAll) titleTrackAll.innerText = "Discover all live projects";
+            } 
+            else if (userRole === 'Internship Seeker') {
+                if(searchInput) searchInput.placeholder = "Search student placements, attachments...";
+                if(feedTitle) feedTitle.innerText = "Placements For You";
+                
+                if(titleTrackOne) titleTrackOne.innerText = "Trending Intern Vacancies";
+                if(arrowTrackOne) arrowTrackOne.setAttribute('onclick', "openFilteredListWithContext('Job', 'Intern Vacancies')");
+                
+                if(titleTrackTwo) titleTrackTwo.innerText = "Peer Student Profiles (CVs)";
+                if(arrowTrackTwo) arrowTrackTwo.setAttribute('onclick', "openFilteredListWithContext('CV', 'Peer Student Profiles')");
+                
+                if(titleTrackAll) titleTrackAll.innerText = "Discover all entry tracks";
+            } 
+            else { // Jobseeker (Default)
+                if(searchInput) searchInput.placeholder = "Search ads, jobs, positions...";
+                if(feedTitle) feedTitle.innerText = "Recommended Openings For You";
+                
+                if(titleTrackOne) titleTrackOne.innerText = "Trending Jobs";
+                if(arrowTrackOne) arrowTrackOne.setAttribute('onclick', "openFilteredListWithContext('Job', 'Trending Jobs')");
+                
+                if(titleTrackTwo) titleTrackTwo.innerText = "Trending Professional CVs";
+                if(arrowTrackTwo) arrowTrackTwo.setAttribute('onclick', "openFilteredListWithContext('CV', 'Trending CVs')");
+                
+                if(titleTrackAll) titleTrackAll.innerText = "Discover all ads";
+            }
+        }
 
         function navigateToPane(targetPaneId) {
             document.querySelectorAll('.view-pane').forEach(p => p.classList.remove('active'));
@@ -1165,7 +1207,6 @@
                 }
             }
             window.scrollTo(0,0);
-            updateNavigationDockIndicators(targetPaneId);
         }
 
         function handlePaneBackNavigation() {
@@ -1174,13 +1215,11 @@
                 const previousPane = historyStack[historyStack.length - 1];
                 document.querySelectorAll('.view-pane').forEach(p => p.classList.remove('active'));
                 document.getElementById(previousPane).classList.add('active');
-                updateNavigationDockIndicators(previousPane);
             }
         }
 
-    // Set active nav item based on current page
         function setActiveNav() {
-            const currentPage = window.location.pathname.split('/').pop() || 'new home.html';
+            const currentPage = window.location.pathname.split('/').pop() || 'home.html';
             const navItems = document.querySelectorAll('.nav-item[data-route]');
             navItems.forEach(item => item.classList.remove('active'));
 
@@ -1199,14 +1238,10 @@
             }
         }
 
-        window.addEventListener('load', setActiveNav);
-
-        let carouselIndex = 0;
-        let carouselInterval;
-
         function initializeCarouselTrack() {
             const track = document.getElementById('verified-trending-carousel-track');
             const verifiedItems = PLATFORM_DATABASE.filter(i => i.verified);
+            if (!track) return;
             track.innerHTML = '';
     
             verifiedItems.forEach(item => {
@@ -1221,30 +1256,28 @@
                 track.appendChild(card);
             });
 
-            // Start the Auto-Play
             startCarouselAutoPlay(verifiedItems.length);
         }
 
         function startCarouselAutoPlay(totalSlides) {
-            // Clear any existing timer first to prevent speed-up bugs
             clearInterval(carouselInterval);
+            if (totalSlides <= 1) return;
 
             carouselInterval = setInterval(() => {
                 const track = document.getElementById('verified-trending-carousel-track');
-        
+                if (!track) return;
                 carouselIndex++;
-        
-                // If we reach the end, go back to the first slide
                 if (carouselIndex >= totalSlides) {
                     carouselIndex = 0;
                 }
-
-                // Move the track
                 track.style.transform = `translateX(-${carouselIndex * 100}%)`;
-            }, 5000); // 5000ms = 5 seconds
-}
+            }, 5000);
+        }
 
         function buildAdHTMLComponent(item) {
+            let labelTypeText = item.type;
+            if (item.type === 'Job' && item.experience === 'Internship') labelTypeText = 'Internship';
+            
             return `
                 <div class="ad-card-wrapper" onclick="openAdDetailPresentation('${item.id}')">
                     <div class="ad-card-media-box">
@@ -1255,14 +1288,14 @@
                         <p class="ad-card-subtitle-text">${item.subtitle}</p>
                         
                         <div class="badge-date-container-row">
-                            <span class="type-document-tag">${item.type}</span>
+                            <span class="type-document-tag">${labelTypeText}</span>
                             <span class="posted-calendar-date-label">${item.date}</span>
                         </div>
 
                         <div class="verification-status-meta-row">
                             ${item.verified ? `
                             <div class="verification-badge-group">
-                                <i class="ph ph-seal-check" style="font-size: 20px;"></i>
+                                <img src="icons/verify.png" alt="Verified Status Check" />
                                 <span>Verified</span>
                             </div>` : '<div></div>'}
                             ${item.contract ? `<span class="extra-modifier-tag-text">${item.contract}</span>` : ''}
@@ -1278,18 +1311,50 @@
         }
 
         function renderDashboardFeeds() {
-            document.getElementById('feed-for-you').innerHTML = PLATFORM_DATABASE.slice(0, 4).map(buildAdHTMLComponent).join('');
-            document.getElementById('feed-trending-jobs').innerHTML = PLATFORM_DATABASE.filter(i => i.type === 'Job').map(buildAdHTMLComponent).join('');
-            document.getElementById('feed-trending-cvs').innerHTML = PLATFORM_DATABASE.filter(i => i.type === 'CV').map(buildAdHTMLComponent).join('');
+            // 1. Contextual feed data loading based on User Track Selection
+            let forYouData = [...PLATFORM_DATABASE];
+            let trackOneData = [];
+            let trackTwoData = [];
+
+            if (userRole === 'Business Owner') {
+                forYouData = PLATFORM_DATABASE.filter(i => i.type === 'CV');
+                trackOneData = PLATFORM_DATABASE.filter(i => i.type === 'CV' && i.experience !== 'Internship');
+                trackTwoData = PLATFORM_DATABASE.filter(i => i.type === 'CV' && i.experience === 'Internship');
+            } 
+            else if (userRole === 'Freelancer') {
+                forYouData = PLATFORM_DATABASE.filter(i => i.category === 'Travel & Logistics' || i.type === 'Job');
+                trackOneData = PLATFORM_DATABASE.filter(i => i.type === 'Job');
+                trackTwoData = PLATFORM_DATABASE.filter(i => i.type === 'CV');
+            } 
+            else if (userRole === 'Internship Seeker') {
+                forYouData = PLATFORM_DATABASE.filter(i => i.experience === 'Internship');
+                trackOneData = PLATFORM_DATABASE.filter(i => i.type === 'Job' && i.experience === 'Internship');
+                trackTwoData = PLATFORM_DATABASE.filter(i => i.type === 'CV' && i.experience === 'Internship');
+            } 
+            else { // Jobseeker
+                forYouData = PLATFORM_DATABASE.filter(i => i.type === 'Job');
+                trackOneData = PLATFORM_DATABASE.filter(i => i.type === 'Job');
+                trackTwoData = PLATFORM_DATABASE.filter(i => i.type === 'CV');
+            }
+
+            // Fallbacks for layout safety
+            if(forYouData.length === 0) forYouData = PLATFORM_DATABASE.slice(0, 3);
+            if(trackOneData.length === 0) trackOneData = PLATFORM_DATABASE.filter(i => i.type === 'Job');
+            if(trackTwoData.length === 0) trackTwoData = PLATFORM_DATABASE.filter(i => i.type === 'CV');
+
+            document.getElementById('feed-for-you').innerHTML = forYouData.slice(0, 4).map(buildAdHTMLComponent).join('');
+            document.getElementById('feed-trending-jobs').innerHTML = trackOneData.slice(0, 4).map(buildAdHTMLComponent).join('');
+            document.getElementById('feed-trending-cvs').innerHTML = trackTwoData.slice(0, 4).map(buildAdHTMLComponent).join('');
             document.getElementById('feed-discover-all').innerHTML = PLATFORM_DATABASE.map(buildAdHTMLComponent).join('');
         }
 
         function renderCategoriesShortcutTrack() {
             const container = document.getElementById('home-categories-shortcut-track');
+            if (!container) return;
             container.innerHTML = CATEGORIES_DATABASE.slice(0, 4).map(cat => `
             <div class="category-square-card" onclick="openFilteredListWithContext('All', '${cat.name}')">
                 <div class="category-square-icon-box">
-                    <i class="${cat.icon}"></i>
+                    <img src="${cat.icon}" alt="${cat.label} Icon View">
                 </div>
                 <span>${cat.label}</span>
             </div>
@@ -1298,20 +1363,22 @@
 
         function renderFullCategoriesListPanel() {
             const container = document.getElementById('full-categories-list-render');
+            if (!container) return;
             container.innerHTML = CATEGORIES_DATABASE.map(cat => `
                 <div class="category-list-row-item" onclick="openFilteredListWithContext('All', '${cat.name}')">
                     <div class="icon-wrapper-box">
                         <img src="${cat.icon}" alt="${cat.label} icon" style="width:20px; height:20px; object-fit: contain;">
                     </div>
-                    <span>${cat.name} (${cat.total})</span>
+                    <span>${cat.name}</span>
                 </div>
             `).join('');
         }
 
         function openFilteredListWithContext(type, titleOrCategoryName) {
             currentFilterType = type;
-            const matchesCategory = CATEGORIES_DATABASE.some(c => c.name === titleOrCategoryName);
+            document.getElementById('filter-type-trigger-btn').innerText = `Type: ${type}`;
             
+            const matchesCategory = CATEGORIES_DATABASE.some(c => c.name === titleOrCategoryName);
             if (matchesCategory) {
                 currentFilterCategory = titleOrCategoryName;
                 document.getElementById('filtered-view-title-label').innerText = titleOrCategoryName;
@@ -1353,7 +1420,7 @@
             }
 
             document.getElementById('filter-field-trigger-btn').innerText = currentFilterCategory === "All" ? "All Fields" : currentFilterCategory;
-            document.getElementById('filter-results-counter').innerText = `${records.length} total ads found`;
+            document.getElementById('filter-results-counter').innerText = `${records.length} total profiles found`;
             document.getElementById('feed-filtered-list-output').innerHTML = records.map(buildAdHTMLComponent).join('');
         }
 
@@ -1367,16 +1434,17 @@
             openFilteredListWithContext('All', 'Search Results');
         }
 
-        let currentAdOwner = null;
         function openAdDetailPresentation(itemId) {
             const target = PLATFORM_DATABASE.find(i => i.id === itemId);
             if (!target) return;
 
-            currentAdOwner = {
-                name: target.title,
-                avatar: target.image
-            };
-            
+            currentAdOwner = { name: target.title, avatar: target.image };
+            currentActiveItemData = target;
+
+            currentAdSlideIndex = 0;
+            const slider = document.getElementById('imageSlider');
+            if (slider) slider.scrollLeft = 0;
+            updateSliderDots();
 
             document.getElementById('detail-pane-image').src = target.image;
             document.getElementById('detail-pane-title').innerText = target.title;
@@ -1384,30 +1452,122 @@
             document.getElementById('detail-pane-description').innerText = target.description;
 
             document.getElementById('meta-attr-type').innerText = target.type;
-            document.getElementById('meta-attr-verified').innerText = target.verified ? "Verified Professional" : "Standard Profile";
+            document.getElementById('meta-attr-verified').innerText = target.verified ? "Verified System Entry" : "Standard Entry";
             document.getElementById('meta-attr-category').innerText = target.category;
+            document.getElementById('meta-attr-experience').innerText = target.experience || "Entry level";
+            document.getElementById('meta-attr-sub-category').innerText = target.subCategory || "General Professional";
             document.getElementById('meta-attr-date').innerText = target.date;
             document.getElementById('meta-attr-location').innerText = target.location;
 
+            // Contextual Copy adaptation inside Details Pane Footer Action button
+            const actionMessageBtn = document.getElementById('ad-detail-message-action-trigger');
+            const saveTextBtn = document.getElementById('save-ad-text');
+            const headingSimilar = document.getElementById('detail-similar-heading');
+
+            if (userRole === 'Business Owner') {
+                if(actionMessageBtn) actionMessageBtn.innerText = "Interview Candidate";
+                if(saveTextBtn && saveTextBtn.innerText !== "Saved") saveTextBtn.innerText = "Save Profile";
+                if(headingSimilar) headingSimilar.innerText = "See matching candidate files";
+            } else if (userRole === 'Freelancer') {
+                if(actionMessageBtn) actionMessageBtn.innerText = "Submit Contract Proposal";
+                if(saveTextBtn && saveTextBtn.innerText !== "Saved") saveTextBtn.innerText = "Bookmark Gig";
+                if(headingSimilar) headingSimilar.innerText = "See similar projects";
+            } else {
+                if(actionMessageBtn) actionMessageBtn.innerText = "Message Recruiter";
+                if(saveTextBtn && saveTextBtn.innerText !== "Saved") saveTextBtn.innerText = "Save ad";
+                if(headingSimilar) headingSimilar.innerText = "See similar ads";
+            }
+
+            updateSaveButtonUI(itemId);
+            renderSimilarAds(target);
             navigateToPane('view-ad-detail');
         }
 
-        
-        // This function now sends the data to the message page
-        function routeAdPresenterToChatThread() {
-            if (!currentAdOwner){
-                alert("Error: No ad owner found")
-              return;
+        function moveAdSlide(direction) {
+            const slider = document.getElementById('imageSlider');
+            const slides = document.querySelectorAll('.detail-pane-slide-image');
+            if (!slider || slides.length === 0) return;
+
+            currentAdSlideIndex += direction;
+            if (currentAdSlideIndex >= slides.length) currentAdSlideIndex = 0;
+            if (currentAdSlideIndex < 0) currentAdSlideIndex = slides.length - 1;
+
+            slider.scrollLeft = slider.offsetWidth * currentAdSlideIndex;
+            updateSliderDots();
+        }
+
+        function updateSliderDots() {
+            const dots = document.querySelectorAll('#sliderDots .dot');
+            dots.forEach((dot, i) => dot.classList.toggle('active', i === currentAdSlideIndex));
+        }
+
+        function initializeAdDetailInteractions() {
+            const seeMore = document.getElementById('description-see-more');
+            const desc = document.getElementById('detail-pane-description');
+            if (seeMore && desc) {
+                seeMore.onclick = () => {
+                    const isExpanded = desc.classList.toggle('expanded');
+                    seeMore.querySelector('span').innerText = isExpanded ? "See less" : "See more";
+                    seeMore.querySelector('svg').style.transform = isExpanded ? "rotate(180deg)" : "rotate(0deg)";
+                };
             }
 
-            console.log("Redirecting to message for:", currentAdOwner.name);
+            const saveBtn = document.getElementById('btn-save-ad-toggle');
+            if (saveBtn) {
+                saveBtn.onclick = () => {
+                    if (!currentActiveItemData) return;
+                    let savedItems = JSON.parse(localStorage.getItem('OPEN_SAVED_ITEMS')) || [];
+                    const index = savedItems.findIndex(i => i.id === currentActiveItemData.id);
+                    
+                    if (index > -1) {
+                        savedItems.splice(index, 1);
+                        alert('Removed from your saved collection.');
+                    } else {
+                        savedItems.push(currentActiveItemData);
+                        alert('Successfully saved!');
+                    }
+                    localStorage.setItem('OPEN_SAVED_ITEMS', JSON.stringify(savedItems));
+                    updateSaveButtonUI(currentActiveItemData.id);
+                };
+            }
+        }
 
-            // We pass the name and avatar through the URL (Query Parameters)
+        function updateSaveButtonUI(itemId) {
+            const savedItems = JSON.parse(localStorage.getItem('OPEN_SAVED_ITEMS')) || [];
+            const isSaved = savedItems.some(i => i.id === itemId);
+            const textNode = document.getElementById('save-ad-text');
+            const iconNode = document.querySelector('.bookmark-icon');
+            
+            if (textNode) {
+                if (isSaved) {
+                    textNode.innerText = "Saved";
+                } else {
+                    textNode.innerText = (userRole === 'Business Owner') ? "Save Profile" : "Save ad";
+                }
+            }
+            if (iconNode) iconNode.style.fill = isSaved ? "var(--purple-main)" : "none";
+        }
+
+        function renderSimilarAds(activeItem) {
+            const track = document.getElementById('detail-similar-ads-track');
+            if (!track) return;
+
+            const similar = PLATFORM_DATABASE.filter(i => i.category === activeItem.category && i.id !== activeItem.id);
+            if (similar.length === 0) {
+                track.innerHTML = `<p style="font-size:12px; color:var(--text-muted); padding:10px 0;">No matching contextual variants found.</p>`;
+                return;
+            }
+            track.innerHTML = similar.map(buildAdHTMLComponent).join('');
+        }
+
+        function routeAdPresenterToChatThread() {
+            if (!currentAdOwner){
+                alert("Error: No listing owner found");
+                return;
+            }
             const url = `message.html?name=${encodeURIComponent(currentAdOwner.name)}&avatar=${encodeURIComponent(currentAdOwner.avatar)}`;
             window.location.href = url;
         }
-
-        
     </script>
 </body>
 </html>
