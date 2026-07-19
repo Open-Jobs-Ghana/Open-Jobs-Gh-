@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="api.js"></script>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <title>Open Jobs Ghana | Log In</title>
+  <style>
+    /* Scoped styles for the two additions below — kept separate from
+       style.css so they can't clash with whatever classes already exist
+       there. */
+    .info-banner {
+      display: none;
+      background: #EFE6FB;
+      color: #500E8C;
+      border: 1px solid #500E8C;
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      margin-bottom: 14px;
+      text-align: center;
+    }
+    .biometric-btn {
+      display: none;
+      width: 100%;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      background: #ffffff;
+      color: #500E8C;
+      border: 2px solid #500E8C;
+      border-radius: 10px;
+      padding: 12px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      margin-bottom: 14px;
+    }
+    .biometric-btn:active { transform: scale(0.98); }
+    .google-btn {
+      display: flex;
+      width: 100%;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      background: #ffffff;
+      color: #1f1f1f;
+      border: 1px solid #dadce0;
+      border-radius: 10px;
+      padding: 12px 16px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .google-btn:hover { background: #f7f7f8; }
+    .google-btn:active { transform: scale(0.98); }
+    .google-btn svg { width: 20px; height: 20px; flex-shrink: 0; }
+    .biometric-error {
+      display: none;
+      color: red;
+      font-size: 0.85rem;
+      font-weight: 500;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-page">
+    <form class="login-card" action="#" method="post" id="loginForm">
+      <div class="brand-header">
+        <img src="icons/Open Logo.png" alt="Open logo" class="brand-logo">
+        <h1>OPEN</h1>
+      </div>
+      <p class="subtitle">Open for work. Open for growth</p>
+
+      <div class="info-banner" id="newAccountBanner">✅ Account created — sign in to continue.</div>
+
+      <button type="button" class="biometric-btn" id="biometricBtn">
+        <i class="fa-solid fa-fingerprint"></i> Sign in with Face ID / Fingerprint
+      </button>
+      <div class="error-message biometric-error" id="biometricError">
+        Biometric sign-in failed. Please use your password below.
+      </div>
+
+      <input id="email" type="text" name="email" placeholder="Email or Username" required>
+
+      <input id="password" type="password" name="password" placeholder="Password" required>
+      
+      <div class="error-message" id="accountError" style="display: none; color: red; margin-top: 10px; font-weight: 500;">
+        ❌ Sorry, account does not exist
+      </div>
+
+      <button type="submit" class="primary-btn">Sign In</button>
+
+      <div class="divider"><span>or</span></div>
+
+      <button type="button" class="google-btn" id="googleLoginBtn">
+        <svg viewBox="0 0 48 48"><path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12s5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24s8.955,20,20,20s20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"/><path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"/><path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"/><path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"/></svg>
+        <span>Continue with Google</span>
+      </button>
+
+      <p class="switch-text">Don't already have an account? <a href="signup.html">Sign Up</a></p>
+    </form>
+  </div>
+</body>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Find all password inputs and set up eye toggle icons
+  const passwordInputs = document.querySelectorAll('input[type="password"]');
+  
+  passwordInputs.forEach((input, index) => {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'password-wrapper';
+    
+    input.parentNode.insertBefore(wrapper, input);
+    wrapper.appendChild(input);
+    
+    const toggleBtn = document.createElement('button');
+    toggleBtn.type = 'button';
+    toggleBtn.className = 'toggle-password';
+    toggleBtn.setAttribute('aria-label', 'Show password');
+    toggleBtn.innerHTML = '<img src="icons/eye.png" alt="Show password">';
+    
+    wrapper.appendChild(toggleBtn);
+    
+    toggleBtn.addEventListener('click', function() {
+      const type = input.type === 'password' ? 'text' : 'password';
+      input.type = type;
+      const iconSrc = type === 'password' ? 'icons/eye.png' : 'icons/invisible.png';
+      const ariaLabel = type === 'password' ? 'Show password' : 'Hide password';
+      this.setAttribute('aria-label', ariaLabel);
+      this.innerHTML = `<img src="${iconSrc}" alt="${ariaLabel}">`;
+    });
+  });
+  
+  const form = document.getElementById('loginForm');
+  const emailInput = document.getElementById('email');
+  const passwordInput = document.getElementById('password');
+  const accountErrorMessage = document.getElementById('accountError');
+  const biometricBtn = document.getElementById('biometricBtn');
+  const biometricError = document.getElementById('biometricError');
+
+  // Show the "account created" banner if we arrived here straight from
+  // onboarding (see onbording.html's final redirect).
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('newAccount') === '1') {
+    document.getElementById('newAccountBanner').style.display = 'block';
+  }
+
+  // Offer biometric quick sign-in only when ALL of these are true:
+  //  - this browser actually supports WebAuthn platform authenticators
+  //  - someone has signed in on this device before
+  //  - that specific person has biometric sign-in enabled (via Settings)
+  (async function setupBiometricButton() {
+    const lastEmail = OpenAPI.getLastLoginEmail();
+    if (!lastEmail) return;
+    if (!OpenAPI.hasBiometricEnabled(lastEmail)) return;
+    const available = await OpenAPI.isBiometricAvailableOnDevice();
+    if (!available) return;
+    biometricBtn.style.display = 'flex';
+  })();
+
+  biometricBtn.addEventListener('click', async function() {
+    biometricError.style.display = 'none';
+    const lastEmail = OpenAPI.getLastLoginEmail();
+    const originalLabel = biometricBtn.innerHTML;
+    biometricBtn.disabled = true;
+    biometricBtn.innerHTML = 'Waiting for fingerprint / Face ID…';
+
+    const result = await OpenAPI.loginWithBiometric(lastEmail);
+
+    if (result.ok) {
+      window.location.href = 'home.html';
+      return;
+    }
+
+    biometricBtn.disabled = false;
+    biometricBtn.innerHTML = originalLabel;
+    biometricError.style.display = 'block';
+  });
+
+  // --------------------------------------------------------------------
+  // GOOGLE SIGN-IN
+  //
+  // *** REPLACE THIS WITH YOUR OWN CLIENT ID ***
+  // Create one at https://console.cloud.google.com/apis/credentials
+  //   1. Create/select a project → "Create Credentials" → "OAuth client ID"
+  //   2. Application type: "Web application"
+  //   3. Under "Authorized JavaScript origins", add the EXACT origin
+  //      you're serving this site from (e.g. http://localhost:8000).
+  //      Google will reject the request if this doesn't match exactly —
+  //      it does NOT support file:// pages at all, same as biometric
+  //      sign-in needing a secure context.
+  //   4. Copy the generated Client ID (ends in .apps.googleusercontent.com)
+  //      and paste it below.
+  const GOOGLE_CLIENT_ID = "YOUR_CLIENT_ID_HERE.apps.googleusercontent.com";
+
+  let googleTokenClient = null;
+  const googleBtn = document.getElementById('googleLoginBtn');
+
+  function initGoogleAuth() {
+    if (!window.google || !google.accounts || !google.accounts.oauth2) {
+      // GIS script hasn't loaded yet — try again shortly rather than
+      // leaving the button silently non-functional.
+      setTimeout(initGoogleAuth, 300);
+      return;
+    }
+    googleTokenClient = google.accounts.oauth2.initTokenClient({
+      client_id: GOOGLE_CLIENT_ID,
+      scope: 'openid email profile',
+      callback: handleGoogleTokenResponse
+    });
+  }
+
+  async function handleGoogleTokenResponse(tokenResponse) {
+    if (!tokenResponse || tokenResponse.error) {
+      await OpenAPI.showAlert("Google sign-in was cancelled or didn't complete. Please try again.", { title: "Couldn't sign in" });
+      resetGoogleButton();
+      return;
+    }
+
+    try {
+      const res = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+        headers: { Authorization: `Bearer ${tokenResponse.access_token}` }
+      });
+      if (!res.ok) throw new Error('userinfo request failed');
+      const profile = await res.json(); // { email, name, picture, sub, ... }
+
+      const result = OpenAPI.loginOrRegisterWithGoogle(profile);
+      window.location.href = result.isNewUser ? 'onbording.html' : 'home.html';
+    } catch (err) {
+      await OpenAPI.showAlert("Something went wrong finishing Google sign-in. Please try again.", { title: "Couldn't sign in" });
+      resetGoogleButton();
+    }
+  }
+
+  function resetGoogleButton() {
+    googleBtn.disabled = false;
+    googleBtn.querySelector('span').innerText = 'Continue with Google';
+  }
+
+  googleBtn.addEventListener('click', () => {
+    if (!googleTokenClient) {
+      initGoogleAuth();
+      OpenAPI.showAlert("Still connecting to Google — please try again in a moment.", { title: "One sec" });
+      return;
+    }
+    googleBtn.disabled = true;
+    googleBtn.querySelector('span').innerText = 'Connecting…';
+    googleTokenClient.requestAccessToken();
+    // If the popup closes without completing, re-enable the button after
+    // a few seconds so the person isn't stuck looking at "Connecting…".
+    setTimeout(resetGoogleButton, 4000);
+  });
+
+  initGoogleAuth();
+
+  // Clear error notes dynamically while typing a new attempt
+  passwordInput.addEventListener('input', function() {
+    this.classList.remove('invalid');
+    accountErrorMessage.style.display = 'none';
+  });
+
+  emailInput.addEventListener('input', function() {
+    passwordInput.classList.remove('invalid');
+    accountErrorMessage.style.display = 'none';
+  });
+
+  // Form submission handling logic
+  if (form) {
+    form.addEventListener('submit', function(e) {
+      e.preventDefault(); // STOP automatic form processing
+      
+      const identifier = emailInput.value.trim();
+      const password = passwordInput.value;
+      
+      // Reset layout configurations
+      accountErrorMessage.style.display = 'none';
+      passwordInput.classList.remove('invalid');
+
+      // Delegate to the shared auth logic in api.js so login.html doesn't
+      // keep its own copy of the user-lookup/password-check rules.
+      // identifier can be either the account's email OR its username.
+      const result = OpenAPI.validateLogin(identifier, password);
+
+      if (!result.ok && result.reason === 'not_found') {
+        accountErrorMessage.innerText = "❌ Sorry, account does not exist";
+        accountErrorMessage.style.display = 'block';
+        return false;
+      }
+
+      if (!result.ok && result.reason === 'wrong_password') {
+        accountErrorMessage.innerText = "❌ Incorrect password";
+        accountErrorMessage.style.display = 'block';
+        passwordInput.classList.add('invalid');
+        passwordInput.focus();
+        return false;
+      }
+
+      if (!result.ok && result.reason === 'google_only') {
+        accountErrorMessage.innerText = "❌ This account uses Google Sign-In — use the Continue with Google button below";
+        accountErrorMessage.style.display = 'block';
+        return false;
+      }
+
+      // Success — OpenAPI.validateLogin already set the active session.
+      window.location.href = 'home.html';
+    });
+  }
+});
+
+if (localStorage.getItem('theme') === 'dark') {
+    document.documentElement.classList.add('dark-theme');
+}
+</script>
+</html>

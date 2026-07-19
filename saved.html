@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Open Jobs Ghana | Saved Items</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    
+    <!-- Instant Dark Mode Switch Check to Prevent Flashing -->
+    <script>
+        if (localStorage.getItem('theme') === 'dark') {
+            document.documentElement.classList.add('dark-theme');
+        }
+    </script>
+
+    <style>
+        /* --- CORE CONFIGURATION & MATERIAL SYSTEM UNIFIED --- */
+        :root {
+            --purple-main: #500e8c;
+            --brand-primary: #500e8c;
+            --bg-light: #ffffff;
+            --card-bg: #ffffff;
+            --bg-search: #f1f2f6;
+            --input-bg: #f1f2f6;
+            --text-dark: #1a1a1a;
+            --text-main: #1a1a1a;
+            --text-muted: #8e8e93;
+            --border-card: #f2f2f7;
+            --border-color: #f2f2f7;
+            --shadow-card: rgba(0, 0, 0, 0.06);
+            --shadow-color: rgba(0, 0, 0, 0.06);
+            --card-sub-bg: #ffffff;
+            --badge-bg: rgba(80, 14, 140, 0.08);
+            --badge-text: #500e8c;
+            --screen-edge-margin: 16px;
+        }
+
+        .dark-theme {
+            --purple-main: #a370db;
+            --brand-primary: #a370db;
+            --bg-light: #121212;
+            --card-bg: #1e1e1e;
+            --bg-search: #2a2a2a;
+            --input-bg: #2a2a2a;
+            --text-dark: #f3f4f6;
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            --border-card: rgba(255, 255, 255, 0.08);
+            --border-color: rgba(255, 255, 255, 0.08);
+            --shadow-card: rgba(0, 0, 0, 0.4);
+            --shadow-color: rgba(0, 0, 0, 0.4);
+            --card-sub-bg: #1e1e1e;
+            --badge-bg: rgba(163, 112, 219, 0.15);
+            --badge-text: #c39bed;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            min-height: 100vh;
+            padding-bottom: 95px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* --- STICKY NAVIGATION HEADER LAYOUT --- */
+        .saved-header-container {
+            background-color: var(--bg-light);
+            border-bottom: 1px solid var(--border-card);
+            padding: 20px var(--screen-edge-margin) 16px var(--screen-edge-margin);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .saved-header-title-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .saved-header-title-bar h1 {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        .clear-all-saved-trigger-btn {
+            background: transparent;
+            border: none;
+            color: #ef4444;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .saved-search-input-frame {
+            position: relative;
+            width: 100%;
+            margin-bottom: 14px;
+        }
+
+        .saved-search-input-frame input {
+            width: 100%;
+            background-color: var(--bg-search);
+            border: 1px solid transparent;
+            border-radius: 24px;
+            padding: 12px 16px 12px 46px;
+            font-size: 14px;
+            outline: none;
+            color: var(--text-dark);
+            transition: all 0.2s ease;
+        }
+
+        .saved-search-input-frame input:focus {
+            border-color: var(--purple-main);
+            background-color: var(--card-bg);
+        }
+
+        .saved-search-input-frame i {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 18px;
+        }
+
+        .filter-capsules-scroll-track {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            white-space: nowrap;
+            padding-bottom: 4px;
+        }
+
+        .filter-capsules-scroll-track::-webkit-scrollbar {
+            display: none;
+        }
+
+        .category-filter-capsule {
+            padding: 6px 16px;
+            background-color: var(--bg-search);
+            color: var(--text-muted);
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s ease;
+        }
+
+        .category-filter-capsule.active-capsule {
+            background-color: var(--purple-main);
+            color: #ffffff;
+        }
+
+        /* --- CARD RESULTS FEED GRID MODIFIERS --- */
+        .saved-items-feed-grid {
+            padding: 16px var(--screen-edge-margin);
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 14px;
+        }
+
+        @media (min-width: 650px) {
+            .saved-items-feed-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        .saved-ad-card-item-cell {
+            background-color: var(--card-sub-bg);
+            border: 1px solid var(--border-card);
+            border-radius: 20px;
+            padding: 16px;
+            display: flex;
+            gap: 14px;
+            position: relative;
+            box-shadow: 0 4px 14px var(--shadow-card);
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .saved-ad-card-item-cell:active {
+            transform: scale(0.98);
+        }
+
+        .saved-ad-thumbnail-box {
+            width: 85px;
+            height: 85px;
+            border-radius: 14px;
+            background-color: var(--bg-search);
+            object-fit: cover;
+            flex-shrink: 0;
+        }
+
+        .saved-ad-info-layout-column {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-width: 0;
+        }
+
+        .saved-ad-upper-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 8px;
+            margin-bottom: 2px;
+        }
+
+        .saved-ad-category-badge {
+            font-size: 10px;
+            font-weight: 600;
+            background-color: var(--badge-bg);
+            color: var(--badge-text);
+            padding: 3px 8px;
+            border-radius: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .remove-saved-item-explicit-btn {
+            background: transparent;
+            border: none;
+            color: var(--purple-main);
+            cursor: pointer;
+            font-size: 20px;
+            padding: 0;
+            line-height: 1;
+        }
+
+        .saved-ad-main-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--purple-main);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-bottom: 2px;
+        }
+
+        .saved-ad-subtitle-desc {
+            font-size: 12.5px;
+            color: var(--text-dark);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-bottom: 6px;
+        }
+
+        .saved-ad-footer-meta-metadata {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 11.5px;
+            color: var(--text-muted);
+            border-top: 1px solid var(--border-card);
+            padding-top: 8px;
+            margin-top: 2px;
+        }
+
+        .saved-ad-location-pin {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            max-width: 70%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        /* --- EMPTY FEED SYSTEM PLACEHOLDER --- */
+        .empty-saved-state-placeholder {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 100px 32px;
+            color: var(--text-muted);
+        }
+
+        .empty-saved-state-placeholder i {
+            font-size: 52px;
+            color: var(--text-muted);
+            margin-bottom: 16px;
+            opacity: 0.6;
+        }
+
+        .empty-saved-state-placeholder h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 6px;
+        }
+
+        .empty-saved-state-placeholder p {
+            font-size: 12.5px;
+            max-width: 260px;
+            line-height: 1.5;
+        }
+
+        /* --- BOTTOM GLOBAL NAVIGATION BAR --- */
+        .bottom-nav {
+            position: fixed; 
+            bottom: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 80px;
+            background: var(--card-sub-bg); 
+            border-top: 1px solid var(--border-card); 
+            display: flex;
+            align-items: center; 
+            justify-content: space-around; 
+            z-index: 10;
+            box-shadow: 0 -4px 10px rgba(0,0,0,0.02); 
+            padding: 0 40px;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            color: var(--text-muted);
+            font-size: 13px;
+            font-weight: 500;
+            text-decoration: none;
+            cursor: pointer;
+            width: 100px;
+            padding: 8px 0;
+        }
+
+        .nav-item.active { color: var(--purple-main); font-weight: 600; }
+        
+        .bottom-nav .nav-item i {
+            font-size: 26px;
+            color: var(--text-muted);
+            transition: all 0.3s ease;
+            margin-bottom: 2px;
+        }
+        .bottom-nav .nav-item.active i {
+            font-size: 32px;
+            color: var(--purple-main);
+        }
+
+        .bottom-nav .nav-item span {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-muted);
+            transition: color 0.3s ease;
+        }
+
+        .bottom-nav .nav-item.active span {
+            color: var(--purple-main);
+        }
+
+        @media (max-width: 768px) {
+            .bottom-nav { padding: 0; height: 72px; }
+            .nav-item { font-size: 11px; width: auto; }
+        }
+    </style>
+    <script src="api.js"></script>
+</head>
+<body>
+
+    <div class="saved-screen-wrapper">
+        
+        <header class="saved-header-container">
+            <div class="saved-header-title-bar">
+                <h1>Saved Ads</h1>
+                <button class="clear-all-saved-trigger-btn" onclick="clearAllSavedItemsFromDatabase()">
+                    <i class="ph ph-trash"></i> Clear All
+                </button>
+            </div>
+
+            <div class="saved-search-input-frame">
+                <i class="ph ph-magnifying-glass"></i>
+                <input type="text" id="saved-search-field" placeholder="Search saved items..." oninput="filterSavedItemsEngine()">
+            </div>
+
+            <div class="filter-capsules-scroll-track">
+                <button class="category-filter-capsule active-capsule" id="filter-all" onclick="filterSavedCategory('All')">All Items</button>
+                <button class="category-filter-capsule" id="filter-hiring" onclick="filterSavedCategory('Hiring')">Hiring</button>
+                <button class="category-filter-capsule" id="filter-available" onclick="filterSavedCategory('Available')">Available</button>
+            </div>
+        </header>
+
+        <div class="empty-saved-state-placeholder" id="saved-empty-state">
+            <i class="ph ph-bookmark-simple"></i>
+            <h3>No saved items yet</h3>
+            <p>Tap the bookmark icon on any item listing inside the Home portal to display it here.</p>
+        </div>
+
+        <main class="saved-items-feed-grid" id="saved-cards-render-container"></main>
+
+        <!-- NAVIGATION STACK CONTEXT -->
+        <nav class="bottom-nav">
+            <div id="bottom-nav-home" class="nav-item tab-trigger" data-route="home" onclick="window.location.href='home.html'">
+                <i class="ph ph-house"></i> <span>Home</span>
+            </div>
+            <div class="nav-item tab-trigger" data-route="messages" onclick="window.location.href='message.html'">
+                <i class="ph ph-chats-circle"></i> <span>Messages</span>
+            </div>
+            <div class="nav-item tab-trigger" data-route="add" onclick="window.location.href='add.html'">
+                <i class="ph ph-plus-circle"></i> <span>Add</span>
+            </div>
+            <div class="nav-item tab-trigger" data-route="saved" onclick="window.location.href='saved.html'">
+                <i class="ph ph-bookmark-simple"></i> <span>Saved</span>
+            </div>
+            <div class="nav-item tab-trigger" data-route="settings" onclick="window.location.href='settings.html'">
+                <i class="ph ph-gear"></i> <span>Settings</span>
+            </div>
+        </nav>
+
+    </div>
+
+<script>
+    let SAVED_DATABASE_RECORDS = [];
+    let activeCategoryFilter = 'All';
+    const HIRING_TYPES = ['Business'];
+
+    // Sync Active Route Highlighter
+    function setActiveNav() {
+        const currentPage = window.location.pathname.split('/').pop() || 'home.html';
+        const routeMap = {
+            'add.html': 'add',
+            'saved.html': 'saved',
+            'home.html': 'home',
+            'message.html': 'messages',
+            'settings.html': 'settings'
+        };
+
+        const currentRoute = routeMap[currentPage];
+        if(currentRoute) {
+            const activeItem = document.querySelector(`.nav-item[data-route="${currentRoute}"]`);
+            if(activeItem) activeItem.classList.add('active');
+        }
+    }
+
+    // Loads the real saved ads (by adId) and preloads a thumbnail for each
+    async function loadSavedItemsFromStorage() {
+        SAVED_DATABASE_RECORDS = await OpenAPI.getSavedAds();
+        const thumbnails = await Promise.all(SAVED_DATABASE_RECORDS.map(async (ad) => {
+            const media = await OpenAPI.getAdMedia(ad.adId);
+            return (media.images && media.images[0]) || null;
+        }));
+        SAVED_DATABASE_RECORDS.forEach((ad, i) => { ad._thumb = thumbnails[i]; });
+    }
+
+    function renderSavedRecordsFeed(recordsList) {
+        const container = document.getElementById('saved-cards-render-container');
+        const emptyState = document.getElementById('saved-empty-state');
+
+        if(recordsList.length === 0) {
+            container.innerHTML = '';
+            emptyState.style.display = 'flex';
+            return;
+        }
+
+        emptyState.style.display = 'none';
+        container.innerHTML = recordsList.map(record => {
+            const badge = OpenAPI.getAdTypeBadge(record.type);
+            return `
+            <div class="saved-ad-card-item-cell" onclick="handleSavedCardNavigationRedirect('${record.adId}')">
+                <img src="${record._thumb || 'https://via.placeholder.com/150?text=No+Photo'}" class="saved-ad-thumbnail-box" alt="${record.title}">
+                <div class="saved-ad-info-layout-column">
+                    <div>
+                        <div class="saved-ad-upper-row">
+                            <span class="saved-ad-category-badge" style="background:${badge.color}22; color:${badge.color};">${badge.label}</span>
+                            <button class="remove-saved-item-explicit-btn" onclick="removeSingleSavedRecordItem(event, '${record.adId}')">
+                                <i class="ph ph-bookmark-simple-fill"></i>
+                            </button>
+                        </div>
+                        <h2 class="saved-ad-main-title">${record.title}</h2>
+                        <p class="saved-ad-subtitle-desc">${record.subcategory || record.category || ''}</p>
+                    </div>
+                    <div>
+                        <div class="saved-ad-footer-meta-metadata">
+                            <span class="saved-ad-location-pin"><i class="ph ph-map-pin"></i> ${record.area || 'All Areas'}, ${record.region || 'All Regions'}</span>
+                            <span>${record.timestamp ? new Date(record.timestamp).toLocaleDateString() : 'Recent'}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        }).join('');
+    }
+
+    function filterSavedItemsEngine() {
+        const searchQuery = document.getElementById('saved-search-field').value.toLowerCase().trim();
+        
+        let filteredResults = SAVED_DATABASE_RECORDS.filter(record => {
+            const matchesSearch = record.title.toLowerCase().includes(searchQuery) || 
+                                  (record.description && record.description.toLowerCase().includes(searchQuery));
+            let matchesCategory = true;
+            if (activeCategoryFilter === 'Hiring') matchesCategory = HIRING_TYPES.includes(record.type);
+            if (activeCategoryFilter === 'Available') matchesCategory = !HIRING_TYPES.includes(record.type);
+            return matchesSearch && matchesCategory;
+        });
+
+        renderSavedRecordsFeed(filteredResults);
+    }
+
+    function filterSavedCategory(category) {
+        activeCategoryFilter = category;
+        document.querySelectorAll('.category-filter-capsule').forEach(btn => btn.classList.remove('active-capsule'));
+        
+        const targetId = `filter-${category.toLowerCase()}`;
+        const activeBtn = document.getElementById(targetId);
+        if(activeBtn) activeBtn.classList.add('active-capsule');
+        
+        filterSavedItemsEngine();
+    }
+
+    function removeSingleSavedRecordItem(event, adId) {
+        event.stopPropagation();
+        OpenAPI.toggleSavedAd(adId);
+        SAVED_DATABASE_RECORDS = SAVED_DATABASE_RECORDS.filter(record => record.adId !== adId);
+        filterSavedItemsEngine();
+    }
+
+    async function clearAllSavedItemsFromDatabase() {
+        if(SAVED_DATABASE_RECORDS.length === 0) return;
+        const confirmed = await OpenAPI.showConfirm("Are you sure you want to clear your saved listings?", { title: "Clear saved listings?", confirmText: "Clear", danger: true });
+        if(confirmed) {
+            SAVED_DATABASE_RECORDS.forEach(record => OpenAPI.toggleSavedAd(record.adId));
+            SAVED_DATABASE_RECORDS = [];
+            filterSavedItemsEngine();
+        }
+    }
+
+    function handleSavedCardNavigationRedirect(adId) {
+        // Safe cross-page routing targeting home page detail container
+        window.location.href = `home.html?openAdId=${adId}`;
+    }
+
+    window.addEventListener('DOMContentLoaded', async () => {
+        setActiveNav();
+        await loadSavedItemsFromStorage();
+        renderSavedRecordsFeed(SAVED_DATABASE_RECORDS);
+    });
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    // Small purple unread-count badge on the Messages nav icon, visible
+    // from any page with a bottom nav — not just after opening Messages.
+    OpenAPI.refreshMessagesNavBadge();
+});
+</script>
+</body>
+</html>

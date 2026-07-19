@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <script>
+        if (localStorage.getItem('theme') === 'dark') {
+            document.documentElement.classList.add('dark-theme');
+        }
+    </script>
+
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <title>Open Jobs Ghana | Policies</title>
+    <style>
+        :root {
+            --body-bg: #F9FAFB;
+            --card-bg: #ffffff;
+            --text-main: #1f2937;
+            --border-color: #F3F4F6;
+            --input-bg: #FBF9FE;
+            --brand-primary: #500E8C;
+            --text-muted: #6B7280;
+            --shadow-color: rgba(0,0,0,0.02);
+        }
+
+        .dark-theme {
+            --body-bg: #121212;
+            --card-bg: #1e1e1e;
+            --text-main: #f5f5f5;
+            --border-color: #2d2d30;
+            --input-bg: #1a1a1e;
+            --brand-primary: #a362e6;
+            --text-muted: #a0a0a5;
+            --shadow-color: rgba(0, 0, 0, 0.4);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            width: 100%;
+            height: 100dvh;
+            background-color: var(--body-bg);
+            color: var(--text-main);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            align-items: flex-start;
+            justify-content: center;
+        }
+
+        #app-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            background: var(--card-bg);
+            position: relative;
+            box-shadow: 0 0 50px rgba(0,0,0,0.3);
+        }
+
+        .header-nav {
+            padding: 30px 24px 15px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border-color);
+            z-index: 10;
+        }
+
+        .back-btn {
+            background: none;
+            border: none;
+            color: var(--brand-primary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4px;
+        }
+
+        .back-btn i { font-size: 24px; font-weight: bold; }
+        .header-title { font-size: 20px; font-weight: 700; color: var(--brand-primary); }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 24px;
+        }
+
+        .placeholder-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: var(--input-bg);
+            color: var(--brand-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            margin-bottom: 18px;
+        }
+
+        .main-content h2 { font-size: 1.1rem; margin-bottom: 8px; }
+        .main-content p { font-size: 0.9rem; color: var(--text-muted); max-width: 320px; line-height: 1.5; }
+    </style>
+</head>
+<body>
+
+<div id="app-container">
+    <div class="header-nav">
+        <button class="back-btn" onclick="window.location.href='support center.html'" aria-label="Go Back">
+            <i class="ph ph-caret-left"></i>
+        </button>
+        <div class="header-title">Policies</div>
+    </div>
+
+    <div class="main-content">
+        <div class="placeholder-icon"><i class="ph ph-file-text"></i></div>
+        <h2>Policies</h2>
+        <p>This page is coming soon.</p>
+    </div>
+</div>
+
+</body>
+</html>

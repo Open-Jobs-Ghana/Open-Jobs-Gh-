@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Identity Verification</title>
+    <style>
+        * { 
+            box-sizing: border-box; 
+            margin: 0; 
+            padding: 0; 
+        }
+
+        html, body { 
+            width: 100%; 
+            height: 100%; 
+            overflow: hidden; 
+            background-color: #F8F9FA; 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        #app-container { 
+            position: relative; 
+            width: 100%; 
+            height: 100%; 
+            max-width: 480px; 
+            margin: 0 auto; 
+            background: #ffffff; 
+            box-shadow: 0 0 20px rgba(0,0,0,0.05); 
+        }
+        
+        canvas { 
+            display: block; 
+            width: 100%; 
+            height: 100%; 
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+            z-index: 1; 
+        }
+        
+        /* Spacious, Scrollable Document Pane Layer for Page 2 Form */
+        #scrollable-verification-pane {
+            position: absolute; 
+            top: 80px; 
+            left: 0; 
+            width: 100%; 
+            height: calc(100% - 160px); 
+            overflow-y: auto; z-index: 8; 
+            padding: 24px; 
+            display: none; 
+            background: #FFF;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        .label-text { 
+            font-size: 14px; 
+            font-weight: 600; 
+            margin-bottom: 12px; 
+            display: block; 
+            color: #374151; 
+        }
+
+        
+        .native-input {
+            width: 100%; 
+            height: 52px; 
+            border: 1px solid #D1D5DB; 
+            border-radius: 12px;
+            font-size: 16px; 
+            padding: 0 16px; 
+            outline: none; 
+            background: #FFFFFF;
+            color: #111827; 
+            font-family: inherit; 
+            margin-bottom: 28px;
+        }
+
+        .upload-zone { 
+            width: 100%; 
+            height: 150px; 
+            border: 2px dashed #9CA3AF; 
+            border-radius: 16px;
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center;
+            background: #F9FAFB; 
+            cursor: pointer; 
+            margin-bottom: 28px; 
+            text-align: center; 
+            padding: 12px;
+            overflow: hidden; 
+            position: relative;
+        }
+
+        .upload-zone img {
+            width: 100%; 
+            height: 100%; 
+            object-fit: contain; 
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+            z-index: 2; 
+            background: #F9FAFB;
+        }
+
+        /* Fixed Footer Action Bar for verification submission */
+        #verification-footer {
+            position: absolute; 
+            bottom: 0; 
+            left: 0; 
+            width: 100%;
+            padding: 16px 24px 24px 24px; 
+            background: white; 
+            border-top: 1px solid #E5E7EB;
+            z-index: 9; 
+            display: none;
+        }
+        
+        .cta-btn {
+            width: 100%; 
+            height: 54px; 
+            background: #500E8C; 
+            color: white; 
+            border-radius: 27px;
+            font-weight: bold; 
+            border: none; 
+            font-size: 16px; 
+            cursor: pointer;
+        }
+
+        .cta-btn:disabled { background: #9E9E9E; cursor: not-allowed; }
+
+        /* Unified Hardware Camera Overlay Window */
+        .camera-overlay {
+            position: absolute; 
+            z-index: 20; 
+            display: none; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            background: rgba(0,0,0,0.95);
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            color: white;
+        }
+        
+        /* Unified Viewport Framework containing our stream track */
+        #camera-viewport-frame {
+            position: relative; 
+            background: #000; 
+            margin-bottom: 24px;
+            transition: all 0.3s ease;
+        }
+
+        /* Classes toggled dynamically based on active hardware profiles */
+        .mode-document {
+            width: 85%; 
+            height: 240px; 
+            border: 3px solid #500E8C; 
+            border-radius: 12px;
+        }
+
+        .mode-biometric {
+            width: 280px; 
+            height: 280px; 
+            border-radius: 50%; 
+            border: 4px solid #500E8C; 
+            overflow: hidden;
+        }
+        
+        video { 
+            width: 100%; 
+            height: 100%; 
+            object-fit: cover; 
+            display: block; 
+            background: #000; 
+        }
+
+        .step-indicator { 
+            font-size: 18px; 
+            font-weight: 600; 
+            text-align: center; 
+            margin-bottom: 12px; 
+            color: #FFF; 
+            line-height: 1.4; 
+            padding: 0 20px; 
+        }
+        
+        /* Action Sheet Popover Option Lists */
+        .choice-popover {
+            position: absolute; 
+            bottom: 0; 
+            left: 0; 
+            width: 100%; 
+            background: white;
+            border-top-left-radius: 16px; 
+            border-top-right-radius: 16px; 
+            z-index: 30;
+            padding: 24px; 
+            box-shadow: 0 -4px 10px rgba(0,0,0,0.1); 
+            display: none;
+        }
+
+        .choice-title { font-weight: bold; 
+            margin-bottom: 16px; 
+            color: #111827; 
+            font-size: 16px; 
+        }
+
+        .choice-option { 
+            width: 100%; 
+            padding: 14px; 
+            text-align: left; 
+            background: #F3F4F6; 
+            border: none; 
+            border-radius: 8px; 
+            font-size: 15px; 
+            margin-bottom: 10px; 
+            font-weight: 500; 
+            cursor: pointer;
+        }
+
+        .cursor-pointer-zone { 
+            position: absolute; 
+            z-index: 5; cursor: pointer; 
+        }
+        
+    </style>
+</head>
+<body>
+
+<div id="app-container">
+    <canvas id="kycCanvas"></canvas>
+    
+    <div id="scrollable-verification-pane">
+        <h2 style="margin-bottom: 12px; font-size: 20px; line-height: 1.3; color: #111827;">🔒 Verify Your Account</h2>
+        <p style="color: #6B7280; font-size: 14px; margin-bottom: 32px; line-height: 1.4;">Secure full access to internships, jobs, and payment features.</p>
+
+        <div>
+            <label class="label-text">Full Name</label>
+            <input type="text" id="kycName" class="native-input" value="Juliana Ekpetogi">
+        </div>
+
+        <div>
+            <label class="label-text">Email Address</label>
+            <input type="email" id="kycEmail" class="native-input" value="j.ekpetogi.professional@email.com">
+        </div>
+
+        <div>
+            <label class="label-text">Image of ID Card/Driver's license/passport</label>
+            <div class="upload-zone" id="idCardZone">
+                <img id="idPreviewImage" style="display: none;" src="" alt="ID Preview">
+                <span style="font-size: 38px;">🪪</span>
+                <span id="idLabelMain" style="margin-top: 8px; font-weight: 500; color: #111827; font-size: 14px;">Ensure your document details</span>
+                <span id="idLabelSub" style="color: #6B7280; font-size: 13px;">are clear and legible.</span>
+            </div>
+        </div>
+
+        <div>
+            <label class="label-text">Selfie image of yourself</label>
+            <div class="upload-zone" id="selfieZone">
+                <img id="selfiePreviewImage" style="display: none;" src="" alt="Selfie Preview">
+                <span style="font-size: 38px;">📸</span>
+                <span id="selfieLabelMain" style="font-weight: 500; color: #111827; font-size: 14px;">Position your face clearly</span>
+                <span id="selfieLabelSub" style="color: #6B7280; font-size: 13px;">within the frame.</span>
+            </div>
+        </div>
+        
+        <p style="text-align: center; font-size: 12px; color: #9CA3AF; margin-top: 16px; padding-bottom: 24px;">Secured with Bank-Grade Encryption • Regulated under BoG Guidelines 🇬🇭</p>
+    </div>
+
+    <div id="verification-footer">
+        <button class="cta-btn" id="submitKycBtn" disabled>Submit for Verification 🔒</button>
+    </div>
+
+    <input type="file" id="fileSelector" accept="image/*" style="display: none;">
+
+    <div id="cameraViewWindow" class="camera-overlay">
+        <div id="cameraInstructions" class="step-indicator">Fit your Document inside the frame</div>
+        
+        <div id="camera-viewport-frame" class="mode-document">
+            <video id="hardwareSharedVideoSink" autoplay playsinline muted></video>
+        </div>
+
+        <div style="display: flex; gap: 16px; width: 85%;">
+            <button class="cta-btn" id="cancelCamBtn" style="background:#E5E7EB; color:#374151;">Cancel</button>
+            <button class="cta-btn" id="capturePhotoBtn">Take Photo 📸</button>
+        </div>
+    </div>
+
+    <div id="uploadChooser" class="choice-popover">
+        <div class="choice-title">Choose document source</div>
+        <button class="choice-option" id="pickLiveCameraBtn">📸 Launch Live Interface Camera</button>
+        <button class="choice-option" id="pickStorageBtn">📁 Choose from Storage/Files</button>
+        <button class="choice-option" style="background:#E5E7EB; color:#374151;" id="closePickerBtn">Cancel</button>
+    </div>
+
+    <canvas id="frameGrabberCanvas" style="display: none;"></canvas>
+
+    <div id="interactive-pointer-zones"></div>
+</div>
+
+<script>
+const canvas = document.getElementById('kycCanvas');
+const ctx = canvas.getContext('2d');
+const pointerZoneWrapper = document.getElementById('interactive-pointer-zones');
+
+let currentScreen = 'LANDING';
+const PURPLE = '#500E8C';
+
+let verificationState = {
+    idUploaded: false,
+    selfieVerified: false,
+    livenessStep: 0, 
+    activeMode: null  
+};
+
+let activeStream = null;
+let hitZones = [];
+let biometricSequenceTimer = null;
+
+function addHitZone(x, y, w, h, callback) {
+    hitZones.push({ x, y, w, h, callback });
+    const zone = document.createElement('div');
+    zone.className = 'cursor-pointer-zone';
+    zone.style.left = `${x}px`; zone.style.top = `${y}px`;
+    zone.style.width = `${w}px`; zone.style.height = `${h}px`;
+    zone.addEventListener('click', (e) => { e.stopPropagation(); callback(); });
+    pointerZoneWrapper.appendChild(zone);
+}
+
+function resizeCanvas() {
+    const width = Math.min(window.innerWidth, 480);
+    const height = window.innerHeight;
+    const dpr = window.devicePixelRatio || 1;
+    
+    canvas.width = width * dpr; canvas.height = height * dpr;
+    ctx.scale(dpr, dpr);
+    canvas.style.width = `${width}px`; canvas.style.height = `${height}px`;
+    
+    drawScreen();
+}
+
+function drawRoundRect(x, y, w, h, r, fill, stroke) {
+    ctx.beginPath(); ctx.moveTo(x + r, y);
+    ctx.lineTo(x + w - r, y); ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+    ctx.lineTo(x + w, h + y - r); ctx.quadraticCurveTo(x + w, h + y, x + w - r, h + y);
+    ctx.lineTo(x + r, h + y); ctx.quadraticCurveTo(x, h + y, x, h + y - r);
+    ctx.lineTo(x, y + r); ctx.quadraticCurveTo(x, y, x + r, y);
+    ctx.closePath();
+    if (fill) { ctx.fillStyle = fill; ctx.fill(); }
+    if (stroke) { ctx.strokeStyle = stroke; ctx.lineWidth = 1; ctx.stroke(); }
+}
+
+function drawScreen() {
+    ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+    pointerZoneWrapper.innerHTML = '';
+    hitZones = [];
+    
+    document.getElementById('scrollable-verification-pane').style.display = 'none';
+    document.getElementById('verification-footer').style.display = 'none';
+
+    if (currentScreen === 'LANDING') {
+        renderKycLanding();
+    } else if (currentScreen === 'FORM') {
+        renderKycForm();
+    } else if (currentScreen === 'REVIEW') {
+        renderKycReview();
+    }
+}
+
+function renderKycLanding() {
+    let w = canvas.width / (window.devicePixelRatio || 1);
+    ctx.fillStyle = '#FFFFFF'; ctx.fillRect(0, 0, w, window.innerHeight);
+
+    ctx.fillStyle = PURPLE; ctx.font = 'bold 16px sans-serif'; ctx.textAlign = 'left';
+    ctx.fillText('‹ Money & Payment Options', 24, 52);
+
+    let cx = w / 2;
+    ctx.fillStyle = '#EBF5FF'; ctx.beginPath(); ctx.arc(cx, 180, 70, 0, Math.PI * 2); ctx.fill();
+    ctx.font = '54px sans-serif'; ctx.textAlign = 'center'; ctx.fillText('🔑', cx, 200);
+
+    ctx.fillStyle = '#000000'; ctx.font = 'bold 22px sans-serif';
+    ctx.fillText('Unlock Payment Features', cx, 300);
+
+    ctx.fillStyle = '#4B5563'; ctx.font = '14px sans-serif';
+    ctx.fillText('To pay for services using Mobile Money or Cards,', cx, 335);
+    ctx.fillText('we need to quickly verify your identity.', cx, 355);
+
+    drawRoundRect(24, 410, w - 48, 54, 27, PURPLE);
+    ctx.fillStyle = '#FFFFFF'; ctx.font = 'bold 16px sans-serif';
+    ctx.fillText('Verify Identity Now ↗', cx, 443);
+    addHitZone(24, 410, w - 48, 54, () => { currentScreen = 'FORM'; drawScreen(); });
+
+    ctx.strokeStyle = '#E5E7EB'; ctx.beginPath(); ctx.moveTo(24, 500); ctx.lineTo(w - 24, 500); ctx.stroke();
+    ctx.textAlign = 'left'; ctx.fillStyle = '#000000'; ctx.font = 'bold 15px sans-serif';
+    ctx.fillText('💡 Why Verify?', 24, 535);
+    ctx.font = '14px sans-serif'; ctx.fillStyle = '#4B5563';
+    ctx.fillText('• 🔒 Bank-Grade Security: Encrypted data protection', 24, 565);
+    ctx.fillText('• ⚡ Instant Access: Unlock all payment networks', 24, 595);
+}
+
+function renderKycForm() {
+    let w = canvas.width / (window.devicePixelRatio || 1);
+    
+    ctx.fillStyle = '#FFFFFF'; ctx.fillRect(0, 0, w, 80);
+    ctx.fillStyle = PURPLE; ctx.font = 'bold 16px sans-serif'; ctx.textAlign = 'left';
+    ctx.fillText('‹ Verification Status', 24, 48);
+    addHitZone(10, 15, 180, 50, () => { currentScreen = 'LANDING'; drawScreen(); });
+
+    document.getElementById('scrollable-verification-pane').style.display = 'block';
+    document.getElementById('verification-footer').style.display = 'block';
+    
+    const submitBtn = document.getElementById('submitKycBtn');
+    if (verificationState.idUploaded && verificationState.selfieVerified) {
+        submitBtn.removeAttribute('disabled');
+    } else {
+        submitBtn.setAttribute('disabled', 'true');
+    }
+}
+
+// STABILIZED DEVICE CAMERA UTILITY ENGINE
+function startCameraHardware(facingModeRequested) {
+    // 1. Force release any tracks locked on previous run loops
+    if (activeStream) {
+        activeStream.getTracks().forEach(track => track.stop());
+        activeStream = null;
+    }
+    
+    // Clear dynamic biometric scheduler ticks safely
+    if (biometricSequenceTimer) {
+        clearTimeout(biometricSequenceTimer);
+    }
+
+    // 2. Loose general aspect descriptors to prevent permission rejections
+    const constraints = {
+        audio: false,
+        video: {
+            facingMode: facingModeRequested,
+            width: { ideal: 640 },
+            height: { ideal: 480 }
+        }
+    };
+
+    const videoSink = document.getElementById('hardwareSharedVideoSink');
+    const viewFrame = document.getElementById('camera-viewport-frame');
+    
+    // 3. Format visual bounding shapes based on active requirements
+    if (verificationState.activeMode === 'ID') {
+        viewFrame.className = 'mode-document';
+        document.getElementById('cameraInstructions').innerText = "Fit your Document inside the frame";
+        document.getElementById('capturePhotoBtn').style.display = 'block';
+    } else {
+        viewFrame.className = 'mode-biometric';
+        document.getElementById('capturePhotoBtn').style.display = 'none';
+    }
+
+    document.getElementById('cameraViewWindow').style.display = 'flex';
+
+    navigator.mediaDevices.getUserMedia(constraints)
+    .then(stream => {
+        activeStream = stream;
+        videoSink.srcObject = stream;
+        
+        // Ensure playback triggers securely
+        videoSink.play()
+        .then(() => {
+            if (verificationState.activeMode === 'SELFIE') {
+                triggerBiometricFlowLogic();
+            }
+        })
+        .catch(e => console.warn("Stream playback catch: ", e));
+    })
+    .catch(err => {
+        console.error("Camera Hardware error trace: ", err);
+        alert("Unable to open camera. Please make sure camera permissions are enabled in your browser.");
+        closeCameraWindow();
+    });
+}
+
+// PROGRESSIVE MULTI-DIRECTIONAL BIOMETRIC SEQUENCING
+function triggerBiometricFlowLogic() {
+    verificationState.livenessStep = 1;
+    updateLivenessInstructionUI();
+}
+
+function advanceLivenessStep() {
+    if (currentScreen !== 'FORM' || verificationState.activeMode !== 'SELFIE') return;
+
+    if (verificationState.livenessStep === 1) {
+        verificationState.livenessStep = 2;
+        updateLivenessInstructionUI();
+    } else if (verificationState.livenessStep === 2) {
+        verificationState.livenessStep = 3;
+        updateLivenessInstructionUI();
+    } else if (verificationState.livenessStep === 3) {
+        executeSnapshotFrameCapture();
+    }
+}
+
+function updateLivenessInstructionUI() {
+    const banner = document.getElementById('cameraInstructions');
+    if (verificationState.livenessStep === 1) {
+        banner.innerHTML = "Turn your head LEFT <br>👈";
+        biometricSequenceTimer = setTimeout(advanceLivenessStep, 2000);
+    } else if (verificationState.livenessStep === 2) {
+        banner.innerHTML = "Great! Now turn your head RIGHT <br>👉";
+        biometricSequenceTimer = setTimeout(advanceLivenessStep, 2000);
+    } else if (verificationState.livenessStep === 3) {
+        banner.innerHTML = "Perfect! Face FORWARD and hold still <br>😐";
+        biometricSequenceTimer = setTimeout(advanceLivenessStep, 1500);
+    }
+}
+
+function executeSnapshotFrameCapture() {
+    const videoSink = document.getElementById('hardwareSharedVideoSink');
+    const captureCanvas = document.getElementById('frameGrabberCanvas');
+    const captureCtx = captureCanvas.getContext('2d');
+    
+    if (videoSink && videoSink.videoWidth > 0) {
+        captureCanvas.width = videoSink.videoWidth;
+        captureCanvas.height = videoSink.videoHeight;
+        
+        // Write the native frame map pixel configuration layout seamlessly
+        captureCtx.drawImage(videoSink, 0, 0, captureCanvas.width, captureCanvas.height);
+        const frameDataUrl = captureCanvas.toDataURL('image/jpeg');
+        
+        if (verificationState.activeMode === 'ID') {
+            const imgEl = document.getElementById('idPreviewImage');
+            imgEl.src = frameDataUrl;
+            imgEl.style.display = 'block';
+            verificationState.idUploaded = true;
+        } else {
+            const imgEl = document.getElementById('selfiePreviewImage');
+            imgEl.src = frameDataUrl;
+            imgEl.style.display = 'block';
+            verificationState.selfieVerified = true;
+            document.getElementById('selfieLabelMain').innerText = "✓ Live Verification Confirmed";
+            document.getElementById('selfieLabelSub').innerText = "Face geometry matched successfully.";
+        }
+    }
+    closeCameraWindow();
+    drawScreen();
+}
+
+function closeCameraWindow() {
+    if (biometricSequenceTimer) clearTimeout(biometricSequenceTimer);
+    document.getElementById('cameraViewWindow').style.display = 'none';
+    
+    const videoSink = document.getElementById('hardwareSharedVideoSink');
+    if (videoSink) {
+        videoSink.srcObject = null;
+    }
+    
+    if (activeStream) {
+        activeStream.getTracks().forEach(track => track.stop());
+        activeStream = null;
+    }
+    verificationState.livenessStep = 0;
+}
+
+// INTERACTIVE COMPONENT DOM EVENT REGISTRARS
+document.getElementById('idCardZone').onclick = () => {
+    verificationState.activeMode = 'ID';
+    document.getElementById('uploadChooser').style.display = 'block';
+};
+
+document.getElementById('selfieZone').onclick = () => {
+    verificationState.activeMode = 'SELFIE';
+    startCameraHardware('user');
+};
+
+document.getElementById('pickLiveCameraBtn').onclick = () => {
+    document.getElementById('uploadChooser').style.display = 'none';
+    startCameraHardware('environment');
+};
+
+document.getElementById('pickStorageBtn').onclick = () => {
+    document.getElementById('uploadChooser').style.display = 'none';
+    document.getElementById('fileSelector').click();
+};
+
+document.getElementById('fileSelector').onchange = (e) => {
+    if (e.target.files.length > 0) {
+        const file = e.target.files[0];
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            const imgEl = document.getElementById('idPreviewImage');
+            imgEl.src = event.target.result;
+            imgEl.style.display = 'block';
+            verificationState.idUploaded = true;
+            drawScreen();
+        };
+        reader.readAsDataURL(file);
+    }
+};
+
+document.getElementById('capturePhotoBtn').onclick = () => {
+    executeSnapshotFrameCapture();
+};
+
+document.getElementById('cancelCamBtn').onclick = () => { closeCameraWindow(); };
+document.getElementById('closePickerBtn').onclick = () => { document.getElementById('uploadChooser').style.display = 'none'; };
+document.getElementById('submitKycBtn').onclick = () => { currentScreen = 'REVIEW'; drawScreen(); };
+
+function renderKycReview() {
+    let w = canvas.width / (window.devicePixelRatio || 1);
+    let h = canvas.height / (window.devicePixelRatio || 1);
+    
+    ctx.fillStyle = '#F0FDF4'; ctx.fillRect(0, 0, w, h);
+    ctx.textAlign = 'center'; ctx.font = '64px sans-serif'; ctx.fillText('⏳', w / 2, h / 2 - 50);
+    
+    ctx.fillStyle = '#166534'; ctx.font = 'bold 22px sans-serif';
+    ctx.fillText('Submission Received', w / 2, h / 2 + 10);
+    
+    ctx.fillStyle = '#1F2937'; ctx.font = '500 15px sans-serif';
+    ctx.fillText('Verification is being reviewed and', w / 2, h / 2 + 50);
+    ctx.fillText('will be completed in 10 minutes', w / 2, h / 2 + 74);
+
+    drawRoundRect(40, h - 100, w - 80, 48, 24, PURPLE);
+    ctx.fillStyle = '#FFFFFF'; ctx.font = 'bold 15px sans-serif';
+    ctx.fillText('Back to Beginning', w / 2, h - 71);
+    addHitZone(40, h - 100, w - 80, 48, () => {
+        verificationState.idUploaded = false;
+        verificationState.selfieVerified = false;
+        document.getElementById('idPreviewImage').style.display = 'none';
+        document.getElementById('selfiePreviewImage').style.display = 'none';
+        document.getElementById('idLabelMain').innerText = "Ensure your document details";
+        document.getElementById('idLabelSub').innerText = "are clear and legible.";
+        document.getElementById('selfieLabelMain').innerText = "Position your face clearly";
+        document.getElementById('selfieLabelSub').innerText = "within the frame.";
+        currentScreen = 'LANDING'; drawScreen();
+    });
+}
+
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
+</script>
+
+</body>
+</html>

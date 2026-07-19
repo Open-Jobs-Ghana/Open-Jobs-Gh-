@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <script>
+        if (localStorage.getItem('theme') === 'dark') {
+            document.documentElement.classList.add('dark-theme');
+        }
+    </script>
+
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script src="api.js"></script>
+    <title>Open Jobs Ghana | Delete Account</title>
+    <style>
+        /* ==========================================
+           THEME CONFIGURATION VARIABLES — matches
+           theme.html / settings.html so this page looks
+           and behaves like the rest of the app.
+           ========================================== */
+        :root {
+            --body-bg: #F9FAFB;
+            --card-bg: #ffffff;
+            --text-main: #1f2937;
+            --border-color: #F3F4F6;
+            --input-bg: #FBF9FE;
+            --brand-primary: #500E8C;
+            --text-muted: #6B7280;
+            --shadow-color: rgba(0,0,0,0.02);
+            --danger: #b20000;
+            --danger-hover: #8e0000;
+            --danger-bg-soft: rgba(178, 0, 0, 0.06);
+        }
+
+        .dark-theme {
+            --body-bg: #121212;
+            --card-bg: #1e1e1e;
+            --text-main: #f5f5f5;
+            --border-color: #2d2d30;
+            --input-bg: #1a1a1e;
+            --brand-primary: #a362e6;
+            --text-muted: #a0a0a5;
+            --shadow-color: rgba(0, 0, 0, 0.4);
+            --danger: #ff5c5c;
+            --danger-hover: #ff7a7a;
+            --danger-bg-soft: rgba(255, 92, 92, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            width: 100%;
+            height: 100dvh;
+            background-color: var(--body-bg);
+            color: var(--text-main);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            align-items: flex-start;
+            justify-content: center;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        #app-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            background: var(--card-bg);
+            position: relative;
+            box-shadow: 0 0 50px rgba(0,0,0,0.3);
+        }
+
+        .header-nav {
+            padding: 30px 24px 15px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border-color);
+            z-index: 10;
+        }
+
+        .back-btn {
+            background: none;
+            border: none;
+            color: var(--brand-primary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4px;
+            transition: transform 0.2s ease;
+        }
+
+        .back-btn:active { transform: scale(0.9); }
+        .back-btn i { font-size: 24px; font-weight: bold; }
+
+        .header-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--brand-primary);
+        }
+
+        .main-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 28px 24px 40px;
+            width: 100%;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .content-card {
+            width: 100%;
+            max-width: 560px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 20px var(--shadow-color);
+            padding: 28px 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .danger-icon-box {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: var(--danger-bg-soft);
+            color: var(--danger);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            margin: 0 auto;
+        }
+
+        .content-card h2 {
+            text-align: center;
+            font-size: 1.15rem;
+            color: var(--text-main);
+        }
+
+        .content-card p {
+            font-size: 0.95rem;
+            line-height: 1.55;
+            color: var(--text-muted);
+        }
+
+        .content-card p strong { color: var(--text-main); }
+
+        .what-goes-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            background: var(--input-bg);
+            border-radius: 12px;
+            padding: 16px 18px;
+        }
+
+        .what-goes-list li {
+            font-size: 0.9rem;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .what-goes-list li i {
+            color: var(--danger);
+            font-size: 1.05rem;
+            flex-shrink: 0;
+        }
+
+        .delete-btn {
+            width: 100%;
+            background-color: var(--danger);
+            color: white;
+            border: none;
+            padding: 15px 0;
+            border-radius: 14px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.1s ease, background-color 0.2s;
+        }
+
+        .delete-btn:hover { background-color: var(--danger-hover); }
+        .delete-btn:active { transform: scale(0.98); }
+        .delete-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+        .cancel-link {
+            text-align: center;
+            font-size: 0.9rem;
+            color: var(--brand-primary);
+            font-weight: 600;
+            cursor: pointer;
+            background: none;
+            border: none;
+        }
+
+        @media (max-width: 360px) {
+            .main-content { padding: 20px 16px 32px; }
+            .content-card { padding: 22px 18px; }
+        }
+    </style>
+</head>
+<body>
+
+<div id="app-container">
+    <div class="header-nav">
+        <button class="back-btn" onclick="window.location.href='settings.html'" aria-label="Go Back">
+            <i class="ph ph-caret-left"></i>
+        </button>
+        <div class="header-title">Delete Account</div>
+    </div>
+
+    <div class="main-content">
+        <div class="content-card">
+            <div class="danger-icon-box">
+                <i class="ph ph-warning"></i>
+            </div>
+
+            <h2>This action is permanent</h2>
+
+            <p>
+                Deleting your account removes your profile from Open <strong>immediately and permanently</strong>.
+                There's no recovery period and no way to undo this once it's confirmed.
+            </p>
+
+            <ul class="what-goes-list">
+                <li><i class="ph ph-x-circle"></i> Your profile, name, username, and login details</li>
+                <li><i class="ph ph-x-circle"></i> Every job, gig, or listing you've posted</li>
+                <li><i class="ph ph-x-circle"></i> Your saved biometric sign-in on this device</li>
+            </ul>
+
+            <p>
+                If you've messaged other users, those conversations stay visible to them, but your name and
+                contact details will no longer be attached to your account.
+            </p>
+
+            <button class="delete-btn" id="deleteBtn">Delete My Account</button>
+            <button class="cancel-link" onclick="window.location.href='settings.html'">Cancel, take me back</button>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const deleteBtn = document.getElementById('deleteBtn');
+
+    deleteBtn.addEventListener('click', async () => {
+        const session = OpenAPI.getSession();
+
+        if (!session) {
+            // No one is actually logged in — nothing to delete, send them
+            // to sign in instead of pretending this succeeded.
+            window.location.href = 'login.html';
+            return;
+        }
+
+        const confirmDelete = await OpenAPI.showConfirm(
+            "Are you absolutely sure? This will permanently delete your account, your listings, and your saved sign-in on this device. This cannot be undone.",
+            { title: "Delete your account?", confirmText: "Delete", danger: true }
+        );
+
+        if (!confirmDelete) return;
+
+        deleteBtn.disabled = true;
+        deleteBtn.innerText = "Deleting...";
+
+        const result = await OpenAPI.deleteUserAccount(session.email);
+
+        if (!result.ok) {
+            deleteBtn.disabled = false;
+            deleteBtn.innerText = "Delete My Account";
+            await OpenAPI.showAlert("Something went wrong deleting your account. Please try again.", { title: "Couldn't delete account" });
+            return;
+        }
+
+        await OpenAPI.showAlert("Your account has been permanently deleted. We're sorry to see you go.", { title: "Account deleted" });
+        window.location.href = "signup.html";
+    });
+});
+</script>
+</body>
+</html>

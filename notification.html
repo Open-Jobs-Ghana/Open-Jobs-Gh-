@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notifications Settings</title>
+    <!-- Phosphor Icons for the back arrow -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <style>
+
+     /* General Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+body {
+    background-color: #ffffff; /* Grey background matching your design */
+    display: flex;
+    justify-content: center;
+    min-height: 100vh;
+}
+
+/* Responsive Container */
+.app-container {
+    width: 100%;
+    max-width: 500px; /* Limits width on desktop */
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding: 40px 30px;
+    background-color: #ffffff;
+}
+
+/* Header */
+.header {
+    margin-bottom: 60px;
+}
+
+.back-link {
+    text-decoration: none;
+    color: #500e8c; /* Purple theme */
+    font-weight: 700;
+    font-size: 1.3rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Content / Options */
+.content {
+    flex: 1; /* Pushes the save button to the bottom */
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.option-item {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.option-item:active {
+    opacity: 0.7;
+}
+
+/* The Radio Circles */
+.radio-circle {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background-color: #b3b3b3; /* Grey for "Off/Unselected" */
+    transition: background-color 0.3s ease;
+}
+
+.option-item.active .radio-circle {
+    background-color: #3e1263; /* Purple for "On/Selected" */
+}
+
+.label {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #3e1263;
+}
+
+/* Footer & Save Button */
+.footer {
+    display: flex;
+    justify-content: center;
+    padding-bottom: 20px;
+}
+
+.save-btn {
+    background-color: #3e1263;
+    color: white;
+    border: none;
+    padding: 14px 70px;
+    border-radius: 18px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.1s ease;
+}
+
+.save-btn:active {
+    transform: scale(0.96);
+}
+
+/* Responsive tweaks for wider screens */
+@media (min-width: 768px) {
+    .app-container {
+        border-right: 1px solid rgba(0,0,0,0.05);
+        border-left: 1px solid rgba(0,0,0,0.05);
+    }
+}
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <!-- Header Navigation -->
+        <header class="header">
+            <a href="settings.html" class="back-link" onclick="window.history.back()">
+                <i class="ph ph-caret-left"></i> Notifications
+            </a>
+        </header>
+
+        <!-- Options Content -->
+        <main class="content">
+            <div class="option-item active" data-value="on">
+                <div class="radio-circle"></div>
+                <span class="label">On</span>
+            </div>
+
+            <div class="option-item" data-value="off">
+                <div class="radio-circle"></div>
+                <span class="label">Off</span>
+            </div>
+        </main>
+
+        <!-- Footer / Save Button -->
+        <footer class="footer">
+            <button class="save-btn" id="saveBtn">Save</button>
+        </footer>
+    </div>
+
+    <script>
+     document.addEventListener('DOMContentLoaded', () => {
+    const options = document.querySelectorAll('.option-item');
+    const saveBtn = document.getElementById('saveBtn');
+    let selectedStatus = 'on';
+
+    // 1. Load saved preference if it exists
+    const savedChoice = localStorage.getItem('notifications_status');
+    if (savedChoice) {
+        selectedStatus = savedChoice;
+        updateUI(savedChoice);
+    }
+
+    // 2. Handle clicking options
+    options.forEach(item => {
+        item.addEventListener('click', () => {
+            selectedStatus = item.getAttribute('data-value');
+            updateUI(selectedStatus);
+        });
+    });
+
+    // 3. Update the circles visually
+    function updateUI(value) {
+        options.forEach(opt => {
+            if (opt.getAttribute('data-value') === value) {
+                opt.classList.add('active');
+            } else {
+                opt.classList.remove('active');
+            }
+        });
+    }
+
+    // 4. Handle Save Action
+    saveBtn.addEventListener('click', () => {
+        localStorage.setItem('notifications_status', selectedStatus);
+        
+        // Visual feedback
+        saveBtn.innerText = "Saved!";
+        setTimeout(() => {
+            saveBtn.innerText = "Save";
+            // Optional: window.history.back(); // Return to settings after save
+        }, 1000);
+
+        console.log("Notifications set to:", selectedStatus);
+    });
+});
+
+if (localStorage.getItem('theme') === 'dark') {
+    document.documentElement.classList.add('dark-theme');
+}
+</script>
+</body>
+</html>
