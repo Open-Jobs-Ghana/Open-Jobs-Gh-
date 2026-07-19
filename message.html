@@ -1,0 +1,1970 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <title>Open Jobs Ghana | Messages</title>
+    <style>
+         :root {
+            --purple-main: #500E8c;
+            --purple-text-title: #4a008c;
+            --bg-light: #ffffff;
+            --bg-search: #f1f2f6;
+            --text-dark: #1a1a1a;
+            --text-muted: #8e8e93;
+            --border-card: #f2f2f7;
+            --shadow-card: rgba(0, 0, 0, 0.06);
+            --screen-edge-margin: 16px;
+        }
+
+       /* Premium Dark Theme Variable Overrides */
+        .dark-theme {
+            --bg-light: #121212;
+            --bg-search: #1e1e1e;
+            --text-dark: #f5f5f5;
+            --text-muted: #a0a0a5;
+            --border-card: #2d2d30;
+            --shadow-card: rgba(0, 0, 0, 0.4);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+        }
+
+        /* Dynamic Unread Badge Style Configuration — now handled by
+           OpenAPI.refreshMessagesNavBadge(), which injects its own
+           .open-nav-unread-badge styles on demand. */
+
+        /* ==========================================================================
+           --- NAMESPACED MESSAGES ARCHITECTURE SYSTEM (BRANDED HEADER ENHANCED) ---
+           ========================================================================== */
+        .msg-screen-layout {
+            padding: 0;
+            background-color: var(--bg-light);
+            width: 100%;
+        }
+
+        /* Pure Identity System Branded Top Navbar Wrapper Block */
+        .msg-screen-layout .branded-identity-header-container {
+            background-color: var(--purple-main);
+            padding: 24px var(--screen-edge-margin) 16px var(--screen-edge-margin);
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .msg-screen-layout .msg-search-action-header-bar {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            width: 100%;
+        }
+
+        .msg-screen-layout .msg-search-input-frame {
+            position: relative;
+            flex: 1;
+        }
+
+        .msg-screen-layout .msg-search-input-frame input {
+            width: 100%;
+            background-color: var(--bg-search);
+            border: none;
+            border-radius: 24px;
+            padding: 12px 16px 12px 46px;
+            font-size: 14px;
+            outline: none;
+            color: var(--text-dark);
+        }
+
+        .dark-theme .msg-screen-layout .msg-search-input-frame input {
+            background-color: #2a2a2d;
+        }
+
+        .msg-screen-layout .msg-search-input-frame input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .msg-screen-layout .msg-search-input-frame .lens-svg {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 18px;
+            height: 18px;
+            stroke: var(--text-muted);
+        }
+
+        /* Filter Adjustment Slider Engine Control Svg Trigger Button */
+        .msg-screen-layout .msg-sort-dropdown-trigger {
+            background: transparent;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #ffffff;
+        }
+
+        /* Central Capsule Selection Switch Navigation Container Row */
+        .msg-screen-layout .capsule-pill-navigation-container {
+            display: flex;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 5px;
+            border-radius: 30px;
+            justify-content: space-between;
+            align-items: center;
+            gap: 4px;
+            box-shadow: inset 0 2px 6px rgba(0,0,0,0.08);
+            margin-top: 4px;
+        }
+
+        .msg-screen-layout .tab-nav-link {
+            flex: 1;
+            padding: 10px 0;
+            font-size: 13.5px;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.85);
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            text-align: center;
+            border-radius: 25px;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .msg-screen-layout .tab-nav-link.active-link-node {
+            color: #000000 !important;
+            background: #ffffff;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+        }
+
+        .dark-theme .msg-screen-layout .tab-nav-link.active-link-node {
+            color: #ffffff !important;
+            background: #2a2a2d;
+        }
+
+        /* Custom Sort Dropdown Options Popover Menu Panel */
+        .msg-screen-layout .sort-options-popover-menu {
+            display: none;
+            position: absolute;
+            right: var(--screen-edge-margin);
+            top: 75px;
+            background: var(--bg-light);
+            border: 1px solid var(--border-card);
+            border-radius: 12px;
+            box-shadow: 0 6px 20px var(--shadow-card);
+            z-index: 60;
+            overflow: hidden;
+            width: 150px;
+        }
+
+        .msg-screen-layout .sort-options-popover-menu.open { display: block; }
+
+        .msg-screen-layout .sort-options-popover-menu button {
+            width: 100%;
+            padding: 12px 16px;
+            background: transparent;
+            border: none;
+            text-align: left;
+            font-size: 13px;
+            cursor: pointer;
+            color: var(--text-dark);
+        }
+
+        .msg-screen-layout .sort-options-popover-menu button:hover { 
+            background: var(--bg-search); 
+        }
+
+        /* Chat Threads Core Feed Track */
+        .msg-screen-layout .msg-threads-scroll-track {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            padding-top: 8px;
+        }
+
+        /* Channel Item Cell Frame Component */
+        .msg-screen-layout .chat-thread-channel-cell {
+            display: flex;
+            padding: 16px var(--screen-edge-margin);
+            gap: 14px;
+            border-bottom: 1px solid var(--border-card);
+            cursor: pointer;
+            align-items: center;
+            transition: background 0.2s ease;
+        }
+
+        .msg-screen-layout .chat-thread-channel-cell:active { 
+            background-color: var(--bg-search); 
+        }
+
+        .msg-screen-layout .thread-avatar-wrapper {
+            position: relative;
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            background-color: var(--bg-search);
+            flex-shrink: 0;
+        }
+
+        .msg-screen-layout .thread-avatar-wrapper img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .msg-screen-layout .thread-meta-details-column {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            min-width: 0;
+        }
+
+        .msg-screen-layout .thread-upper-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .msg-screen-layout .thread-profile-title {
+            font-size: 14.5px;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        .msg-screen-layout .thread-timestamp-label {
+            font-size: 11.5px;
+            color: var(--text-muted);
+        }
+
+        .msg-screen-layout .thread-lower-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .msg-screen-layout .thread-message-snippet {
+            font-size: 13px;
+            color: var(--text-muted);
+            white-space: nowrap;
+            overflow: hidden;
+            text-transform: none;
+            text-overflow: ellipsis;
+        }
+
+        .msg-screen-layout .thread-message-snippet i {
+            font-size: 13px;
+            margin-right: 3px;
+            vertical-align: -1px;
+        }
+
+        /* Unread Notification Numeric Alert Pill Struct */
+        .msg-screen-layout .thread-unread-numeric-alert-pill {
+            background-color: var(--purple-main);
+            color: #ffffff;
+            font-size: 11px;
+            font-weight: 700;
+            min-width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 5px;
+        }
+
+        /* Delivered Single/Double Network Tick Checks */
+        .msg-screen-layout .cell-delivery-status-ticks-svg {
+            width: 15px;
+            height: 15px;
+            fill: none;
+            stroke: #b0b0b5;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            flex-shrink: 0;
+        }
+
+        .msg-screen-layout .chat-thread-channel-cell.unread-thread-state .thread-message-snippet {
+            color: var(--text-dark);
+            font-weight: 500;
+        }
+
+        .msg-screen-layout .chat-thread-channel-cell.unread-thread-state .thread-timestamp-label {
+            color: var(--purple-main);
+            font-weight: 600;
+        }
+
+        /* Empty Feed System Handler Box */
+        .msg-screen-layout .empty-inbox-placeholder-box {
+            padding: 80px var(--screen-edge-margin);
+            text-align: center;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-muted);
+        }
+
+        .msg-screen-layout .empty-inbox-placeholder-box p { font-size: 13px; }
+
+        /* ==========================================================================
+           --- PROFILE DETAIL MODAL (tap avatar/name in chat header) ---
+           ========================================================================== */
+        .profile-detail-modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.55);
+            z-index: 300;
+            align-items: center;
+            justify-content: center;
+        }
+        .profile-detail-modal-overlay.visible { display: flex; }
+
+        .profile-detail-modal-box {
+            width: 90%;
+            max-width: 360px;
+            background: var(--bg-light);
+            border-radius: 18px;
+            padding: 28px 24px;
+            text-align: center;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+        }
+
+        .profile-detail-avatar-img {
+            width: 84px;
+            height: 84px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 14px;
+            border: 3px solid var(--purple-main);
+        }
+
+        .profile-detail-modal-box h3 { font-size: 17px; color: var(--text-dark); margin-bottom: 4px; }
+        .profile-detail-email { font-size: 13px; color: var(--text-muted); margin-bottom: 12px; }
+
+        .profile-detail-origin-ad {
+            background: var(--bg-search);
+            border-radius: 10px;
+            padding: 10px 12px;
+            font-size: 12.5px;
+            color: var(--text-dark);
+            margin-bottom: 16px;
+            text-align: left;
+        }
+        .profile-detail-origin-ad span { color: var(--text-muted); display: block; font-size: 10.5px; margin-bottom: 2px; }
+
+        .profile-detail-client-toggle-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 13px;
+            color: var(--text-dark);
+            margin-bottom: 16px;
+            cursor: pointer;
+        }
+        .profile-detail-client-toggle-row input { width: 16px; height: 16px; accent-color: var(--purple-main); cursor: pointer; }
+
+        .profile-detail-actions-row { display: flex; flex-direction: column; gap: 8px; margin-top: 6px; }
+        .profile-detail-actions-row-top { display: flex; gap: 8px; }
+
+        .profile-detail-close-btn, .profile-detail-report-btn, .profile-detail-spam-btn {
+            flex: 1;
+            padding: 11px 0;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            border: 1px solid var(--border-card);
+        }
+        .profile-detail-close-btn { background: transparent; color: var(--text-dark); }
+        .profile-detail-spam-btn { background: transparent; color: #b8860b; border-color: #b8860b; }
+        .dark-theme .profile-detail-spam-btn { color: #e0b23d; border-color: #e0b23d; }
+        .profile-detail-spam-btn.is-spam-active { background: #b8860b; color: #fff; }
+        .dark-theme .profile-detail-spam-btn.is-spam-active { background: #e0b23d; color: #1a1400; }
+        .profile-detail-report-btn { background: #dc2626; color: #fff; border-color: #dc2626; width: 100%; }
+
+        /* Edit/delete/reply menu on messages (both directions) */
+        .speech-bubble-payload { position: relative; }
+        .msg-action-menu-trigger {
+            position: absolute;
+            top: -4px;
+            right: -6px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: rgba(0,0,0,0.15);
+            color: inherit;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        .chat-message-row-node.outgoing-node-direction .msg-action-menu-trigger { color: #fff; }
+        .chat-message-row-node.incoming-node-direction .msg-action-menu-trigger { color: var(--text-dark); background: rgba(0,0,0,0.08); }
+        .chat-message-row-node:hover .msg-action-menu-trigger { display: flex; }
+
+        .msg-action-popover {
+            display: none;
+            position: absolute;
+            top: 18px;
+            right: -6px;
+            background: var(--bg-light);
+            border-radius: 10px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+            z-index: 20;
+            overflow: hidden;
+            min-width: 100px;
+        }
+        .msg-action-popover.visible { display: block; }
+        .msg-action-popover button {
+            display: block;
+            width: 100%;
+            text-align: left;
+            padding: 9px 14px;
+            font-size: 12.5px;
+            background: none;
+            border: none;
+            color: var(--text-dark);
+            cursor: pointer;
+        }
+        .msg-action-popover button:hover { background: var(--bg-search); }
+        .msg-action-popover button.destructive-action { color: #dc2626; }
+
+        .msg-edited-tag { font-size: 10px; opacity: 0.7; margin-left: 4px; }
+
+        /* Bounded-size image/video previews (WhatsApp style) — click to open full screen */
+        .chat-attachment-image-preview, .chat-attachment-video-preview-wrapper {
+            width: 220px;
+            max-width: 100%;
+            border-radius: 10px;
+            margin-bottom: 4px;
+            cursor: pointer;
+            display: block;
+        }
+        .chat-attachment-image-preview {
+            max-height: 260px;
+            object-fit: cover;
+        }
+        .chat-attachment-video-preview-wrapper {
+            position: relative;
+            height: 160px;
+        }
+        .chat-attachment-video-preview-wrapper video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 10px;
+            pointer-events: none;
+        }
+        .chat-attachment-video-preview-wrapper .video-play-badge {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 44px; height: 44px;
+            background: rgba(0,0,0,0.5);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 18px;
+        }
+
+        .chat-attachment-file-chip {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255,255,255,0.15);
+            padding: 10px 12px;
+            border-radius: 10px;
+            font-size: 12.5px;
+            margin-bottom: 4px;
+            text-decoration: none;
+            color: inherit;
+            min-width: 180px;
+        }
+        .chat-message-row-node.incoming-node-direction .chat-attachment-file-chip {
+            background: rgba(0,0,0,0.06);
+        }
+        .chat-attachment-file-chip .file-chip-icon { font-size: 22px; flex-shrink: 0; }
+        .chat-attachment-file-chip .file-chip-meta { display: flex; flex-direction: column; overflow: hidden; }
+        .chat-attachment-file-chip .file-chip-name { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 160px; }
+        .chat-attachment-file-chip .file-chip-size { font-size: 10.5px; opacity: 0.75; }
+
+        /* Simple link preview card (no fetched thumbnail — just a clean link chip) */
+        .chat-link-preview-card {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255,255,255,0.15);
+            padding: 8px 10px;
+            border-radius: 8px;
+            font-size: 12px;
+            margin-top: 6px;
+            text-decoration: none;
+            color: inherit;
+        }
+        .chat-message-row-node.incoming-node-direction .chat-link-preview-card {
+            background: rgba(0,0,0,0.06);
+        }
+
+        /* Long text collapsing */
+        .msg-text-body.collapsed-text {
+            display: -webkit-box;
+            -webkit-line-clamp: 6;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .msg-see-more-toggle {
+            display: inline-block;
+            font-size: 11.5px;
+            font-weight: 700;
+            margin-top: 3px;
+            cursor: pointer;
+            text-decoration: underline;
+            opacity: 0.9;
+        }
+
+        /* Reply quote block shown inside a bubble that's replying to another message */
+        .msg-reply-quote-block {
+            background: rgba(0,0,0,0.12);
+            border-left: 3px solid currentColor;
+            border-radius: 6px;
+            padding: 5px 8px;
+            margin-bottom: 6px;
+            font-size: 11.5px;
+            opacity: 0.9;
+            cursor: pointer;
+        }
+        .chat-message-row-node.incoming-node-direction .msg-reply-quote-block { background: rgba(0,0,0,0.05); }
+        .msg-reply-quote-block .reply-quote-sender { font-weight: 700; display: block; font-size: 10.5px; }
+
+        /* Reply-composer preview bar above the input field */
+        .chat-reply-preview-bar {
+            display: none;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            background: var(--bg-search);
+            border-left: 3px solid var(--purple-main);
+            padding: 8px 12px;
+            border-radius: 8px;
+            margin: 0 12px 8px;
+            font-size: 12px;
+            color: var(--text-dark);
+        }
+        .chat-reply-preview-bar.visible { display: flex; }
+        .chat-reply-preview-bar .reply-preview-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .chat-reply-preview-bar .reply-preview-close { cursor: pointer; font-size: 16px; color: var(--text-muted); flex-shrink: 0; }
+
+        /* Custom voice note player (replaces the plain browser <audio> element) */
+        .voice-note-player-widget {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            min-width: 180px;
+            padding: 4px 0;
+        }
+        .voice-note-play-btn {
+            width: 32px; height: 32px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.25);
+            border: none;
+            color: inherit;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            flex-shrink: 0;
+            font-size: 14px;
+        }
+        .chat-message-row-node.incoming-node-direction .voice-note-play-btn { background: rgba(0,0,0,0.08); }
+        .voice-note-progress-track {
+            flex: 1;
+            height: 3px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 3px;
+            position: relative;
+            cursor: pointer;
+        }
+        .chat-message-row-node.incoming-node-direction .voice-note-progress-track { background: rgba(0,0,0,0.15); }
+        .voice-note-progress-fill {
+            height: 100%;
+            width: 0%;
+            background: currentColor;
+            border-radius: 3px;
+        }
+        .voice-note-time-label { font-size: 10.5px; opacity: 0.8; flex-shrink: 0; min-width: 30px; }
+
+        /* Fullscreen media lightbox */
+        .chat-media-lightbox-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.94);
+            z-index: 400;
+            flex-direction: column;
+        }
+        .chat-media-lightbox-overlay.visible { display: flex; }
+        .chat-media-lightbox-top-bar {
+            display: flex;
+            justify-content: flex-end;
+            gap: 18px;
+            padding: 16px 20px;
+        }
+        .chat-media-lightbox-top-bar button {
+            background: rgba(255,255,255,0.12);
+            border: none;
+            color: #fff;
+            width: 40px; height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 18px;
+        }
+        .chat-media-lightbox-body {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            padding: 0 16px 16px;
+        }
+        .chat-media-lightbox-body img, .chat-media-lightbox-body video {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            border-radius: 6px;
+        }
+
+        /* ==========================================================================
+           --- CHAT INTERFACE WINDOW COMPONENT LAYOUT ---
+           ========================================================================== */
+        .chat-interface-layout {
+            display: flex;
+            flex-direction: column;
+            background-color: var(--bg-light);
+            height: 100dvh;
+            width: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 200;
+        }
+
+        /* Top Bar Segment Profile Info Header Row */
+        .chat-interface-layout .chat-window-top-navigation-bar {
+            display: flex;
+            align-items: center;
+            padding: 10px 20px;
+            border-bottom: 1px solid var(--border-card);
+            background: var(--bg-light);
+            gap: 15px;
+            height: 60px;
+        }
+
+        .chat-interface-layout .chat-window-back-btn {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--purple-main);
+            cursor: pointer;
+            padding: 4px 8px 4px 0;
+        }
+
+        .chat-interface-layout .chat-header-profile-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            object-fit: cover;
+            background-color: var(--bg-search);
+        }
+
+        .chat-interface-layout .chat-header-meta-column {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            padding-right: 10px;
+        }
+
+        .chat-interface-layout .chat-header-interlocutor-name {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        .chat-interface-layout .chat-header-status-presence {
+            font-size: 11px;
+            color: #26d07c;
+            font-weight: 500;
+        }
+
+        /* Central Messages Bubbles Render Loop Stream */
+        .chat-interface-layout .chat-bubbles-timeline-scroll-stream {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px var(--screen-edge-margin);
+            background-color: var(--bg-light);
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        /* Speech Container Blocks Core Structuring */
+        .chat-interface-layout .chat-message-row-node {
+            display: flex;
+            width: 100%;
+            position: relative;
+        }
+
+        .chat-interface-layout .chat-message-row-node.incoming-node-direction { justify-content: flex-start; }
+        .chat-interface-layout .chat-message-row-node.outgoing-node-direction { justify-content: flex-end; }
+
+        .chat-interface-layout .speech-bubble-payload {
+            max-width: 75%;
+            padding: 10px 14px;
+            border-radius: 16px;
+            font-size: 13.5px;
+            line-height: 1.45;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-interface-layout .chat-message-row-node.incoming-node-direction .speech-bubble-payload {
+            background-color: var(--bg-search);
+            color: var(--text-dark);
+            border-top-left-radius: 4px;
+        }
+
+        .chat-interface-layout .chat-message-row-node.outgoing-node-direction .speech-bubble-payload {
+            background-color: var(--purple-main);
+            color: #ffffff;
+            border-top-right-radius: 4px;
+        }
+
+        /* Destructive Media Action Buttons for Audio Clips */
+        .chat-interface-layout .voice-msg-trash-delete-btn {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            color: rgba(255, 255, 255, 0.7);
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            margin-top: 6px;
+            font-size: 11px;
+            font-weight: 500;
+            gap: 4px;
+            transition: color 0.2s;
+        }
+       
+        .chat-interface-layout .voice-msg-trash-delete-btn:hover {
+            color: #ff3b30;
+        }
+
+        .chat-interface-layout .speech-bubble-deleted-fallback {
+            font-style: italic;
+            color: var(--text-muted) !important;
+            background-color: var(--bg-search) !important;
+            border-radius: 8px !important;
+            border: 1px dashed var(--border-card);
+            padding: 8px 14px;
+            font-size: 13px;
+        }
+
+        /* Footer Metadata Layer indicators inside message bubbles */
+        .chat-interface-layout .speech-bubble-meta-footer {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 4px;
+            margin-top: 4px;
+            align-self: flex-end;
+        }
+
+        .chat-interface-layout .speech-bubble-timestamp {
+            font-size: 10px;
+            opacity: 0.65;
+        }
+
+        /* Delivery Network Checks Representation Elements */
+        .chat-interface-layout .speech-delivery-status-check-svg {
+            width: 13px;
+            height: 13px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        /* Interactive Controls Footer System Anchor */
+        .chat-interface-layout .chat-input-controls-dock-footer {
+            border-top: 1px solid var(--border-card);
+            padding: 15px 20px;
+            background-color: var(--bg-light);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .chat-interface-layout .chat-media-attachment-action-trigger {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .chat-input-textarea-element-wrapper {
+            flex: 1;
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .chat-interface-layout .chat-input-textarea-element-wrapper input {
+            width: 100%;
+            background-color: var(--bg-search);
+            border: none;
+            border-radius: 20px;
+            padding: 10px 42px 10px 16px;
+            font-size: 13.5px;
+            outline: none;
+            color: var(--text-dark);
+        }
+
+        /* Emulated voice recording overlay timeline track */
+        .chat-interface-layout .audio-recording-active-track-overlay {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--bg-search);
+            border-radius: 20px;
+            align-items: center;
+            padding: 0 16px;
+            justify-content: space-between;
+            color: #ff3b30;
+            font-size: 12.5px;
+            font-weight: 600;
+            animation: pulseRecord 1s infinite alternate;
+        }
+
+        @keyframes pulseRecord {
+            from { opacity: 0.8; }
+            to { opacity: 1; }
+        }
+
+        .chat-interface-layout .chat-voice-note-recorder-action-trigger {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .chat-interface-layout .chat-voice-note-recorder-action-trigger.recording-active {
+            color: #ff3b30;
+        }
+
+        .chat-interface-layout .chat-message-dispatch-send-btn {
+            background-color: var(--purple-main);
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        /* ==========================================
+           BOTTOM PINNED GLOBAL TAB MENU LAYOUT
+        ========================================== */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 80px;
+            background: var(--bg-light); 
+            border-top: 1px solid var(--border-card); 
+            display: flex;
+            align-items: center; 
+            justify-content: space-around;
+            z-index: 10;
+            box-shadow: 0 -4px 10px rgba(0,0,0,0.02); 
+            padding: 0 40px;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column; 
+            align-items: center; 
+            gap: 4px;
+            color: var(--text-muted); 
+            font-size: 13px; 
+            font-weight: 500; 
+            text-decoration: none; 
+            cursor: pointer;
+            width: 100px;
+            padding: 8px 0;
+        }
+
+
+        .nav-item.active { 
+            color: var(--purple-main); 
+            font-weight: 600;
+        }
+        
+        .bottom-nav .nav-item i {
+            font-size: 26px;
+            color: var(--text-muted);
+            transition: all 0.3s ease;
+            margin-bottom: 2px;
+        }
+
+        .bottom-nav .nav-item.active i {
+            font-size: 32px;
+            color: var(--purple-main);
+        }
+
+        .bottom-nav .nav-item span {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-muted);
+            transition: color 0.3s ease;
+        }
+
+        .bottom-nav .nav-item.active span {
+            color: var(--purple-main);
+        }
+
+        @media (max-width: 768px) {
+            .main-content { padding: 16px; }
+            .settings-list-container { max-width: 100%; border-radius: 12px; }
+            .settings-item { padding: 16px; }
+            .bottom-nav { padding: 0; height: 72px; }
+            .nav-item { font-size: 11px; width: auto; }
+        }
+
+    </style>
+    <script src="api.js"></script>
+</head>
+<body>
+
+<div id="app-container">
+    <section id="view-messages" class="view-pane msg-screen-layout">
+        <div class="branded-identity-header-container">
+            <div class="msg-search-action-header-bar">
+                <div class="msg-search-input-frame">
+                    <input type="text" id="msg-threads-search-field" placeholder="Search for chat" oninput="executeMessagesFilterEngine()">
+                    <svg class="lens-svg" viewBox="0 0 24 24" fill="none" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                </div>
+                <button class="msg-sort-dropdown-trigger" id="msg-sort-popover-launcher" onclick="toggleMsgSortPopoverMenu(event)">
+                    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><circle cx="4" cy="12" r="2"/><circle cx="12" cy="10" r="2"/><circle cx="20" cy="14" r="2"/></svg>
+                </button>
+                   
+                <div class="sort-options-popover-menu" id="msg-sort-menu-box">
+                    <button onclick="applyMessageSortingStrategy('name')">Sort by Name</button>
+                    <button onclick="applyMessageSortingStrategy('newest')">Newest Date</button>
+                    <button onclick="applyMessageSortingStrategy('oldest')">Oldest Date</button>
+                </div>
+            </div>
+
+            <div class="capsule-pill-navigation-container">
+                <button class="tab-nav-link active-link-node" id="msg-tab-all" onclick="switchMessagesTabContext('all')">All</button>
+                <button class="tab-nav-link" id="msg-tab-unread" onclick="switchMessagesTabContext('unread')">Unread</button>
+                <button class="tab-nav-link" id="msg-tab-spam" onclick="switchMessagesTabContext('spam')">Spam</button>
+                <button class="tab-nav-link" id="msg-tab-client" onclick="switchMessagesTabContext('client')">Clients</button>
+            </div>
+        </div>
+
+        <div class="empty-inbox-placeholder-box" id="msg-empty-inbox-state">
+            <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="#8e8e93" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            <p>No conversations found</p>
+        </div>
+
+        <div class="msg-threads-scroll-track" id="msg-threads-render-feed"></div>
+    </section>
+
+    <div class="chat-interface-layout" id="runtime-chat-overlay-window" style="display: none;">
+        <header class="chat-window-top-navigation-bar">
+            <span class="chat-window-back-btn" onclick="closeActiveChatThreadOverlay()">←</span>
+            <img class="chat-header-profile-avatar" id="chat-window-header-avatar" src="" alt="" onclick="openProfileDetailModal()" style="cursor:pointer;">
+            <div class="chat-header-meta-column" onclick="openProfileDetailModal()" style="cursor:pointer;">
+                <span class="chat-header-interlocutor-name" id="chat-window-header-title"></span>
+                <span class="chat-header-status-presence" id="chat-window-header-status">Tap for profile</span>
+            </div>
+        </header>
+        
+        <div class="chat-bubbles-timeline-scroll-stream" id="chat-bubbles-render-stream"></div>
+
+        <div class="chat-reply-preview-bar" id="chat-reply-preview-bar">
+            <div>
+                <span class="reply-quote-sender" id="chat-reply-preview-sender" style="font-weight:700; display:block; font-size:10.5px;"></span>
+                <span class="reply-preview-text" id="chat-reply-preview-text"></span>
+            </div>
+            <span class="reply-preview-close" onclick="cancelReplyPreview()">×</span>
+        </div>
+        
+        <footer class="chat-input-controls-dock-footer">
+            <button class="chat-media-attachment-action-trigger" onclick="triggerNativeFileSelectionField()">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
+            </button>
+            <input type="file" id="chat-hidden-native-file-input" style="display: none;" accept="*/*" onchange="handleNativeFileUploadedEvent(this)">
+            
+            <div class="chat-input-textarea-element-wrapper">
+                <input type="text" id="chat-window-text-input-field" placeholder="Type a message..." onkeydown="handleChatInputKeyDownSubmit(event)">
+                <div class="audio-recording-active-track-overlay" id="audio-recording-ui-overlay">
+                    <span>🎙️ Live Hardware Recording...</span>
+                    <span id="audio-recording-timer-label">0:00</span>
+                </div>
+            </div>
+            <button class="chat-voice-note-recorder-action-trigger" id="chat-voice-recorder-btn" onclick="toggleAudioVoiceRecorderAction()">
+                <i class="ph ph-microphone" style="font-size: 22px;"></i>
+            </button>
+            <button class="chat-message-dispatch-send-btn" onclick="executeManualChatThreadDispatchedPayload()">
+                <i class="ph ph-paper-plane-right" style="font-size: 18px;"></i>
+            </button>
+        </footer>
+    </div>
+
+    <!-- FULLSCREEN MEDIA LIGHTBOX: images/videos open here instead of a blank new tab -->
+    <div class="chat-media-lightbox-overlay" id="chat-media-lightbox-overlay">
+        <div class="chat-media-lightbox-top-bar">
+            <button onclick="downloadCurrentLightboxMedia()" title="Download"><i class="ph ph-download-simple"></i></button>
+            <button onclick="shareCurrentLightboxMedia()" title="Share"><i class="ph ph-share-network"></i></button>
+            <button onclick="closeChatMediaLightbox()" title="Close"><i class="ph ph-x"></i></button>
+        </div>
+        <div class="chat-media-lightbox-body" id="chat-media-lightbox-body"></div>
+    </div>
+
+    <!-- PROFILE DETAIL MODAL: shown when tapping the chat partner's avatar/name -->
+    <div class="profile-detail-modal-overlay" id="profile-detail-modal-overlay" onclick="closeProfileDetailModalOnBackdrop(event)">
+        <div class="profile-detail-modal-box">
+            <img class="profile-detail-avatar-img" id="profile-detail-avatar" src="" alt="">
+            <h3 id="profile-detail-name"></h3>
+            <p class="profile-detail-email" id="profile-detail-email"></p>
+            <div class="profile-detail-origin-ad" id="profile-detail-origin-ad" style="display:none;"></div>
+            <label class="profile-detail-client-toggle-row">
+                <input type="checkbox" id="profile-detail-client-checkbox" onchange="toggleClientTagForCurrentPartner(this)">
+                <span>Mark as Client</span>
+            </label>
+            <div class="profile-detail-actions-row">
+                <div class="profile-detail-actions-row-top">
+                    <button class="profile-detail-close-btn" onclick="closeProfileDetailModal()">Close</button>
+                    <button class="profile-detail-spam-btn" id="profile-detail-spam-btn" onclick="toggleSpamForCurrentPartner()">Send to Spam</button>
+                </div>
+                <button class="profile-detail-report-btn" onclick="reportCurrentChatPartner()">Report User</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- BOTTOM PINNED GLOBAL TAB MENU LAYOUT -->
+    <nav class="bottom-nav">
+        <div id="bottom-nav-home" class="nav-item tab-trigger" data-route="home" onclick="window.location.href='home.html'">
+            <i class="ph ph-house"></i> <span>Home</span>
+        </div>
+        <div class="nav-item tab-trigger" data-route="messages" onclick="window.location.href='message.html'">
+            <i class="ph ph-chats-circle"></i> <span>Messages</span>
+        </div>
+        <div class="nav-item tab-trigger" data-route="add" onclick="window.location.href='add.html'">
+            <i class="ph ph-plus-circle"></i> <span>Add</span>
+        </div>
+        <div class="nav-item tab-trigger" data-route="saved" onclick="window.location.href='saved.html'">
+            <i class="ph ph-bookmark-simple"></i> <span>Saved</span>
+        </div>
+        <div class="nav-item tab-trigger" data-route="settings" onclick="window.location.href='settings.html'">
+            <i class="ph ph-gear"></i> <span>Settings</span>
+        </div>
+    </nav>
+</div>
+
+<script>
+    // Theme Engine Activation Implementation Hook
+    if (localStorage.getItem('theme') === 'dark') {
+        document.documentElement.classList.add('dark-theme');
+    }
+
+    // Global Active Navigation Configuration Trackers
+    function setActiveNav() {
+        const currentPath = window.location.pathname;
+        document.querySelectorAll('.bottom-nav .nav-item').forEach(item => {
+            item.classList.remove('active');
+        });
+        
+        const activeItem = document.querySelector('.bottom-nav .nav-item[data-route="messages"]');
+        if(activeItem) {
+            activeItem.classList.add('active');
+        }
+    }
+
+    // Add click handlers for navigation
+    document.querySelectorAll('.bottom-nav .nav-item').forEach(tab => {
+        tab.addEventListener('click', function() {
+            const destinationRoute = this.getAttribute('data-route');
+            const routeMap = {
+                'home': 'home.html',
+                'messages': 'message.html',
+                'add': 'add.html',
+                'saved': 'saved.html',
+                'settings': 'settings.html'
+            };
+            const targetPage = routeMap[destinationRoute];
+            if(targetPage) {
+                window.location.href = targetPage;
+            }
+        });
+    });
+
+    window.addEventListener('load', setActiveNav);
+
+    // Real messaging state — everything here is loaded from OpenAPI, which
+    // reads/writes real, persistent conversations (see api.js).
+    let myEmail = null;
+    let myUserRecord = null;
+    let CONVERSATIONS = [];       // this user's conversations, loaded from OpenAPI
+    let activeSelectedChannelId = null;
+    let currentMessagesTab = 'all';
+    let currentMessagesSortStrategy = 'newest';
+    let currentOpenMenuMsgId = null;
+    let editingMessageId = null;
+    let replyingToMsgId = null;
+
+    // Hardware Interface Media Capturing Controllers
+    let hardwareMediaRecorderInstance = null;
+    let hardwareAudioPlaybackChunks = [];
+    let recordDurationIntervalId = null;
+    let elapsedRecordingDurationSeconds = 0;
+
+    const MAX_ATTACHMENT_BYTES = 100 * 1024 * 1024; // 100MB
+
+    /* ==========================================================================
+       --- INTERACTIVE JAVASCRIPT MESSAGES PROCESSING ENGINE ---
+       ========================================================================== */
+    function toggleMsgSortPopoverMenu(event) {
+        event.stopPropagation();
+        document.getElementById('msg-sort-menu-box').classList.toggle('open');
+    }
+
+    function applyMessageSortingStrategy(strategy) {
+        currentMessagesSortStrategy = strategy;
+        document.getElementById('msg-sort-menu-box').classList.remove('open');
+        executeMessagesFilterEngine();
+    }
+
+    function switchMessagesTabContext(tabName) {
+        currentMessagesTab = tabName;
+        document.querySelectorAll('.capsule-pill-navigation-container .tab-nav-link').forEach(btn => {
+            btn.classList.remove('active-link-node');
+        });
+        document.getElementById(`msg-tab-${tabName}`).classList.add('active-link-node');
+        executeMessagesFilterEngine();
+    }
+
+    // Resolves a partner's display name/avatar from their email
+    function getPartnerDisplay(conversation) {
+        const partnerEmail = conversation.participants.find(p => p !== myEmail);
+        const user = OpenAPI.getUserByEmail(partnerEmail);
+        const name = (user && user.name) || partnerEmail || "Unknown User";
+        return {
+            email: partnerEmail,
+            name: name,
+            avatar: (user && user.profilePic) || OpenAPI.getInitialsAvatarDataUri(name)
+        };
+    }
+
+    function formatConversationTimestamp(ts) {
+        if (!ts) return "";
+        const d = new Date(ts);
+        const now = new Date();
+        const sameDay = d.toDateString() === now.toDateString();
+        if (sameDay) return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        const yesterday = new Date(now); yesterday.setDate(now.getDate() - 1);
+        if (d.toDateString() === yesterday.toDateString()) return "Yesterday";
+        return d.toLocaleDateString();
+    }
+
+    function executeMessagesFilterEngine() {
+        let tracks = [...CONVERSATIONS];
+
+        if (currentMessagesTab === 'unread') {
+            tracks = tracks.filter(t => !OpenAPI.isMarkedAsSpam(myEmail, getPartnerDisplay(t).email) && OpenAPI.getUnreadCountForUser(t, myEmail) > 0);
+        } else if (currentMessagesTab === 'spam') {
+            tracks = tracks.filter(t => OpenAPI.isMarkedAsSpam(myEmail, getPartnerDisplay(t).email));
+        } else if (currentMessagesTab === 'client') {
+            tracks = tracks.filter(t => !OpenAPI.isMarkedAsSpam(myEmail, getPartnerDisplay(t).email) && OpenAPI.isMarkedAsClient(myEmail, getPartnerDisplay(t).email));
+        } else {
+            tracks = tracks.filter(t => !OpenAPI.isMarkedAsSpam(myEmail, getPartnerDisplay(t).email));
+        }
+
+        const searchInput = document.getElementById('msg-threads-search-field').value.trim().toLowerCase();
+        if (searchInput) {
+            tracks = tracks.filter(t => getPartnerDisplay(t).name.toLowerCase().includes(searchInput));
+        }
+
+        if (currentMessagesSortStrategy === 'name') {
+            tracks.sort((a, b) => getPartnerDisplay(a).name.localeCompare(getPartnerDisplay(b).name));
+        } else if (currentMessagesSortStrategy === 'newest') {
+            tracks.sort((a, b) => (b.lastUpdated || 0) - (a.lastUpdated || 0));
+        } else if (currentMessagesSortStrategy === 'oldest') {
+            tracks.sort((a, b) => (a.lastUpdated || 0) - (b.lastUpdated || 0));
+        }
+
+        const feedContainer = document.getElementById('msg-threads-render-feed');
+        const placeholder = document.getElementById('msg-empty-inbox-state');
+
+        if (tracks.length === 0) {
+            feedContainer.innerHTML = '';
+            placeholder.style.display = 'flex';
+            return;
+        }
+        placeholder.style.display = 'none';
+
+        feedContainer.innerHTML = tracks.map(channel => {
+            const partner = getPartnerDisplay(channel);
+            const lastMsgObj = channel.messages[channel.messages.length - 1];
+            let lastMsgPreview = "No messages yet";
+            if (lastMsgObj) {
+                if (lastMsgObj.deleted) lastMsgPreview = "message deleted";
+                else if (lastMsgObj.attachmentType === 'image') lastMsgPreview = "<i class='ph ph-image'></i> Photo";
+                else if (lastMsgObj.attachmentType === 'video') lastMsgPreview = "<i class='ph ph-video-camera'></i> Video";
+                else if (lastMsgObj.attachmentType === 'audio') lastMsgPreview = "<i class='ph ph-microphone'></i> Voice note";
+                else if (lastMsgObj.attachmentType === 'file') lastMsgPreview = `<i class='ph ph-file-text'></i> ${lastMsgObj.attachmentName || 'File'}`;
+                else lastMsgPreview = lastMsgObj.text;
+            }
+            const unreadCount = OpenAPI.getUnreadCountForUser(channel, myEmail);
+            const timestampLabel = formatConversationTimestamp(channel.lastUpdated);
+
+            return `
+                <div class="chat-thread-channel-cell ${unreadCount > 0 ? 'unread-thread-state' : ''}" onclick="launchActiveChatOverlay('${channel.id}')">
+                    <div class="thread-avatar-wrapper">
+                        <img src="${partner.avatar}" alt="${partner.name}">
+                    </div>
+                    <div class="thread-meta-details-column">
+                        <div class="thread-upper-row">
+                            <span class="thread-profile-title">${partner.name}</span>
+                            <span class="thread-timestamp-label">${timestampLabel}</span>
+                        </div>
+                        <div class="thread-lower-row">
+                            <p class="thread-message-snippet">${lastMsgPreview}</p>
+                            ${unreadCount > 0 ? `<span class="thread-unread-numeric-alert-pill">${unreadCount}</span>` : `
+                                <svg class="cell-delivery-status-ticks-svg" viewBox="0 0 24 24"><path d="M2 12l5 5L22 4M6 12l5 5L18 9"/></svg>
+                            `}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    // Dynamic Deep-Link Redirection Processing Systems — now uses real
+    // identity (?with=<email>&adId=<adId>) instead of a display name.
+    async function interceptActiveInboundDeepLinkingChannelRouter() {
+        const queryParams = new URLSearchParams(window.location.search);
+        const withEmail = queryParams.get('with');
+        const adId = queryParams.get('adId');
+
+        if (withEmail && myEmail) {
+            if (withEmail === myEmail) {
+                // Can't message yourself — just show the inbox instead
+                window.history.replaceState({}, document.title, "message.html");
+                return;
+            }
+
+            let originAd = null;
+            if (adId) {
+                const allAds = await OpenAPI.getAllAds();
+                const ad = allAds.find(a => a.adId === adId);
+                if (ad) {
+                    const media = await OpenAPI.getAdMedia(ad.adId);
+                    originAd = { adId: ad.adId, title: ad.title, thumb: (media.images && media.images[0]) || null };
+                }
+            }
+
+            const convo = await OpenAPI.findOrCreateConversation(myEmail, withEmail, originAd);
+            CONVERSATIONS = await OpenAPI.getConversationsForUser(myEmail);
+            window.history.replaceState({}, document.title, "message.html");
+            launchActiveChatOverlay(convo.id);
+        }
+    }
+
+    async function launchActiveChatOverlay(channelId) {
+        activeSelectedChannelId = channelId;
+        const channel = OpenAPI.getConversationById(channelId);
+        if (!channel) return;
+
+        await OpenAPI.markConversationRead(channelId, myEmail);
+        CONVERSATIONS = await OpenAPI.getConversationsForUser(myEmail);
+        await OpenAPI.refreshMessagesNavBadge();
+        executeMessagesFilterEngine();
+
+        const partner = getPartnerDisplay(channel);
+        document.getElementById('chat-window-header-title').innerText = partner.name;
+        document.getElementById('chat-window-header-avatar').src = partner.avatar;
+
+        await renderChatTimelineStreamPayload(channel);
+        document.getElementById('runtime-chat-overlay-window').style.display = 'flex';
+    }
+
+    function closeActiveChatThreadOverlay() {
+        document.getElementById('runtime-chat-overlay-window').style.display = 'none';
+        activeSelectedChannelId = null;
+        cancelReplyPreview();
+        editingMessageId = null;
+        Object.values(activeVoiceAudioElements).forEach(audio => audio.pause());
+        activeVoiceAudioElements = {};
+        executeMessagesFilterEngine();
+    }
+
+    async function renderChatTimelineStreamPayload(channel) {
+        const container = document.getElementById('chat-bubbles-render-stream');
+        if (!container) return;
+
+        let originAdHtml = '';
+        if (channel.originAd) {
+            originAdHtml = `
+                <div style="text-align:center; margin: 8px 0 16px;">
+                    <span style="display:inline-block; background:var(--bg-search); color:var(--text-muted); font-size:11.5px; padding:6px 14px; border-radius:20px;">
+                        Started from ad: <strong style="color:var(--text-dark);">${channel.originAd.title}</strong>
+                    </span>
+                </div>
+            `;
+        }
+
+        if (channel.messages.length === 0) {
+            container.innerHTML = originAdHtml + `<p style="text-align:center; color:var(--text-muted); font-size:12px; margin-top:20px;">No messages here. Start the conversation...</p>`;
+            return;
+        }
+
+        const bubbleHtmlParts = await Promise.all(channel.messages.map(async (msg) => {
+            const isOutgoing = msg.sender === myEmail;
+
+            if (msg.deleted) {
+                return `
+                    <div class="chat-message-row-node ${isOutgoing ? 'outgoing-node-direction' : 'incoming-node-direction'}">
+                        <div class="speech-bubble-payload speech-bubble-deleted-fallback">
+                            <span>message deleted</span>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Reply quote block (if this message is a reply to another one)
+            let replyQuoteHtml = '';
+            if (msg.replyTo) {
+                const quoted = channel.messages.find(m => m.msgId === msg.replyTo);
+                if (quoted && !quoted.deleted) {
+                    const quotedSenderLabel = quoted.sender === myEmail ? "You" : getPartnerDisplay(channel).name;
+                    let quotedSnippet = quoted.text || (quoted.attachmentType ? `[${quoted.attachmentType}]` : '');
+                    if (quotedSnippet.length > 80) quotedSnippet = quotedSnippet.slice(0, 80) + '…';
+                    replyQuoteHtml = `
+                        <div class="msg-reply-quote-block" onclick="scrollToQuotedMessage('${quoted.msgId}')">
+                            <span class="reply-quote-sender">${quotedSenderLabel}</span>${quotedSnippet}
+                        </div>
+                    `;
+                }
+            }
+
+            let mediaContentPayloadText = buildTextBubbleContent(msg);
+
+            if (msg.attachmentId) {
+                const attachment = await OpenAPI.getChatAttachment(msg.attachmentId);
+                if (attachment) {
+                    if (msg.attachmentType === 'image') {
+                        mediaContentPayloadText = `<img class="chat-attachment-image-preview" src="${attachment.dataUrl}" alt="${msg.attachmentName || 'photo'}" onclick="openChatMediaLightbox('${msg.attachmentId}', 'image', '${(msg.attachmentName || 'photo').replace(/'/g, "")}')">` + (msg.text ? buildTextBubbleContent(msg) : '');
+                    } else if (msg.attachmentType === 'video') {
+                        mediaContentPayloadText = `
+                            <div class="chat-attachment-video-preview-wrapper" onclick="openChatMediaLightbox('${msg.attachmentId}', 'video', '${(msg.attachmentName || 'video').replace(/'/g, "")}')">
+                                <video src="${attachment.dataUrl}" preload="metadata"></video>
+                                <div class="video-play-badge"><i class="ph ph-play-fill"></i></div>
+                            </div>
+                        ` + (msg.text ? buildTextBubbleContent(msg) : '');
+                    } else if (msg.attachmentType === 'audio') {
+                        mediaContentPayloadText = buildVoiceNotePlayerHtml(msg.msgId, attachment.dataUrl);
+                    } else {
+                        const sizeLabel = msg.attachmentSize ? `${(msg.attachmentSize / (1024 * 1024)).toFixed(1)} MB` : '';
+                        const fileIcon = getFileIconForName(msg.attachmentName);
+                        mediaContentPayloadText = `
+                            <a class="chat-attachment-file-chip" href="${attachment.dataUrl}" download="${msg.attachmentName || 'file'}">
+                                <span class="file-chip-icon">${fileIcon}</span>
+                                <span class="file-chip-meta">
+                                    <span class="file-chip-name">${msg.attachmentName || 'File'}</span>
+                                    <span class="file-chip-size">${sizeLabel}</span>
+                                </span>
+                            </a>
+                        `;
+                    }
+                }
+            }
+
+            const menuHtml = `
+                <div class="msg-action-menu-trigger" onclick="toggleMsgActionMenu(event, '${msg.msgId}')">⋮</div>
+                <div class="msg-action-popover" id="msg-menu-${msg.msgId}">
+                    <button onclick="startReplyToMessage('${msg.msgId}', event)">Reply</button>
+                    ${(isOutgoing && !msg.attachmentId) ? `<button onclick="startEditingMessage('${msg.msgId}', event)">Edit</button>` : ''}
+                    ${isOutgoing ? `<button class="destructive-action" onclick="destroySelectedMessagePayload('${msg.msgId}', event)">Delete</button>` : ''}
+                </div>
+            `;
+
+            return `
+                <div class="chat-message-row-node ${isOutgoing ? 'outgoing-node-direction' : 'incoming-node-direction'}">
+                    <div class="speech-bubble-payload" id="bubble-${msg.msgId}">
+                        ${menuHtml}
+                        ${replyQuoteHtml}
+                        ${mediaContentPayloadText}
+                        <div class="speech-bubble-meta-footer">
+                            <span class="speech-bubble-timestamp">${new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                            ${isOutgoing ? `<svg class="speech-delivery-status-check-svg" style="color:${msg.read ? '#26d07c' : 'rgba(255,255,255,0.6)'};" viewBox="0 0 24 24"><path d="M2 12l5 5L22 4M6 12l5 5L18 9"/></svg>` : ''}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }));
+
+        container.innerHTML = originAdHtml + bubbleHtmlParts.join('');
+        container.scrollTop = container.scrollHeight;
+        initializeVoiceNotePlayers(container);
+    }
+
+    // Detects a URL a message and appends a compact link card. No real
+    // fetched thumbnail (that needs a server-side fetch to avoid CORS
+    // issues) — just a clean "you're about to open this link" card.
+    const URL_DETECT_REGEX = /(https?:\/\/[^\s]+)/i;
+    function buildTextBubbleContent(msg) {
+        if (!msg.text) return '';
+        const isLong = msg.text.length > 320;
+        const urlMatch = msg.text.match(URL_DETECT_REGEX);
+
+        const escapedText = msg.text.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        const textId = `text-${msg.msgId}`;
+
+        let linkCardHtml = '';
+        if (urlMatch) {
+            try {
+                const hostname = new URL(urlMatch[0]).hostname.replace('www.', '');
+                linkCardHtml = `
+                    <a class="chat-link-preview-card" href="${urlMatch[0]}" target="_blank" rel="noopener">
+                        <i class="ph ph-link"></i> ${hostname}
+                    </a>
+                `;
+            } catch (e) { /* not a real URL, skip the card */ }
+        }
+
+        const editedTag = msg.edited ? '<span class="msg-edited-tag">(edited)</span>' : '';
+
+        if (isLong) {
+            return `
+                <span class="msg-text-body collapsed-text" id="${textId}">${escapedText}</span>${editedTag}
+                <span class="msg-see-more-toggle" onclick="toggleLongText('${textId}', this)">See more</span>
+                ${linkCardHtml}
+            `;
+        }
+        return `<span class="msg-text-body" id="${textId}">${escapedText}</span>${editedTag}${linkCardHtml}`;
+    }
+
+    function toggleLongText(textId, toggleEl) {
+        const el = document.getElementById(textId);
+        const isCollapsed = el.classList.toggle('collapsed-text');
+        toggleEl.innerText = isCollapsed ? "See more" : "See less";
+    }
+
+    function getFileIconForName(name) {
+        if (!name) return '📄';
+        const ext = name.split('.').pop().toLowerCase();
+        if (ext === 'pdf') return '📕';
+        if (['doc', 'docx'].includes(ext)) return '📘';
+        if (['xls', 'xlsx', 'csv'].includes(ext)) return '📗';
+        if (['zip', 'rar', '7z'].includes(ext)) return '🗜️';
+        if (['ppt', 'pptx'].includes(ext)) return '📙';
+        return '📄';
+    }
+
+    function scrollToQuotedMessage(msgId) {
+        const el = document.getElementById(`bubble-${msgId}`);
+        if (el) {
+            el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            el.style.transition = 'background-color 0.3s ease';
+            const original = el.style.boxShadow;
+            el.style.boxShadow = '0 0 0 2px var(--purple-main)';
+            setTimeout(() => { el.style.boxShadow = original; }, 900);
+        }
+    }
+
+    /* ---------- Reply-to-message composer preview ---------- */
+    function startReplyToMessage(msgId, event) {
+        event.stopPropagation();
+        const channel = OpenAPI.getConversationById(activeSelectedChannelId);
+        const msg = channel.messages.find(m => m.msgId === msgId);
+        if (!msg) return;
+
+        document.getElementById(`msg-menu-${msgId}`).classList.remove('visible');
+        replyingToMsgId = msgId;
+
+        const bar = document.getElementById('chat-reply-preview-bar');
+        const senderLabel = msg.sender === myEmail ? "You" : getPartnerDisplay(channel).name;
+        let snippet = msg.text || (msg.attachmentType ? `[${msg.attachmentType}]` : '');
+        if (snippet.length > 60) snippet = snippet.slice(0, 60) + '…';
+
+        document.getElementById('chat-reply-preview-sender').innerText = `Replying to ${senderLabel}`;
+        document.getElementById('chat-reply-preview-text').innerText = snippet;
+        bar.classList.add('visible');
+        document.getElementById('chat-window-text-input-field').focus();
+    }
+
+    function cancelReplyPreview() {
+        replyingToMsgId = null;
+        document.getElementById('chat-reply-preview-bar').classList.remove('visible');
+    }
+
+    /* ---------- Custom voice-note player (not the plain browser widget) ---------- */
+    function buildVoiceNotePlayerHtml(msgId, dataUrl) {
+        return `
+            <div class="voice-note-player-widget" data-audio-src="${dataUrl}" data-msg-id="${msgId}">
+                <button class="voice-note-play-btn" onclick="toggleVoiceNotePlayback('${msgId}')" id="voice-play-btn-${msgId}">
+                    <i class="ph ph-play-fill"></i>
+                </button>
+                <div class="voice-note-progress-track" onclick="seekVoiceNote(event, '${msgId}')">
+                    <div class="voice-note-progress-fill" id="voice-progress-${msgId}"></div>
+                </div>
+                <span class="voice-note-time-label" id="voice-time-${msgId}">0:00</span>
+            </div>
+        `;
+    }
+
+    let activeVoiceAudioElements = {};
+
+    function initializeVoiceNotePlayers(container) {
+        container.querySelectorAll('.voice-note-player-widget').forEach(widget => {
+            const msgId = widget.dataset.msgId;
+            if (!activeVoiceAudioElements[msgId]) {
+                const audio = new Audio(widget.dataset.audioSrc);
+                audio.addEventListener('timeupdate', () => updateVoiceNoteProgress(msgId));
+                audio.addEventListener('ended', () => {
+                    const btn = document.getElementById(`voice-play-btn-${msgId}`);
+                    if (btn) btn.innerHTML = `<i class="ph ph-play-fill"></i>`;
+                });
+                activeVoiceAudioElements[msgId] = audio;
+            }
+        });
+    }
+
+    function toggleVoiceNotePlayback(msgId) {
+        const audio = activeVoiceAudioElements[msgId];
+        if (!audio) return;
+        const btn = document.getElementById(`voice-play-btn-${msgId}`);
+
+        // Pause any other currently-playing voice note first
+        Object.keys(activeVoiceAudioElements).forEach(id => {
+            if (id !== msgId && !activeVoiceAudioElements[id].paused) {
+                activeVoiceAudioElements[id].pause();
+                const otherBtn = document.getElementById(`voice-play-btn-${id}`);
+                if (otherBtn) otherBtn.innerHTML = `<i class="ph ph-play-fill"></i>`;
+            }
+        });
+
+        if (audio.paused) {
+            audio.play();
+            if (btn) btn.innerHTML = `<i class="ph ph-pause-fill"></i>`;
+        } else {
+            audio.pause();
+            if (btn) btn.innerHTML = `<i class="ph ph-play-fill"></i>`;
+        }
+    }
+
+    function updateVoiceNoteProgress(msgId) {
+        const audio = activeVoiceAudioElements[msgId];
+        const fill = document.getElementById(`voice-progress-${msgId}`);
+        const timeLabel = document.getElementById(`voice-time-${msgId}`);
+        if (!audio || !fill || !timeLabel) return;
+
+        const pct = audio.duration ? (audio.currentTime / audio.duration) * 100 : 0;
+        fill.style.width = `${pct}%`;
+
+        const mins = Math.floor(audio.currentTime / 60);
+        const secs = Math.floor(audio.currentTime % 60);
+        timeLabel.innerText = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+    }
+
+    function seekVoiceNote(event, msgId) {
+        const audio = activeVoiceAudioElements[msgId];
+        if (!audio || !audio.duration) return;
+        const track = event.currentTarget;
+        const rect = track.getBoundingClientRect();
+        const pct = (event.clientX - rect.left) / rect.width;
+        audio.currentTime = pct * audio.duration;
+    }
+
+    /* ---------- Fullscreen media lightbox (images/videos) ---------- */
+    let currentLightboxAttachment = null;
+
+    async function openChatMediaLightbox(attachmentId, type, name) {
+        const attachment = await OpenAPI.getChatAttachment(attachmentId);
+        if (!attachment) return;
+        currentLightboxAttachment = { dataUrl: attachment.dataUrl, type, name: name || 'download' };
+
+        const body = document.getElementById('chat-media-lightbox-body');
+        body.innerHTML = type === 'video'
+            ? `<video src="${attachment.dataUrl}" controls autoplay></video>`
+            : `<img src="${attachment.dataUrl}" alt="${name || 'photo'}">`;
+
+        document.getElementById('chat-media-lightbox-overlay').classList.add('visible');
+    }
+
+    function closeChatMediaLightbox() {
+        document.getElementById('chat-media-lightbox-overlay').classList.remove('visible');
+        document.getElementById('chat-media-lightbox-body').innerHTML = '';
+        currentLightboxAttachment = null;
+    }
+
+    function downloadCurrentLightboxMedia() {
+        if (!currentLightboxAttachment) return;
+        const a = document.createElement('a');
+        a.href = currentLightboxAttachment.dataUrl;
+        a.download = currentLightboxAttachment.name;
+        a.click();
+    }
+
+    async function shareCurrentLightboxMedia() {
+        if (!currentLightboxAttachment) return;
+        if (navigator.share) {
+            fetch(currentLightboxAttachment.dataUrl)
+                .then(res => res.blob())
+                .then(blob => {
+                    const file = new File([blob], currentLightboxAttachment.name, { type: blob.type });
+                    navigator.share({ files: [file] }).catch(() => {});
+                });
+        } else {
+            await OpenAPI.showAlert("Sharing isn't supported on this browser — use Download instead.", { title: "Can't share" });
+        }
+    }
+
+    function toggleMsgActionMenu(event, msgId) {
+        event.stopPropagation();
+        document.querySelectorAll('.msg-action-popover.visible').forEach(el => {
+            if (el.id !== `msg-menu-${msgId}`) el.classList.remove('visible');
+        });
+        document.getElementById(`msg-menu-${msgId}`).classList.toggle('visible');
+    }
+
+    function startEditingMessage(msgId, event) {
+        event.stopPropagation();
+        const channel = OpenAPI.getConversationById(activeSelectedChannelId);
+        const msg = channel.messages.find(m => m.msgId === msgId);
+        if (!msg) return;
+
+        document.getElementById(`msg-menu-${msgId}`).classList.remove('visible');
+        editingMessageId = msgId;
+
+        const input = document.getElementById('chat-window-text-input-field');
+        input.value = msg.text;
+        input.focus();
+
+        const sendBtn = document.querySelector('.chat-message-dispatch-send-btn');
+        sendBtn.innerHTML = `<i class="ph ph-check" style="font-size: 18px;"></i>`;
+    }
+
+    async function destroySelectedMessagePayload(msgId, event) {
+        if (event) event.stopPropagation();
+        await OpenAPI.deleteMessageInConversation(activeSelectedChannelId, msgId);
+        const channel = OpenAPI.getConversationById(activeSelectedChannelId);
+        await renderChatTimelineStreamPayload(channel);
+        CONVERSATIONS = await OpenAPI.getConversationsForUser(myEmail);
+        executeMessagesFilterEngine();
+    }
+
+    async function executeManualChatThreadDispatchedPayload() {
+        const inputComponent = document.getElementById('chat-window-text-input-field');
+        const textPayload = inputComponent.value.trim();
+        if (!textPayload || !activeSelectedChannelId) return;
+
+        if (editingMessageId) {
+            await OpenAPI.editMessageInConversation(activeSelectedChannelId, editingMessageId, textPayload);
+            editingMessageId = null;
+            document.querySelector('.chat-message-dispatch-send-btn').innerHTML = `<i class="ph ph-paper-plane-right" style="font-size: 18px;"></i>`;
+        } else {
+            await OpenAPI.addMessageToConversation(activeSelectedChannelId, myEmail, { text: textPayload, replyTo: replyingToMsgId });
+            cancelReplyPreview();
+        }
+
+        inputComponent.value = '';
+        const channel = OpenAPI.getConversationById(activeSelectedChannelId);
+        await renderChatTimelineStreamPayload(channel);
+        CONVERSATIONS = await OpenAPI.getConversationsForUser(myEmail);
+    }
+
+    function handleChatInputKeyDownSubmit(event) {
+        if (event.key === 'Enter') {
+            executeManualChatThreadDispatchedPayload();
+        }
+    }
+
+    function triggerNativeFileSelectionField() {
+        document.getElementById('chat-hidden-native-file-input').click();
+    }
+
+    async function handleNativeFileUploadedEvent(inputComponent) {
+        const chosenFile = inputComponent.files[0];
+        if (!chosenFile || !activeSelectedChannelId) return;
+
+        if (chosenFile.size > MAX_ATTACHMENT_BYTES) {
+            await OpenAPI.showAlert("That file is too large. Please choose something under 100MB.", { title: "File too large" });
+            inputComponent.value = '';
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = async (e) => {
+            const dataUrl = e.target.result;
+            const attachmentId = OpenAPI.generateAttachmentId();
+            let attachmentType = 'file';
+            if (chosenFile.type.startsWith('image/')) attachmentType = 'image';
+            else if (chosenFile.type.startsWith('video/')) attachmentType = 'video';
+
+            await OpenAPI.saveChatAttachment(attachmentId, dataUrl, {
+                name: chosenFile.name,
+                size: chosenFile.size,
+                type: chosenFile.type
+            });
+
+            await OpenAPI.addMessageToConversation(activeSelectedChannelId, myEmail, {
+                text: '',
+                attachmentId,
+                attachmentType,
+                attachmentName: chosenFile.name,
+                attachmentSize: chosenFile.size,
+                replyTo: replyingToMsgId
+            });
+            cancelReplyPreview();
+
+            const channel = OpenAPI.getConversationById(activeSelectedChannelId);
+            await renderChatTimelineStreamPayload(channel);
+            CONVERSATIONS = await OpenAPI.getConversationsForUser(myEmail);
+        };
+        reader.readAsDataURL(chosenFile);
+        inputComponent.value = '';
+    }
+
+    // Live Action Hardware Mic Audio Capturing Systems Architecture
+    function toggleAudioVoiceRecorderAction() {
+        const btn = document.getElementById('chat-voice-recorder-btn');
+        const uiTrackOverlay = document.getElementById('audio-recording-ui-overlay');
+
+        if (!hardwareMediaRecorderInstance || hardwareMediaRecorderInstance.state === "inactive") {
+            navigator.mediaDevices.getUserMedia({ audio: true })
+                .then(stream => {
+                    hardwareAudioPlaybackChunks = [];
+                    hardwareMediaRecorderInstance = new MediaRecorder(stream);
+
+                    hardwareMediaRecorderInstance.ondataavailable = e => {
+                        if (e.data.size > 0) hardwareAudioPlaybackChunks.push(e.data);
+                    };
+
+                    hardwareMediaRecorderInstance.onstop = () => {
+                        const audioBlob = new Blob(hardwareAudioPlaybackChunks, { type: 'audio/mp3' });
+
+                        if (elapsedRecordingDurationSeconds > 0 && activeSelectedChannelId) {
+                            const reader = new FileReader();
+                            reader.onload = async (e) => {
+                                const dataUrl = e.target.result;
+                                const attachmentId = OpenAPI.generateAttachmentId();
+                                await OpenAPI.saveChatAttachment(attachmentId, dataUrl, {
+                                    name: "Voice Note",
+                                    size: audioBlob.size,
+                                    type: 'audio/mp3'
+                                });
+                                await OpenAPI.addMessageToConversation(activeSelectedChannelId, myEmail, {
+                                    text: '',
+                                    attachmentId,
+                                    attachmentType: 'audio',
+                                    attachmentName: 'Voice Note',
+                                    attachmentSize: audioBlob.size,
+                                    replyTo: replyingToMsgId
+                                });
+                                cancelReplyPreview();
+                                const channel = OpenAPI.getConversationById(activeSelectedChannelId);
+                                await renderChatTimelineStreamPayload(channel);
+                                CONVERSATIONS = await OpenAPI.getConversationsForUser(myEmail);
+                            };
+                            reader.readAsDataURL(audioBlob);
+                        }
+                    };
+
+                    hardwareMediaRecorderInstance.start();
+                    btn.classList.add('recording-active');
+                    uiTrackOverlay.style.display = 'flex';
+
+                    elapsedRecordingDurationSeconds = 0;
+                    document.getElementById('audio-recording-timer-label').innerText = "0:00";
+
+                    recordDurationIntervalId = setInterval(() => {
+                        elapsedRecordingDurationSeconds++;
+                        const mins = Math.floor(elapsedRecordingDurationSeconds / 60);
+                        const secs = elapsedRecordingDurationSeconds % 60;
+                        document.getElementById('audio-recording-timer-label').innerText = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+                    }, 1000);
+                }).catch(async err => {
+                    await OpenAPI.showAlert("Couldn't access your microphone. Please check your browser's permission settings.", { title: "Microphone unavailable" });
+                });
+        } else {
+            hardwareMediaRecorderInstance.stop();
+            clearInterval(recordDurationIntervalId);
+            btn.classList.remove('recording-active');
+            uiTrackOverlay.style.display = 'none';
+        }
+    }
+
+    /* ==========================================================================
+       --- PROFILE DETAIL MODAL ---
+       ========================================================================== */
+    function openProfileDetailModal() {
+        if (!activeSelectedChannelId) return;
+        const channel = OpenAPI.getConversationById(activeSelectedChannelId);
+        if (!channel) return;
+        const partner = getPartnerDisplay(channel);
+
+        document.getElementById('profile-detail-avatar').src = partner.avatar;
+        document.getElementById('profile-detail-name').innerText = partner.name;
+        document.getElementById('profile-detail-email').innerText = partner.email;
+        document.getElementById('profile-detail-client-checkbox').checked = OpenAPI.isMarkedAsClient(myEmail, partner.email);
+        document.getElementById('profile-detail-client-checkbox').dataset.partnerEmail = partner.email;
+
+        const spamBtn = document.getElementById('profile-detail-spam-btn');
+        spamBtn.dataset.partnerEmail = partner.email;
+        updateSpamButtonState(spamBtn, OpenAPI.isMarkedAsSpam(myEmail, partner.email));
+
+        const originBox = document.getElementById('profile-detail-origin-ad');
+        if (channel.originAd) {
+            originBox.style.display = 'block';
+            originBox.innerHTML = `<span>Started from ad</span>${channel.originAd.title}`;
+        } else {
+            originBox.style.display = 'none';
+        }
+
+        document.getElementById('profile-detail-modal-overlay').classList.add('visible');
+    }
+
+    function toggleClientTagForCurrentPartner(checkbox) {
+        const partnerEmail = checkbox.dataset.partnerEmail;
+        OpenAPI.setClientTag(myEmail, partnerEmail, checkbox.checked);
+        if (currentMessagesTab === 'client') executeMessagesFilterEngine();
+    }
+
+    function updateSpamButtonState(btn, isSpam) {
+        btn.classList.toggle('is-spam-active', isSpam);
+        btn.innerText = isSpam ? "Remove from Spam" : "Send to Spam";
+    }
+
+    // Toggles spam for whoever the profile detail modal is currently
+    // showing. Marking someone as spam only hides them from YOUR inbox
+    // (All/Unread/Client tabs) and stops their messages counting toward
+    // your unread badge — it's reversible, and separate from reporting.
+    async function toggleSpamForCurrentPartner() {
+        const btn = document.getElementById('profile-detail-spam-btn');
+        const partnerEmail = btn.dataset.partnerEmail;
+        const currentlySpam = OpenAPI.isMarkedAsSpam(myEmail, partnerEmail);
+
+        if (!currentlySpam) {
+            const confirmed = await OpenAPI.showConfirm(
+                "Send this conversation to Spam? It'll disappear from All, Unread, and Clients until you remove it from Spam.",
+                { title: "Send to Spam?", confirmText: "Send to Spam" }
+            );
+            if (!confirmed) return;
+        }
+
+        OpenAPI.setSpamTag(myEmail, partnerEmail, !currentlySpam);
+        updateSpamButtonState(btn, !currentlySpam);
+
+        CONVERSATIONS = await OpenAPI.getConversationsForUser(myEmail);
+        executeMessagesFilterEngine();
+        await OpenAPI.refreshMessagesNavBadge();
+    }
+
+    function closeProfileDetailModal() {
+        document.getElementById('profile-detail-modal-overlay').classList.remove('visible');
+    }
+
+    function closeProfileDetailModalOnBackdrop(event) {
+        if (event.target.id === 'profile-detail-modal-overlay') {
+            closeProfileDetailModal();
+        }
+    }
+
+    // NOTE: intentionally minimal for now — the full report flow (reasons,
+    // review queue, etc.) is still being defined. This just logs that a
+    // report happened via OpenAPI.reportConversation() and lets the person
+    // know it was received. Unlike Spam, reporting does NOT hide the
+    // conversation from view — those are two separate actions now.
+    async function reportCurrentChatPartner() {
+        if (!activeSelectedChannelId) return;
+        const confirmed = await OpenAPI.showConfirm(
+            "Report this user for a policy violation? Our team will review this conversation.",
+            { title: "Report user?", confirmText: "Report", danger: true }
+        );
+        if (!confirmed) return;
+
+        await OpenAPI.reportConversation(activeSelectedChannelId);
+        closeProfileDetailModal();
+        await OpenAPI.showAlert("Thanks — this has been reported for review.", { title: "Report submitted" });
+    }
+
+    document.addEventListener('click', () => {
+        document.getElementById('msg-sort-menu-box').classList.remove('open');
+        document.querySelectorAll('.msg-action-popover.visible').forEach(el => el.classList.remove('visible'));
+    });
+
+    // Boot execution systems configuration context
+    window.addEventListener('DOMContentLoaded', async () => {
+        const currentUser = await OpenAPI.getCurrentUser();
+        const session = OpenAPI.getSession();
+        myEmail = (session && session.email) || null;
+        myUserRecord = currentUser;
+
+        if (!myEmail) {
+            window.location.href = 'login.html';
+            return;
+        }
+
+        CONVERSATIONS = await OpenAPI.getConversationsForUser(myEmail);
+        executeMessagesFilterEngine();
+        await OpenAPI.refreshMessagesNavBadge();
+        await interceptActiveInboundDeepLinkingChannelRouter();
+    });
+</script>
+
+</body>
+</html>

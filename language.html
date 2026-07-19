@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <script>
+        if (localStorage.getItem('theme') === 'dark') {
+            document.documentElement.classList.add('dark-theme');
+        }
+    </script>
+
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script src="api.js"></script>
+    <title>Open Jobs Ghana | Language</title>
+    <style>
+        /* ==========================================
+           THEME CONFIGURATION VARIABLES — matches
+           theme.html / settings.html so this page looks
+           and behaves like the rest of the app.
+           ========================================== */
+        :root {
+            --body-bg: #F9FAFB;
+            --card-bg: #ffffff;
+            --text-main: #1f2937;
+            --border-color: #F3F4F6;
+            --input-bg: #FBF9FE;
+            --brand-primary: #500E8C;
+            --text-muted: #6B7280;
+            --shadow-color: rgba(0,0,0,0.02);
+        }
+
+        .dark-theme {
+            --body-bg: #121212;
+            --card-bg: #1e1e1e;
+            --text-main: #f5f5f5;
+            --border-color: #2d2d30;
+            --input-bg: #1a1a1e;
+            --brand-primary: #a362e6;
+            --text-muted: #a0a0a5;
+            --shadow-color: rgba(0, 0, 0, 0.4);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            width: 100%;
+            height: 100dvh;
+            background-color: var(--body-bg);
+            color: var(--text-main);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            align-items: flex-start;
+            justify-content: center;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        #app-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            background: var(--card-bg);
+            position: relative;
+            box-shadow: 0 0 50px rgba(0,0,0,0.3);
+        }
+
+        .header-nav {
+            padding: 30px 24px 15px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border-color);
+            z-index: 10;
+        }
+
+        .back-btn {
+            background: none;
+            border: none;
+            color: var(--brand-primary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4px;
+            transition: transform 0.2s ease;
+        }
+
+        .back-btn:active { transform: scale(0.9); }
+        .back-btn i { font-size: 24px; font-weight: bold; }
+
+        .header-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--brand-primary);
+        }
+
+        .main-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px 0;
+            width: 100%;
+            -webkit-overflow-scrolling: touch;
+            padding-bottom: 140px;
+        }
+
+        .note-banner {
+            max-width: 800px;
+            margin: 0 auto 18px;
+            padding: 0 24px;
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        .settings-list-container {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 8px 0;
+            box-shadow: 0 4px 20px var(--shadow-color);
+            border: 1px solid var(--border-color);
+        }
+
+        .lang-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 18px 24px;
+            cursor: pointer;
+            transition: background-color 0.15s ease;
+        }
+
+        .lang-item:not(:last-child) { border-bottom: 1px solid var(--border-color); }
+        .lang-item:hover { background-color: var(--input-bg); }
+
+        .lang-item-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .lang-flag-box {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .lang-label-text {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--brand-primary);
+        }
+
+        .lang-check-indicator {
+            color: var(--brand-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+        }
+
+        .lang-check-indicator i {
+            font-size: 22px;
+            transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .lang-item:not(.active) .lang-check-indicator i {
+            opacity: 0.2;
+            color: var(--text-muted);
+        }
+
+        .lang-item.active .lang-check-indicator i { transform: scale(1.1); }
+
+        .bottom-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 20px 24px;
+            background: var(--card-bg);
+            border-top: 1px solid var(--border-color);
+            box-shadow: 0 -4px 10px var(--shadow-color);
+            display: flex;
+            justify-content: center;
+        }
+
+        .save-btn {
+            width: 100%;
+            max-width: 320px;
+            background-color: var(--brand-primary);
+            color: white;
+            border: none;
+            padding: 15px 0;
+            border-radius: 14px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: opacity 0.2s, transform 0.1s ease;
+        }
+
+        .save-btn:active { transform: scale(0.98); }
+
+        @media (max-width: 768px) {
+            .main-content { padding: 16px; padding-bottom: 140px; }
+            .settings-list-container { max-width: 100%; border-radius: 12px; }
+            .lang-item { padding: 16px; }
+        }
+    </style>
+</head>
+<body>
+
+<div id="app-container">
+    <div class="header-nav">
+        <button class="back-btn" onclick="window.location.href='settings.html'" aria-label="Go Back">
+            <i class="ph ph-caret-left"></i>
+        </button>
+        <div class="header-title">Language</div>
+    </div>
+
+    <div class="main-content">
+        <p class="note-banner">
+            This sets your preferred display language and saves it to your device.
+            App-wide translation is still being rolled out screen by screen — for now this
+            preference is saved and ready for the rest of the app to read as more pages adopt it.
+        </p>
+
+        <div class="settings-list-container" id="languageList">
+            <div class="lang-item" data-lang="English">
+                <div class="lang-item-left">
+                    <div class="lang-flag-box">🇬🇧</div>
+                    <div class="lang-label-text">English</div>
+                </div>
+                <div class="lang-check-indicator"><i class="ph ph-check-circle"></i></div>
+            </div>
+            <div class="lang-item" data-lang="French">
+                <div class="lang-item-left">
+                    <div class="lang-flag-box">🇫🇷</div>
+                    <div class="lang-label-text">French</div>
+                </div>
+                <div class="lang-check-indicator"><i class="ph ph-check-circle"></i></div>
+            </div>
+            <div class="lang-item" data-lang="Spanish">
+                <div class="lang-item-left">
+                    <div class="lang-flag-box">🇪🇸</div>
+                    <div class="lang-label-text">Spanish</div>
+                </div>
+                <div class="lang-check-indicator"><i class="ph ph-check-circle"></i></div>
+            </div>
+            <div class="lang-item" data-lang="German">
+                <div class="lang-item-left">
+                    <div class="lang-flag-box">🇩🇪</div>
+                    <div class="lang-label-text">German</div>
+                </div>
+                <div class="lang-check-indicator"><i class="ph ph-check-circle"></i></div>
+            </div>
+            <div class="lang-item" data-lang="Twi">
+                <div class="lang-item-left">
+                    <div class="lang-flag-box">🇬🇭</div>
+                    <div class="lang-label-text">Twi</div>
+                </div>
+                <div class="lang-check-indicator"><i class="ph ph-check-circle"></i></div>
+            </div>
+            <div class="lang-item" data-lang="Hausa">
+                <div class="lang-item-left">
+                    <div class="lang-flag-box">🇬🇭</div>
+                    <div class="lang-label-text">Hausa</div>
+                </div>
+                <div class="lang-check-indicator"><i class="ph ph-check-circle"></i></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="bottom-bar">
+        <button class="save-btn" id="saveBtn">Save</button>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const langItems = document.querySelectorAll('.lang-item');
+    const saveBtn = document.getElementById('saveBtn');
+
+    // Load and reflect whatever was actually saved before (real
+    // persistence via OpenAPI, not just an in-memory variable).
+    let selectedLanguage = OpenAPI.getLanguage();
+    updateActiveState(selectedLanguage);
+
+    langItems.forEach(item => {
+        item.addEventListener('click', () => {
+            selectedLanguage = item.getAttribute('data-lang');
+            updateActiveState(selectedLanguage);
+        });
+    });
+
+    function updateActiveState(lang) {
+        langItems.forEach(item => {
+            item.classList.toggle('active', item.getAttribute('data-lang') === lang);
+        });
+    }
+
+    saveBtn.addEventListener('click', () => {
+        OpenAPI.setLanguage(selectedLanguage);
+
+        const originalText = saveBtn.innerText;
+        saveBtn.innerText = "Saved!";
+        setTimeout(() => { saveBtn.innerText = originalText; }, 1200);
+    });
+});
+</script>
+</body>
+</html>

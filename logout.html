@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Open Jobs Ghana | Logout</title>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script src="api.js"></script>
+    <style>
+        * { 
+	   box-sizing: border-box; 
+	   margin: 0; 
+	   padding: 0; 
+	   font-family: sans-serif; 
+	 }
+        
+        body {
+            background-color: #9b9b9b;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 480px;
+            padding: 40px 25px;
+            text-align: center;
+        }
+
+        .icon-box {
+            width: 80px;
+            height: 80px;
+            background: #ffffff;
+            color: #500E8C;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 30px;
+            font-size: 40px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 15px;
+            color: #000;
+        }
+
+        p {
+            font-size: 16px;
+            color: #444;
+            margin-bottom: 40px;
+            line-height: 1.5;
+        }
+
+        .action-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 16px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            border: none;
+            transition: transform 0.1s;
+        }
+
+        .btn-logout {
+            background-color: #500E8C;
+            color: white;
+        }
+
+        .btn-cancel {
+            background-color: transparent;
+            color: #500E8C;
+            border: 2px solid #500E8C;
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="icon-box">
+            <i class="ph ph-sign-out"></i>
+        </div>
+        <h1>Logout</h1>
+        <p>Are you sure you want to log out of your account?</p>
+
+        <div class="action-buttons">
+            <button class="btn btn-logout" onclick="performLogout()">Yes, Logout</button>
+            <button class="btn btn-cancel" onclick="window.history.back()">Cancel</button>
+        </div>
+    </div>
+
+    <script>
+        function performLogout() {
+            // 1. Clear the active session — single shared implementation
+            OpenAPI.clearSession();
+            
+            // 2. Redirect to the login/signup page
+            window.location.href = "index.html";
+        }
+
+        if (localStorage.getItem('theme') === 'dark') {
+        document.documentElement.classList.add('dark-theme');
+    }
+    </script>
+</body>
+</html>
